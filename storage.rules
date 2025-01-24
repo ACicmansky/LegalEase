@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      // Allow public read access
+      allow read: if true;
+      
+      // Allow write with file type and size validation
+      allow write: if
+        // Verify file type is PDF
+        request.resource.contentType == 'application/pdf' &&
+        // Verify file size is less than 10MB
+        request.resource.size < 10 * 1024 * 1024;
+    }
+  }
+}
