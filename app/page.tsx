@@ -2,7 +2,6 @@ import Footer from '@/components/home/Footer';
 import Header from '@/components/home/Header';
 import Hero from '@/components/home/Hero';
 import HowItWorks from '@/components/home/HowItWorks';
-import ProudlyOpenSource from '@/components/home/ProudlyOpenSource';
 import { User, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
@@ -18,7 +17,6 @@ export default async function Home() {
       <Header />
       <Hero />
       <HowItWorks />
-      <ProudlyOpenSource />
       <Footer />
     </main>
   );

@@ -9,11 +9,11 @@ const anek = Anek_Bangla({
   display: 'swap',
 });
 
-let title = 'PDF to Chat';
-let description = 'Chat with your PDFs in seconds.';
+let title = 'AI legal assistant';
+let description = 'Get answers to your legal questions in seconds';
 let ogimage = 'https://www.pdftochat.com/og-image.png';
-let url = 'https://www.pdftochat.com';
-let sitename = 'pdftochat.com';
+let url = 'https://www.legalease.sk';
+let sitename = 'legalease.sk';
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),
@@ -48,7 +48,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={anek.className}>
         <head>
-          <PlausibleProvider domain="pdftochat.com" />
+          <PlausibleProvider domain="legalease.sk" />
         </head>
         <body>{children}</body>
       </html>

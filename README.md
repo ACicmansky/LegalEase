@@ -1,10 +1,10 @@
-<a href="https://www.pdftochat.com/">
-  <img alt="PDFToChat – Chat with your PDFs in seconds." src="./public/og-image.png">
-  <h1 align="center">PDFToChat</h1>
+<a href="https://www.legalease.sk/">
+  <img alt="LegalEase – Get answers to your legal questions in seconds" src="./public/og-image.png">
+  <h1 align="center">LegalEase</h1>
 </a>
 
 <p align="center">
-  Chat with your PDFs in seconds. Powered by Together AI and Pinecone.
+  Get answers to your legal questions in seconds. Powered by Together AI and MongoDB.
 </p>
 
 <p align="center">
@@ -29,22 +29,6 @@
 - [Vercel](https://vercel.com/) for hosting and for the postgres DB
 - [Clerk](https://clerk.dev/) for user authentication
 - [Tailwind CSS](https://tailwindcss.com/) for styling
-
-## Deploy Your Own
-
-You can deploy this template to Vercel or any other host. Note that you'll need to:
-
-- Set up [Together.ai](https://dub.sh/together-ai/)
-- Set up a [MongoDB Atlas](https://www.mongodb.com/atlas/database) Atlas database with 768 dimensions
-  - See instructions below for MongoDB
-- Set up [Bytescale](https://www.bytescale.com/)
-- Set up [Clerk](https://clerk.dev/)
-- Set up [Vercel](https://vercel.com/)
-- (Optional) Set up [LangSmith](https://smith.langchain.com/) for tracing.
-
-See the .example.env for a list of all the required environment variables.
-
-You will also need to prepare your database schema by running `npx prisma db push`.
 
 ### MongoDB Atlas
 
@@ -92,13 +76,6 @@ MONGODB_ATLAS_INDEX_NAME= # The name of the index you just created.
 - Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index name.
 - Check that you've set the vector dimensions to `768` and that `index` matched your specified field in the `.env variable`.
 - Check that you've added a credit card on Together AI if you're hitting rate limiting issues due to the free tier
-
-## Credits
-
-- [Youssef](https://twitter.com/YoussefUiUx) for the design of the app
-- [Mayo](https://twitter.com/mayowaoshin) for the original RAG repo and inspiration
-- [Jacob](https://twitter.com/Hacubu) for the LangChain help
-- Together AI, Bytescale, Pinecone, and Clerk for sponsoring
 
 ## Future tasks
 

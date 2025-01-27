@@ -4,7 +4,7 @@ import Link from 'next/link';
 const data = [
   {
     title: 'Sign up',
-    description: 'Start by signing up for a free PDFtoChat account',
+    description: 'Start by signing up for a free LegalEase account',
     image: '/pen.png',
   },
   {

@@ -62,7 +62,7 @@ export default function DashboardClient({ docsList }: { docsList: any }) {
   return (
     <div className="mx-auto flex flex-col gap-4 container mt-10">
       <h1 className="text-4xl leading-[1.1] tracking-tighter font-medium text-center">
-        Chat With Your PDFs
+      Get explanations to your legal PDFs
       </h1>
       {docsList.length > 0 && (
         <div className="flex flex-col gap-4 mx-10 my-5">
