@@ -161,7 +161,7 @@ export default function DocumentClient({
                           className="mr-4 rounded-sm h-full"
                           priority
                         />
-                        <ReactMarkdown linkTarget="_blank" className="prose">
+                        <ReactMarkdown className="prose">
                           {message.content}
                         </ReactMarkdown>
                       </div>
