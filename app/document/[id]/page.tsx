@@ -1,6 +1,5 @@
 import prisma from '@/utils/prisma';
-import { currentUser } from '@clerk/nextjs';
-import type { User } from '@clerk/nextjs/api';
+import { User, currentUser } from '@clerk/nextjs/server';
 import DocumentClient from './document-client';
 
 export default async function Page({ params }: { params: { id: string } }) {
