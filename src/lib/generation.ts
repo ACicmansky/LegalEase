@@ -5,8 +5,8 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { Document } from "@langchain/core/documents";
 
 export class GenerationEngine {
-    private model: ChatGroq;
-    private promptTemplate: PromptTemplate;
+    public model: ChatGroq;
+    public promptTemplate: PromptTemplate;
 
     constructor() {
         this.model = new ChatGroq({
