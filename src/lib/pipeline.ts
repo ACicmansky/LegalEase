@@ -1,26 +1,30 @@
-import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-import { formatDocumentsAsString } from "langchain/util/document";
-import { vectorStore } from "./vector-store";
-import { GenerationEngine } from "./generation";
-import { VectorCache } from "./caching";
+import { AdaptiveBatcher } from "@/utils/adaptive-batcher";
 import { HallucinationDetector } from "@/utils/hallucination-detector";
 import { ResponseValidator } from "@/utils/response-validator";
-import { AdaptiveBatcher } from "@/utils/adaptive-batcher";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
+import { formatDocumentsAsString } from "langchain/util/document";
+
+import { VectorCache } from "@/lib/caching";
+import { GenerationEngine } from "@/lib/generation";
+import { createVectorStore } from "@/lib/vector-store";
 
 // Initialize components
-const retriever = vectorStore.asRetriever({
-  searchType: "mmr",
-  searchKwargs: {
-    fetchK: 6,
-    lambda: 0.75,
-  },
-  filter: {
-    metadata: {
-      source: { $exists: true }
+const initializeRetriever = async () => {
+  const vectorStore = await createVectorStore();
+  return vectorStore.asRetriever({
+    searchType: "mmr",
+    searchKwargs: {
+      fetchK: 6,
+      lambda: 0.75,
+    },
+    filter: {
+      metadata: {
+        source: { $exists: true }
+      }
     }
-  }
-});
+  });
+};
 
 const generationEngine = new GenerationEngine();
 
@@ -33,7 +37,8 @@ const vectorCache = new VectorCache({
 });
 
 // Create a cached retriever wrapper
-const createCachedRetriever = () => {
+const createCachedRetriever = async () => {
+  const vectorStore = await createVectorStore();
   return async (input: any) => {
     const query = typeof input === 'string' ? input : input.question;
     
@@ -52,19 +57,20 @@ const createCachedRetriever = () => {
 
       // On cache miss, perform retrieval and cache results
       console.debug('Cache miss for query:', query);
-      const results = await retriever.getRelevantDocuments(query);
+      const results = (await initializeRetriever()).getRelevantDocuments(query);
       
       return results;
     } catch (error) {
       console.error('Cache retrieval error:', error);
       // Fallback to direct retrieval on cache error
-      return await retriever.getRelevantDocuments(query);
+      return (await initializeRetriever()).getRelevantDocuments(query);
     }
   };
 };
 
 // Build the optimized pipeline
-export const createOptimizedPipeline = () => {
+export const createOptimizedPipeline = async () => {
+  const retriever = await initializeRetriever();
   const hallucinationDetector = new HallucinationDetector(0.85);
   const batcher = new AdaptiveBatcher({
     minBatchSize: 1,
@@ -74,7 +80,7 @@ export const createOptimizedPipeline = () => {
   });
 
   // Create cached retriever instance
-  const cachedRetriever = createCachedRetriever();
+  const cachedRetriever = await createCachedRetriever();
 
   return RunnableSequence.from([
     {

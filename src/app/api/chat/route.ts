@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOptimizedPipeline } from '@/lib/pipeline';
 import { z } from 'zod';
+
 import { handleError } from '@/lib/error-handler';
+import { createOptimizedPipeline } from '@/lib/pipeline';
 
 // Request validation schema
 const requestSchema = z.object({
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     // Process the request through the pipeline
     const startTime = Date.now();
-    const response = await pipeline.invoke({
+    const response =  (await pipeline).invoke({
       question,
       sessionId,
     });

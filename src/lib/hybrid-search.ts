@@ -1,8 +1,9 @@
 import { Document } from "@langchain/core/documents";
 import { Embeddings } from "@langchain/core/embeddings";
-import { vectorStore } from "./vector-store";
-import { ChatGroq } from "@langchain/groq";
 import { StringOutputParser } from "@langchain/core/output_parsers";
+import { ChatGroq } from "@langchain/groq";
+
+import { similaritySearch, similaritySearchWithScore } from "@/lib/vector-store";
 
 interface SearchResult {
     document: Document;
@@ -55,7 +56,7 @@ export class HybridSearcher {
 
     async search(query: string): Promise<SearchResult[]> {
         // Get vector search results
-        const vectorResults = await vectorStore.similaritySearch(query, this.topK);
+        const vectorResults = await similaritySearch(query, this.topK);
         
         // Calculate keyword scores
         const keywordScores = vectorResults.map(doc => 
@@ -63,7 +64,7 @@ export class HybridSearcher {
         );
         
         // Get vector similarity scores (assuming they're between 0 and 1)
-        const vectorScores = await vectorStore.similaritySearchWithScore(query, this.topK);
+        const vectorScores = await similaritySearchWithScore(query, this.topK);
         
         // Normalize scores
         const normalizedKeywordScores = this.normalizeScores(keywordScores);

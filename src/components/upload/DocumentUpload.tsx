@@ -5,6 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebas
 import { storage } from '@/lib/firebase';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
+import { ingestDocument } from '@/utils/ingest';
 
 interface UploadedFile {
   id: string;
@@ -74,7 +75,7 @@ export const DocumentUpload = () => {
                   )
                 );
 
-                // Process the document (this will be integrated with the actual processing pipeline)
+                // Process the document using the ingest utility
                 await processDocument(fileEntry.file);
 
                 // Update status to complete
@@ -120,6 +121,23 @@ export const DocumentUpload = () => {
       }
     }
     setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  // Process document using the ingest utility
+  const processDocument = async (file: File) => {
+    try {
+      // Process the document directly using the File object
+      const result = await ingestDocument(file);
+      
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process document';
+      throw new Error(errorMessage);
+    }
   };
 
   return (
@@ -189,10 +207,4 @@ export const DocumentUpload = () => {
       )}
     </div>
   );
-};
-
-// Temporary function to process document
-const processDocument = async (file: File) => {
-  // This will be replaced with actual document processing logic
-  return new Promise((resolve) => setTimeout(resolve, 1500));
 };

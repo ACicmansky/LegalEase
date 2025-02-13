@@ -1,11 +1,14 @@
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { Document } from "@langchain/core/documents";
-import { BaseDocumentLoader } from "langchain/document_loaders/base";
+'use server';
+
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
+import { Document } from "@langchain/core/documents";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 
-import { vectorStore } from "@/lib/vector-store";
+import { addDocuments } from "@/lib/vector-store";
 
 export type SupportedFileType = 'pdf' | 'docx' | 'txt';
 
@@ -17,41 +20,58 @@ interface IngestConfig {
 const DEFAULT_CHUNK_SIZE = 1000;
 const DEFAULT_CHUNK_OVERLAP = 200;
 
-const getFileExtension = (filePath: string): SupportedFileType | null => {
-  const extension = filePath.split('.').pop()?.toLowerCase();
+const getFileExtension = (filename: string): SupportedFileType | null => {
+  const extension = filename.split('.').pop()?.toLowerCase();
   if (extension === 'pdf' || extension === 'docx' || extension === 'txt') {
     return extension as SupportedFileType;
   }
   return null;
 };
 
-const getLoader = (filePath: string): BaseDocumentLoader => {
-  const extension = getFileExtension(filePath);
+const getLoader = async (input: string | File | Blob): Promise<BaseDocumentLoader> => {
+  let extension: SupportedFileType | null;
   
-  switch (extension) {
-    case 'pdf':
-      return new PDFLoader(filePath);
-    case 'docx':
-      return new DocxLoader(filePath);
-    case 'txt':
-      return new TextLoader(filePath);
-    default:
-      throw new Error(`Unsupported file type. Supported types are: pdf, docx, txt`);
+  if (input instanceof File || input instanceof Blob) {
+    extension = getFileExtension(input instanceof File ? input.name : 'document.pdf');
+    
+    switch (extension) {
+      case 'pdf':
+        return new WebPDFLoader(input);
+      case 'docx':
+        throw new Error('DOCX files are not supported in browser environment yet');
+      case 'txt':
+        return new TextLoader(input);
+      default:
+        throw new Error(`Unsupported file type. Supported types are: pdf, txt`);
+    }
+  } else {
+    extension = getFileExtension(input);
+    
+    switch (extension) {
+      case 'pdf':
+        return new PDFLoader(input);
+      case 'docx':
+        return new DocxLoader(input);
+      case 'txt':
+        return new TextLoader(input);
+      default:
+        throw new Error(`Unsupported file type. Supported types are: pdf, docx, txt`);
+    }
   }
 };
 
 export async function ingestDocument(
-  filePath: string,
+  input: string | File | Blob,
   config: IngestConfig = {}
 ): Promise<{ success: boolean; message: string; chunks?: Document[] }> {
   try {
-    // Validate file path
-    if (!filePath) {
-      throw new Error('File path is required');
+    // Validate input
+    if (!input) {
+      throw new Error('Input is required');
     }
 
-    // Get appropriate loader based on file type
-    const loader = getLoader(filePath);
+    // Get appropriate loader based on input type
+    const loader = await getLoader(input);
     
     // Load document
     const rawDocs = await loader.load();
@@ -74,7 +94,7 @@ export async function ingestDocument(
     }
 
     // Store chunks in vector store
-    await vectorStore.addDocuments(finalChunks);
+    await addDocuments(finalChunks);
 
     return {
       success: true,
