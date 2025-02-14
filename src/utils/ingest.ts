@@ -3,7 +3,6 @@
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
-import { Document } from "@langchain/core/documents";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
@@ -63,7 +62,7 @@ const getLoader = async (input: string | File | Blob): Promise<BaseDocumentLoade
 export async function ingestDocument(
   input: string | File | Blob,
   config: IngestConfig = {}
-): Promise<{ success: boolean; message: string; chunks?: Document[] }> {
+): Promise<{ success: boolean; message: string }> {
   try {
     // Validate input
     if (!input) {
@@ -99,13 +98,11 @@ export async function ingestDocument(
     return {
       success: true,
       message: `Successfully processed document with ${finalChunks.length} chunks`,
-      chunks: finalChunks,
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return {
       success: false,
-      message: `Failed to process document: ${errorMessage}`,
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
     };
   }
 }
