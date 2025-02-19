@@ -76,7 +76,7 @@ export const DocumentUpload = () => {
                 );
 
                 // Process the document using the ingest utility
-                await processDocument(fileEntry.file);
+                await processDocument(fileEntry.id, fileEntry.file);
 
                 // Update status to complete
                 setUploadedFiles((prev) =>
@@ -124,10 +124,10 @@ export const DocumentUpload = () => {
   };
 
   // Process document using the ingest utility
-  const processDocument = async (file: File) => {
+  const processDocument = async (id: string, file: File) => {
     try {
       // Process the document directly using the File object
-      const result = await ingestDocument(file);
+      const result = await ingestDocument(id, file);
       
       if (!result.success) {
         throw new Error(result.message);

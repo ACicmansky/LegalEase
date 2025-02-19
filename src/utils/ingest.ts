@@ -7,7 +7,7 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 
-import { addDocuments } from "@/lib/vector-store";
+import { loadMongoDBStore } from "@/lib/vector-store";
 
 export type SupportedFileType = 'pdf' | 'docx' | 'txt';
 
@@ -60,6 +60,7 @@ const getLoader = async (input: string | File | Blob): Promise<BaseDocumentLoade
 };
 
 export async function ingestDocument(
+  id: string,
   input: string | File | Blob,
   config: IngestConfig = {}
 ): Promise<{ success: boolean; message: string }> {
@@ -92,8 +93,13 @@ export async function ingestDocument(
       throw new Error('Failed to split document into chunks');
     }
 
+    for (const chunks of finalChunks) {
+      chunks.metadata.docstore_document_id = id;
+    }
+
     // Store chunks in vector store
-    await addDocuments(finalChunks);
+    const mongo = await loadMongoDBStore();
+    await mongo.vectorStore.addDocuments(finalChunks);
 
     return {
       success: true,

@@ -7,11 +7,11 @@ import { formatDocumentsAsString } from "langchain/util/document";
 
 import { VectorCache } from "@/lib/caching";
 import { GenerationEngine } from "@/lib/generation";
-import { createVectorStore } from "@/lib/vector-store";
+import { loadMongoDBStore } from "@/lib/vector-store";
 
 // Initialize components
 const initializeRetriever = async () => {
-  const vectorStore = await createVectorStore();
+  const vectorStore = (await loadMongoDBStore()).vectorStore;
   return vectorStore.asRetriever({
     searchType: "mmr",
     searchKwargs: {
@@ -38,7 +38,7 @@ const vectorCache = new VectorCache({
 
 // Create a cached retriever wrapper
 const createCachedRetriever = async () => {
-  const vectorStore = await createVectorStore();
+  const vectorStore = (await loadMongoDBStore()).vectorStore;
   return async (input: any) => {
     const query = typeof input === 'string' ? input : input.question;
     
