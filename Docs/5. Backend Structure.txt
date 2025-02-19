@@ -1,0 +1,86 @@
+# Backend Structure
+
+## 1. **Overview**
+
+This document outlines the backend architecture, including API routes, database schema, and core logic for the AI-Powered Legal Assistant.
+
+## 2. **Tech Stack**
+
+- **Framework:** Node.js
+- **Database:** PostgreSQL
+- **ORM:** SQLAlchemy
+- **Authentication:** JWT (JSON Web Tokens) & SupaBase Auth
+- **Storage:** SupaBase Storage
+- **Task Queue:** Celery with Redis
+- **Logging & Monitoring:** Sentry, Prometheus, ELK Stack
+
+## 3. **API Routes**
+
+### **3.1 Authentication Routes**
+
+| Method | Endpoint       | Description           |
+| ------ | -------------- | --------------------- |
+| POST   | `/auth/signup` | Register a new user   |
+| POST   | `/auth/login`  | User authentication   |
+| GET    | `/auth/me`     | Get current user info |
+| POST   | `/auth/logout` | Logout user           |
+
+### **3.2 Document Handling**
+
+| Method | Endpoint            | Description               |
+| ------ | ------------------- | ------------------------- |
+| POST   | `/documents/upload` | Upload a legal document   |
+| GET    | `/documents/{id}`   | Retrieve document details |
+| DELETE | `/documents/{id}`   | Delete a document         |
+
+### **3.3 AI Processing & Chat**
+
+| Method | Endpoint                    | Description                   |
+| ------ | --------------------------- | ----------------------------- |
+| POST   | `/documents/{id}/summarize` | Generate a legal summary      |
+| POST   | `/chat/{id}/query`          | Ask AI about the document     |
+| GET    | `/chat/{id}/history`        | Retrieve conversation history |
+
+### **3.4 User Management**
+
+| Method | Endpoint      | Description           |
+| ------ | ------------- | --------------------- |
+| GET    | `/users/{id}` | Retrieve user profile |
+| PATCH  | `/users/{id}` | Update user profile   |
+| DELETE | `/users/{id}` | Delete user account   |
+
+## 4. **Database Schema**
+
+### **4.1 Documents Table**
+
+### **4.2 Chat Table**
+
+### 4.3 Embeddings Table
+
+## 5. **Core Logic**
+
+### **5.1 Authentication**
+
+- Secure JWT-based authentication.
+- SupaBase Auth for easy social logins.
+
+### **5.2 Document Processing**
+
+- File validation and storage.
+- AI-powered legal text extraction and summarization.
+
+### **5.3 AI Chatbot Integration**
+
+- NLP-based chatbot using Llama 3.3 & LegalBERT.
+- Context-aware legal assistance.
+
+### **5.4 Performance & Security**
+
+- Caching mechanisms (Redis) for optimized responses.
+- Encrypted storage and GDPR compliance.
+
+## 6. **Future Enhancements**
+
+- Multi-language legal document support.
+- Integration with Slovak legal databases.
+- Advanced AI fine-tuning for improved accuracy.

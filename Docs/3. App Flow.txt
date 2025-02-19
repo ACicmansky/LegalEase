@@ -1,0 +1,54 @@
+# App Flow
+
+## 1. **Overview**
+
+This document outlines the user journey within the AI-Powered Legal Assistant application, mapping each step from login to interacting with AI for legal insights.
+
+## 2. **User Journey**
+
+### **2.1 Step-by-Step Flow**
+
+#### **Step 1: User Login / Sign-Up**
+
+- **User Action:** Opens the app and logs in using email/password or social login (Google, Facebook, etc.).
+- **System Response:** Authenticates the user and redirects them to the dashboard.
+- **Error Handling:** Displays error messages for incorrect credentials or unverified accounts.
+
+#### **Step 2: Upload Legal Document**
+
+- **User Action:** Clicks on “Upload Document” and selects a file (PDF, DOCX).
+- **System Response:**
+  - Validates file format and size.
+  - Extracts text using OCR (if necessary).
+  - Stores the document securely.
+- **Error Handling:** Alerts the user if the file type is unsupported or exceeds size limits.
+
+#### **Step 3: Generate Understandable Summary**
+
+- **System Generates:**
+  - Uses AI to extract key clauses and summarize in plain language.
+  - Highlights obligations, risks, and important legal terms.
+  - Presents the summary in an easy-to-read format.
+- **Error Handling:** Displays an error message if document processing fails.
+
+#### **Step 4: Start AI Chat About Legal Implications**
+
+- **User Action:** Types in chat input to discuss legal aspects.
+- **System Response:**
+  - AI provides responses based on Slovak legal frameworks.
+  - Supports follow-up questions related to the document.
+- **Error Handling:** AI informs the user if a question is outside its scope.
+
+#### **Step 5: User Downloads or Shares Processed Document**
+
+- **User Action:** Clicks on “Download” or “Share.”
+- **System Response:**
+  - Provides a downloadable version of the summary.
+  - Enables sharing via email or secure link.
+- **Error Handling:** Notifies the user of any download or sharing issues.
+
+## 3. **Future Enhancements**
+
+- Integration with a legal professional for expert review.
+- Document editing and annotation features.
+

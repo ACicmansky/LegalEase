@@ -1,0 +1,94 @@
+# Tech Stack
+
+## 1. **Overview**
+
+This document outlines the selected technologies, frameworks, libraries, and integrations for the AI-Powered Legal Assistant MVP. The stack is designed for scalability, security, and fast development.
+
+## 2. **Frontend**
+
+### **2.1 Framework & Libraries**
+
+- **React.js** – Primary frontend framework for a dynamic and responsive UI.
+- **Next.js** – Server-side rendering for improved SEO and performance.
+- **Tailwind CSS** – Styling framework for rapid UI development.
+- **ShadCN/UI** – Component library for reusable and modern UI elements.
+- **Axios** – HTTP client for API communication.
+- **i18next** – Library for internationalization (Slovak & English support).
+
+## 3. **Backend**
+
+### **3.1 Framework & Language**
+
+- **FastAPI (Python)** – High-performance backend framework for API development.
+- **Node.js (Express.js) [Optional]** – Alternative for specific microservices.
+
+### **3.2 Libraries & Tools**
+
+- **Pydantic** – Data validation and serialization.
+- **Celery** – Task queue for asynchronous processing.
+- **SQLAlchemy** – ORM for database interactions.
+- **Gunicorn** – WSGI HTTP server for deployment.
+- **JWT (PyJWT)** – User authentication and security.
+
+## 4. **Database & Storage**
+
+### **4.1 Database**
+
+- **PostgreSQL** – Relational database for structured data storage.
+- **SupaBase Vector Store** – Alternative NoSQL database for real-time data.
+
+### **4.2 Storage**
+
+- **AWS S3 / SupaBase Storage** – Secure document storage.
+- **Redis** – Caching layer for performance optimization.
+
+## 5. **AI & NLP Technologies**
+
+### **5.1 Models & APIs**
+
+- Hugging Face Llama 3.3 – Legal chatbot and document analysis.
+- **Hugging Face Transformers (LegalBERT)** – Legal text processing.
+- **spaCy** – NLP processing for legal text.
+- **Google Document AI** – OCR and document processing.
+
+## 6. **Security & Compliance**
+
+- **Firebase Authentication** – User authentication and management.
+- **OAuth 2.0 / JWT** – Secure API authentication.
+- **GDPR Compliance Tools** – Data anonymization and logging.
+- **OWASP Security Best Practices** – Secure coding standards.
+
+## 7. **Infrastructure & DevOps**
+
+- **Docker** – Containerized deployments.
+- **Kubernetes** – Scalable orchestration (future scalability needs).
+- **Terraform** – Infrastructure as Code (IaC) for cloud setup.
+- **AWS Lambda** – Serverless functions for lightweight processing.
+- **GitHub Actions** – CI/CD pipeline for automated testing and deployment.
+
+## 8. **Integrations**
+
+- **Slov-Lex API** – Slovak legal database for reference material.
+- **Google Drive API** – Optional integration for document imports.
+- **Stripe API** – Payment processing for subscription plans.
+- **Intercom / Drift** – Customer support chat integration.
+
+## 9. **Monitoring & Logging**
+
+- **Sentry** – Error tracking and debugging.
+- **Prometheus & Grafana** – Performance monitoring.
+- **ELK Stack (Elasticsearch, Logstash, Kibana)** – Logging and analytics.
+
+## 10. **Development & Collaboration Tools**
+
+- **GitHub** – Version control and repository management.
+- **Jira / Trello** – Project management and task tracking.
+- **Slack** – Team communication.
+- **Postman** – API testing tool.
+
+## 11. **Future Scalability Considerations**
+
+- **GraphQL (Apollo Server)** – Future enhancement for efficient API queries.
+- **AI Fine-tuning** – Custom training for better legal accuracy.
+- **Microservices Architecture** – For modular and scalable system design.
+

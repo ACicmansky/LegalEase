@@ -1,0 +1,72 @@
+# Frontend Guidelines
+
+## 1. **Overview**
+This document establishes guidelines to ensure a consistent and user-friendly UI/UX design for the AI-Powered Legal Assistant application.
+
+## 2. **Design Principles**
+- **Consistency:** Maintain uniform styling, typography, and components across the app.
+- **Simplicity:** Keep UI elements intuitive and clutter-free.
+- **Accessibility:** Ensure all users, including those with disabilities, can use the platform effectively.
+- **Responsiveness:** Optimize for desktop, tablet, and mobile devices.
+- **Performance:** Minimize load times with optimized assets and efficient rendering.
+
+## 3. **UI Components & Styling**
+### **3.1 Framework & Libraries**
+- **React.js + Next.js** for frontend development.
+- **Tailwind CSS** for styling and layout consistency.
+- **ShadCN/UI** for reusable UI components.
+
+### **3.2 Typography**
+- **Primary Font:** Inter (Fallback: Arial, sans-serif).
+- **Headings:** Use `font-bold` and `text-xl+` for clear hierarchy.
+- **Body Text:** `text-base` for readability.
+- **Line Spacing:** Maintain `leading-relaxed` for readability.
+
+### **3.3 Color Palette**
+| Element            | Primary Color | Secondary Color | Accent Color |
+|--------------------|---------------|-----------------|--------------|
+| Background         | #F9FAFB       | #FFFFFF         | #E5E7EB      |
+| Primary Buttons    | #2563EB       | #1D4ED8         | #3B82F6      |
+| Text               | #111827       | #374151         | #6B7280      |
+
+### **3.4 Components**
+- **Buttons:**
+  - Use consistent `rounded-lg` and padding `px-4 py-2`.
+  - Primary buttons should have hover effects.
+  
+- **Forms & Inputs:**
+  - Use `border-gray-300` with `rounded-md`.
+  - Add placeholders and labels for clarity.
+
+- **Modals & Dialogs:**
+  - Overlay should use `bg-black bg-opacity-50`.
+  - Always include a close button for accessibility.
+
+## 4. **User Experience (UX) Guidelines**
+- **Navigation:**
+  - Keep a top navigation bar with a clear page structure.
+  - Use breadcrumbs for deeper sections.
+
+- **Animations & Transitions:**
+  - Use `framer-motion` for smooth transitions.
+  - Avoid excessive motion that may distract users.
+
+- **Error Handling:**
+  - Use toast notifications (`react-toastify`) for feedback.
+  - Show validation messages near form fields.
+
+## 5. **Performance Optimization**
+- **Lazy Loading:** Implement dynamic imports for large components.
+- **Image Optimization:** Use `next/image` for automatic resizing.
+- **Caching & State Management:** Use React Query for API data handling.
+
+## 6. **Testing & Debugging**
+- **Unit Testing:** Use Jest & React Testing Library.
+- **UI Testing:** Use Cypress for end-to-end testing.
+- **Linting:** Ensure consistent code formatting with ESLint & Prettier.
+
+## 7. **Version Control & Collaboration**
+- Use **GitHub** for version control.
+- Follow the **feature branch workflow** (`feature/branch-name`).
+- Ensure all pull requests include screenshots and descriptions.
+

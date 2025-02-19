@@ -1,0 +1,128 @@
+# Project Requirements
+
+## 1. **Project Overview**
+
+**Project Name:** AI-Powered Legal Assistant ("LegalEases")\
+**Target Market:** Slovak Republic (expansion planned later)\
+**Primary Users:**
+
+- Individuals seeking affordable legal advice, document explanation, and generation.
+- Future expansion to law firms for automation and workflow optimization.
+
+## 2. **Goals & Objectives**
+
+### **2.1 MVP Goals**
+
+- Provide **affordable and accessible legal assistance** through AI.
+- Automate **legal document analysis** and explain legal clauses in simple terms.
+- Offer **basic legal Q&A** via AI chatbot based on Slovak law.
+- Enable users to **generate simple legal documents** (e.g., NDAs, rental agreements).
+
+### **2.2 Long-Term Goals**
+
+- Expand AI capabilities to support law firms with legal workflow automation.
+- Integrate with legal databases for **case law analysis and legal research**.
+- Develop a **multi-language legal assistant** for broader market reach.
+
+## 3. **Scope of MVP**
+
+### **3.1 Core Features**
+
+1. **Legal Document Explanation**
+
+   - Users upload legal documents (PDF, DOCX, TXT).
+   - AI extracts and summarizes key clauses in simple language.
+   - Highlights important terms, obligations, and risks.
+
+2. **AI-Powered Legal Chatbot**
+
+   - Users ask legal questions in Slovak (limited scope initially).
+   - AI responds based on Slovak legislation and legal FAQs.
+   - Covers common legal topics (contracts, rental agreements, consumer rights).
+
+3. **Legal Document Generation**
+
+   - Users fill out a guided form to create documents (e.g., NDAs, contracts).
+   - AI generates a structured legal document in PDF format.
+
+### **3.2 Features NOT in MVP (Future Phases)**
+
+- Advanced contract risk analysis.
+- Integration with law firm case management tools.
+- Real-time legal compliance checks.
+- AI-powered legal case prediction.
+
+## 4. **Technical Requirements**
+
+### **4.1 Tech Stack**
+
+- **AI & NLP:** Hugging Face Llama 3.3 API, Hugging Face LegalBERT (if needed).
+- **Backend:** SupaBase and Node.js
+- **Frontend:** React.js&#x20;
+- **Storage:** SupaBase
+- **Database:** SupaBase
+- **Security:** GDPR-compliant encryption, SupaBase Auth for user authentication.
+
+### **4.2 Integration Requirements**
+
+- Slov-Lex (Slovak legal database) for legal references.
+- Google Document AI for OCR (if required for scanned documents).
+- OpenAI API for chatbot and document summarization.
+
+## 5. **User Flow & UI Requirements**
+
+### **5.1 User Flow**
+
+1. **User signs up/logs in**.
+2. **Uploads a legal documents** or starts a chatbot session.
+3. **AI analyzes documents** and provides explanation.
+4. **User asks follow-up legal questions**.
+5. **User generates/downloads legal documents**.
+
+### **5.2 UI/UX Requirements**
+
+- **Simple and intuitive** document upload interface.
+- **Chat-style interaction** for Q&A with AI.
+- **Legal term definitions** (tooltips/popups for complex terms).
+- **Dark/light mode support** for better accessibility.
+
+## 6. **Milestones & Timeline**
+
+| Week | Milestone                      | Deliverables                        |
+| ---- | ------------------------------ | ----------------------------------- |
+| 1    | Backend & AI Integration Setup | API, database, authentication       |
+| 2    | Document Upload & Parsing      | File processing, text extraction    |
+| 3    | AI Chatbot Implementation      | Basic legal Q&A in Slovak           |
+| 4    | Legal Document Generation      | PDF generation for simple contracts |
+| 5    | UI/UX Refinement & Testing     | User testing, bug fixes             |
+| 6    | Soft Launch & Feedback         | First users onboarded               |
+
+## 7. **Success Metrics**
+
+- **MVP adoption rate:** Number of users uploading legal documents.
+- **Chatbot accuracy:** % of correct legal responses.
+- **User feedback:** Ease of use and satisfaction scores (above 80%).
+- **Conversion rate:** % of users generating legal documents.
+
+## 8. **Risk Management & Challenges**
+
+### **8.1 Key Risks**
+
+- **AI Accuracy:** Ensuring correct legal interpretations.
+- **Regulatory Compliance:** GDPR & Slovak legal guidelines.
+- **Language Limitations:** Training AI on Slovak legal terms.
+- **User Trust:** Ensuring AI does not provide misleading advice.
+
+### **8.2 Mitigation Strategies**
+
+- Implement **hybrid AI + rule-based checks** for legal accuracy.
+- Regularly update legal data from Slov-Lex.
+- Human lawyer review process for critical errors.
+- Clear disclaimers that AI is not a substitute for legal counsel.
+
+## 9. **Next Steps**
+
+- Finalize dataset collection for AI training.
+- Develop Alpha version within 4 weeks.
+- Conduct early user testing with legal professionals & individuals.
+- Prepare for marketing & investor outreach.
