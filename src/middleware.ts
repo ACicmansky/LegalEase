@@ -3,19 +3,34 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
+  // Create the response early so we can modify headers
   const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  
+  // Add security headers
+  res.headers.set("Content-Security-Policy", "default-src 'self'");
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  
+  // Add rate limiting headers
+  res.headers.set("RateLimit-Limit", "100");
+  res.headers.set("RateLimit-Remaining", "99");
+  res.headers.set("RateLimit-Reset", "60");
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // Only check auth for protected routes
+  if (req.nextUrl.pathname.startsWith('/dashboard')) {
+    // Initialize Supabase client
+    const supabase = createMiddlewareClient({ req, res });
 
-  // If there's no session and the user is trying to access a protected route
-  if (!session && req.nextUrl.pathname.startsWith('/dashboard')) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = '/login';
-    redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    // If there's no session and the user is trying to access a protected route
+    if (!session) {
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = '/login';
+      redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return res;
@@ -23,14 +38,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - public files
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/dashboard/:path*',  // Protected routes
+    '/api/:path*',        // API routes
   ],
 };
