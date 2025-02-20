@@ -7,7 +7,7 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 
-import { loadMongoDBStore } from "@/lib/vector-store";
+import { loadMongoDBStore } from "@/utils/vector-store";
 
 export type SupportedFileType = 'pdf' | 'docx' | 'txt';
 

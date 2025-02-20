@@ -19,7 +19,6 @@ This document outlines the selected technologies, frameworks, libraries, and int
 
 ### **3.1 Framework & Language**
 
-- **FastAPI (Python)** – High-performance backend framework for API development.
 - **Node.js (Express.js) [Optional]** – Alternative for specific microservices.
 
 ### **3.2 Libraries & Tools**

@@ -1,13 +1,13 @@
 import { AdaptiveBatcher } from "@/utils/adaptive-batcher";
-import { HallucinationDetector } from "@/utils/hallucination-detector";
-import { ResponseValidator } from "@/utils/response-validator";
+import { HallucinationDetector } from "@/lib/hallucination-detector";
+import { ResponseValidator } from "@/lib/response-validator";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
 
 import { VectorCache } from "@/lib/caching";
 import { GenerationEngine } from "@/lib/generation";
-import { loadMongoDBStore } from "@/lib/vector-store";
+import { loadMongoDBStore } from "@/utils/vector-store";
 
 // Initialize components
 const initializeRetriever = async () => {

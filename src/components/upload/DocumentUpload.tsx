@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { storage } from '@/utils/firebase';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
 import { ingestDocument } from '@/utils/ingest';
