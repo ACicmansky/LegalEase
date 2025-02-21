@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/utils/firebase';
+import { createSupabaseClient } from '@/utils/supabase/client';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
 import { ingestDocument } from '@/utils/ingest';
@@ -40,59 +39,54 @@ export const DocumentUpload = () => {
           )
         );
 
-        // Create a storage reference
-        const storageRef = ref(storage, `documents/${fileEntry.id}/${fileEntry.file.name}`);
+        const supabase = createSupabaseClient();
+        const userId = (await supabase.auth.getUser()).data.user?.id;
+        const filePath = `${userId}/${fileEntry.id}/${fileEntry.file.name}`;
         
-        // Start upload task
-        const uploadTask = uploadBytesResumable(storageRef, fileEntry.file);
+        // Set initial progress
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileEntry.id ? { ...f, progress: 0 } : f
+          )
+        );
 
-        // Listen to upload progress
-        await new Promise((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadedFiles((prev) =>
-                prev.map((f) =>
-                  f.id === fileEntry.id ? { ...f, progress } : f
-                )
-              );
-            },
-            (error) => {
-              reject(error);
-            },
-            async () => {
-              try {
-                // Get download URL
-                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        // Upload file to Supabase storage
+        const { data, error } = await supabase.storage
+          .from('documents')
+          .upload(filePath, fileEntry.file);
 
-                // Update status to processing
-                setUploadedFiles((prev) =>
-                  prev.map((f) =>
-                    f.id === fileEntry.id
-                      ? { ...f, status: 'processing', progress: 100, downloadUrl }
-                      : f
-                  )
-                );
+        if (error) throw error;
 
-                // Process the document using the ingest utility
-                //TODO delete document if processing fails                
-                await processDocument(fileEntry.id, fileEntry.file);
+        // Set progress to 100% when upload is complete
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileEntry.id ? { ...f, progress: 100 } : f
+          )
+        );
 
-                // Update status to complete
-                setUploadedFiles((prev) =>
-                  prev.map((f) =>
-                    f.id === fileEntry.id ? { ...f, status: 'complete' } : f
-                  )
-                );
+        // Get the public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('documents')
+          .getPublicUrl(filePath);
 
-                resolve(undefined);
-              } catch (error) {
-                reject(error);
-              }
-            }
-          );
-        });
+        // Update status to processing
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileEntry.id
+              ? { ...f, status: 'processing', downloadUrl: publicUrl }
+              : f
+          )
+        );
+
+        // Process the document using the ingest utility
+        await processDocument(fileEntry.id, fileEntry.file);
+
+        // Update status to complete
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileEntry.id ? { ...f, status: 'complete' } : f
+          )
+        );
       } catch (error) {
         // Update status to error
         const errorMessage = error instanceof Error 
@@ -114,9 +108,11 @@ export const DocumentUpload = () => {
     const fileToRemove = uploadedFiles.find(f => f.id === id);
     if (fileToRemove?.downloadUrl) {
       try {
-        // Create a reference to the file to delete
-        const fileRef = ref(storage, fileToRemove.downloadUrl);
-        await deleteObject(fileRef);
+        const supabase = createSupabaseClient();
+        const filePath = fileToRemove.downloadUrl.split('/').pop();
+        await supabase.storage
+          .from('documents')
+          .remove([filePath!]);
       } catch (error) {
         console.error('Error removing file from storage:', error);
       }

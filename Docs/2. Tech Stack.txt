@@ -52,7 +52,7 @@ This document outlines the selected technologies, frameworks, libraries, and int
 
 ## 6. **Security & Compliance**
 
-- **Firebase Authentication** – User authentication and management.
+- **SupaBase Authentication** – User authentication and management.
 - **OAuth 2.0 / JWT** – Secure API authentication.
 - **GDPR Compliance Tools** – Data anonymization and logging.
 - **OWASP Security Best Practices** – Secure coding standards.
