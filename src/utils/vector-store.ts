@@ -1,7 +1,8 @@
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 // import { Document } from "@langchain/core/documents";
 import { MongoClient } from "mongodb";
+
+import { embeddings } from "@/lib/embeddings";
 
 export async function loadMongoDBStore() {
     const mongoDbClient = new MongoClient(process.env.MONGODB_ATLAS_URI ?? '');
@@ -12,9 +13,6 @@ export async function loadMongoDBStore() {
     const collectionName = process.env.MONGODB_ATLAS_COLLECTION_NAME ?? '';
     const collection = mongoDbClient.db(dbName).collection(collectionName);
 
-    const embeddings = new HuggingFaceInferenceEmbeddings({
-        apiKey: process.env.HUGGINGFACE_API_KEY,
-    });
     const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
         indexName: process.env.MONGODB_ATLAS_INDEX_NAME ?? 'vector_index',
         collection,

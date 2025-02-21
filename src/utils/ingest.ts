@@ -6,8 +6,10 @@ import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
-import { loadMongoDBStore } from "@/utils/vector-store";
+// import { loadMongoDBStore } from "@/utils/vector-store";
+import { vectorStore } from "@/utils/supabase/server";
 
 export type SupportedFileType = 'pdf' | 'docx' | 'txt';
 
@@ -29,10 +31,10 @@ const getFileExtension = (filename: string): SupportedFileType | null => {
 
 const getLoader = async (input: string | File | Blob): Promise<BaseDocumentLoader> => {
   let extension: SupportedFileType | null;
-  
+
   if (input instanceof File || input instanceof Blob) {
     extension = getFileExtension(input instanceof File ? input.name : 'document.pdf');
-    
+
     switch (extension) {
       case 'pdf':
         return new WebPDFLoader(input);
@@ -45,7 +47,7 @@ const getLoader = async (input: string | File | Blob): Promise<BaseDocumentLoade
     }
   } else {
     extension = getFileExtension(input);
-    
+
     switch (extension) {
       case 'pdf':
         return new PDFLoader(input);
@@ -72,10 +74,10 @@ export async function ingestDocument(
 
     // Get appropriate loader based on input type
     const loader = await getLoader(input);
-    
+
     // Load document
     const rawDocs = await loader.load();
-    
+
     if (!rawDocs.length) {
       throw new Error('No content found in document');
     }
@@ -93,19 +95,41 @@ export async function ingestDocument(
       throw new Error('Failed to split document into chunks');
     }
 
-    for (const chunks of finalChunks) {
-      chunks.metadata.docstore_document_id = id;
+    // Assign document ID and user_id to each chunk
+    for (const chunk of finalChunks) {
+      chunk.metadata = {
+        ...chunk.metadata,
+        document_id: id
+      };
     }
 
     // Store chunks in vector store
-    const mongo = await loadMongoDBStore();
-    await mongo.vectorStore.addDocuments(finalChunks);
+    const vector = await vectorStore();
+    const result = await vector.addDocuments(finalChunks);
+
+    if (result) {
+      // Create document record in Supabase with user_id
+      const { error: documentError } = await (await createSupabaseServerClient())
+        .from('documents')
+        .insert({
+          id,
+          name: input instanceof File ? input.name : id,
+        });
+
+      if (documentError) {
+        throw new Error(`Failed to create document record: ${documentError.message}`);
+      }
+    }
 
     return {
       success: true,
       message: `Successfully processed document with ${finalChunks.length} chunks`,
     };
   } catch (error) {
+    // If there's an error, clean up the document if it was created
+    if (id) {
+      (await createSupabaseServerClient()).from('documents').delete().match({ id });
+    }
     return {
       success: false,
       message: error instanceof Error ? error.message : 'An unknown error occurred',

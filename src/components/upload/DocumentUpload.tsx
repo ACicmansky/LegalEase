@@ -76,6 +76,7 @@ export const DocumentUpload = () => {
                 );
 
                 // Process the document using the ingest utility
+                //TODO delete document if processing fails                
                 await processDocument(fileEntry.id, fileEntry.file);
 
                 // Update status to complete
