@@ -1,14 +1,21 @@
 'use client';
 
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { ChatListContainer } from "@/components/chat/ChatListContainer";
+import { ChatInterface } from "@/components/chat/ChatInterface";
+import { ChatService } from "@/lib/api/chatService";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Plus, User } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
   const { signIn, user } = useAuth();
+  const [selectedChatId, setSelectedChatId] = useState<string>();
 
   useEffect(() => {
-    // Only attempt auto-login if we're in development and not already logged in
     if (process.env.NODE_ENV === 'development' && !user) {
       const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
       const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
@@ -20,24 +27,84 @@ export default function Home() {
     }
   }, [signIn, user]);
 
+  const handleSendMessage = async (message: string) => {
+    if (!selectedChatId) return;
+
+    try {
+      await ChatService.addMessage(selectedChatId, message);
+      // You might want to update the chat list or current chat here
+      // depending on your real-time update strategy
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      toast('Failed to send message. Please try again.');
+    }
+  };
+
+  const handleCreateNewChat = async () => {
+    try {
+      const newChat = await ChatService.createChat('New Chat');
+      setSelectedChatId(newChat.id);
+    } catch (error) {
+      console.error('Failed to create new chat:', error);
+      toast('Failed to create new chat. Please try again.');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-            Legal Document Analysis
-          </h1>
-          <p className="mt-3 text-lg text-gray-500 dark:text-gray-400">
-            Upload your legal documents and ask questions about them
-          </p>
-          {process.env.NODE_ENV === 'development' && (
-            <p className="mt-2 text-sm text-gray-500">
-              {user ? `Logged in as: ${user.email}` : 'Not logged in'}
-            </p>
-          )}
+    <div className="flex h-screen bg-background">
+      {/* Left Sidebar */}
+      <div className="w-64 border-r flex flex-col">
+        {/* New Chat Button */}
+        <div className="p-4">
+          <Button
+            onClick={handleCreateNewChat}
+            className="w-full"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Chat
+          </Button>
         </div>
         
-        <DocumentUpload />
+        {/* Document/Chat List */}
+        <div className="flex-1">
+          <ChatListContainer 
+            onChatSelect={setSelectedChatId}
+            selectedChatId={selectedChatId}
+          />
+        </div>
+
+        {/* User Settings */}
+        <div className="p-4 border-t">
+          {user && (
+            <div className="flex items-center">
+              <Avatar>
+                <AvatarFallback>
+                  {user.email?.[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="ml-2 text-sm text-muted-foreground">{user.email}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {selectedChatId ? (
+          <ChatInterface 
+            chatId={selectedChatId}
+            onSendMessage={handleSendMessage}
+          />
+        ) : (
+          <main className="flex-1 p-6">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-center mb-8">
+                Chat with your Legal Documents
+              </h1>
+              <DocumentUpload />
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );
