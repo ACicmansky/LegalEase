@@ -1,0 +1,126 @@
+# Backend Structure
+
+## 1. **Overview**
+
+This document outlines the backend architecture, including API routes, database schema, and core logic for the AI-Powered Legal Assistant.
+
+## 2. **Tech Stack**
+
+- **Framework:** Next.js
+- **Database:** PostgreSQL (via Supabase)
+- **ORM:** Supabase Client
+- **Authentication:** Supabase Auth
+- **Storage:** Supabase Storage
+- **AI Integration:** LangChain
+- **UI:** Tailwind CSS, shadcn/ui
+
+## 3. **API Routes**
+
+### **3.1 Authentication Routes**
+Handled by Supabase Auth
+
+### **3.2 Chat Management**
+
+| Method | Endpoint                    | Description                   |
+| ------ | --------------------------- | ----------------------------- |
+| GET    | `/api/chats`               | Get all user's chats          |
+| POST   | `/api/chats`               | Create a new chat            |
+| GET    | `/api/chats/{id}`          | Get specific chat details    |
+| DELETE | `/api/chats/{id}`          | Delete a chat                |
+| POST   | `/api/chats/{id}/messages` | Add message to chat          |
+
+### **3.3 Document Handling**
+
+| Method | Endpoint            | Description               |
+| ------ | ------------------- | ------------------------- |
+| POST   | `/api/documents`    | Upload a legal document   |
+| GET    | `/api/documents`    | List user's documents     |
+| DELETE | `/api/documents/{id}` | Delete a document         |
+
+### **3.4 AI Processing & Chat**
+
+| Method | Endpoint                    | Description                   |
+| ------ | --------------------------- | ----------------------------- |
+| POST   | `/documents/{id}/summarize` | Generate a legal summary      |
+| POST   | `/chat/{id}/query`          | Ask AI about the document     |
+| GET    | `/chat/{id}/history`        | Retrieve conversation history |
+
+### **3.5 User Management**
+
+| Method | Endpoint      | Description           |
+| ------ | ------------- | --------------------- |
+| GET    | `/users/{id}` | Retrieve user profile |
+| PATCH  | `/users/{id}` | Update user profile   |
+| DELETE | `/users/{id}` | Delete user account   |
+
+## 4. **Database Schema**
+
+## 4. **Database Schema**
+
+### **4.1 Chats Table**
+- id: uuid (Primary Key)
+- created_at: timestamp with time zone
+- user: uuid (Foreign Key to auth.users)
+- document: uuid (Optional, reference to document)
+- folder: uuid (Optional, reference to folder)
+- title: text (Optional)
+- last_message: text (Optional)
+
+### **4.2 Messages Table**
+- id: uuid (Primary Key)
+- content: text
+- is_user: boolean
+- created_at: timestamp with time zone
+- chat_id: uuid (Foreign Key to chats)
+
+### **4.3 Documents Table**
+- id: uuid (Primary Key)
+- name: text
+- user: uuid (Foreign Key to auth.users)
+- created_at: timestamp with time zone
+- type: text
+
+### **4.4 Embeddings Table**
+- id: uuid (Primary Key)
+- content: text
+- embedding: vector
+- document_id: uuid (Foreign Key to documents)
+- metadata: jsonb
+
+### **4.5 Folders Table**
+- id: uuid (Primary Key)
+- name: text
+- user: uuid (Foreign Key to auth.users)
+- created_at: timestamp with time zone
+- parent_id: uuid (Optional, self-reference)
+
+## 5. **Core Logic**
+
+### **5.1 Authentication**
+- Secure authentication via Supabase Auth
+- Row Level Security (RLS) policies for data access control
+- User session management
+
+### **5.2 Document Processing**
+- File validation and storage using Supabase Storage
+- Text extraction and chunking
+- Vector embeddings generation and storage
+- Document organization with folders
+
+### **5.3 Chat Integration**
+- Context-aware chat using document embeddings
+- Real-time message handling
+- Chat history management
+- Document and folder-based chat organization
+
+### **5.4 Performance & Security**
+- Database indexes for optimal query performance
+- Row Level Security (RLS) for data protection
+- Proper error handling and validation
+- Type safety with TypeScript
+
+## 6. **Future Enhancements**
+
+- Multi-language legal document support.
+- Integration with Slovak legal databases.
+- Advanced AI fine-tuning for improved accuracy.
