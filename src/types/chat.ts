@@ -2,19 +2,18 @@ export interface ChatMessage {
   id: string;
   content: string;
   isUser: boolean;
-  timestamp: Date;
-  sources?: Array<{
-    title: string;
-    page: number;
-  }>;
+  created_at: Date;
+  chat_id: string;
 }
 
 export interface Chat {
   id: string;
-  title: string;
-  lastMessage?: string;
-  timestamp: Date;
-  documentName?: string;
+  title?: string;
+  last_message?: string;
+  created_at: Date;
+  user: string;
+  document?: string;
+  folder?: string;
   messages: ChatMessage[];
 }
 

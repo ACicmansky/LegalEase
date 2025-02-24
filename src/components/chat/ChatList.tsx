@@ -37,17 +37,12 @@ export function ChatList({ chats, onChatSelect, selectedChatId, onDeleteChat }: 
                     {chat.title}
                   </h3>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(chat.timestamp).toLocaleDateString()}
+                    {new Date(chat.created_at).toLocaleDateString()}
                   </span>
                 </div>
-                {chat.documentName && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    📄 {chat.documentName}
-                  </p>
-                )}
-                {chat.lastMessage && (
+                {chat.last_message && (
                   <p className="text-sm text-muted-foreground mt-1 truncate">
-                    {chat.lastMessage}
+                    {chat.last_message}
                   </p>
                 )}
               </div>
