@@ -44,7 +44,7 @@ export default function Home() {
 
   const handleCreateNewChat = async () => {
     try {
-      const newChat = await ChatService.createChat('New Chat ' + Date());
+      const newChat = await ChatService.createChat('New Chat');
       chatListRef.current?.handleCreateChat(newChat);
       setSelectedChatId(newChat.id);
     } catch (error) {

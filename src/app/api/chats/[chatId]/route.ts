@@ -51,6 +51,7 @@ export async function DELETE(
 ) {
   try {
     const supabase = await createSupabaseServerClient();
+    const chatId = (await params).chatId;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -62,7 +63,7 @@ export async function DELETE(
     const { error: messagesError } = await supabase
       .from('messages')
       .delete()
-      .eq('chat_id', params.chatId);
+      .eq('chat_id', chatId);
 
     if (messagesError) {
       return NextResponse.json({ error: messagesError.message }, { status: 500 });
@@ -72,7 +73,7 @@ export async function DELETE(
     const { error: chatError } = await supabase
       .from('chats')
       .delete()
-      .eq('id', params.chatId)
+      .eq('id', chatId)
       .eq('user_id', user.id);
 
     if (chatError) {
