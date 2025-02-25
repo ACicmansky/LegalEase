@@ -8,7 +8,7 @@ import { ChatInterface } from "@/components/chat/ChatInterface";
 import { ChatService } from "@/lib/api/chatService";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Plus, User } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
@@ -42,7 +42,7 @@ export default function Home() {
 
   const handleCreateNewChat = async () => {
     try {
-      const newChat = await ChatService.createChat('New Chat');
+      const newChat = await ChatService.createChat('New Chat ' + Date());
       setSelectedChatId(newChat.id);
     } catch (error) {
       console.error('Failed to create new chat:', error);

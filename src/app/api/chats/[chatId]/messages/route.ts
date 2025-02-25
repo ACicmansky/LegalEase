@@ -21,7 +21,7 @@ export async function POST(
       .from('chats')
       .select()
       .eq('id', params.chatId)
-      .eq('user', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (chatError || !chat) {

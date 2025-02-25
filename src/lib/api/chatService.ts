@@ -13,7 +13,8 @@ export class ChatService {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create chat');
+      //throw new Error('Failed to create chat');
+      throw new Error(await response.text());
     }
 
     return response.json();
@@ -23,7 +24,8 @@ export class ChatService {
     const response = await fetch(`${API_BASE}/chats`);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch chats');
+      //throw new Error('Failed to fetch chats');
+      throw new Error(await response.text());
     }
 
     return response.json();

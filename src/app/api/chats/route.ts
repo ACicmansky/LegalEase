@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { title } from 'process';
 
 // GET /api/chats - Get all chats for the current user
 export async function GET() {
@@ -20,7 +21,7 @@ export async function GET() {
         *,
         messages (*)
       `)
-      .eq('user', user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -54,15 +55,19 @@ export async function POST(request: Request) {
     const { data: chat, error } = await supabase
       .from('chats')
       .insert({
-        title,
-        document: documentName,
-        user: user.id,
+        title: title
       })
       .select(`
         *,
         messages (*)
       `)
       .single();
+
+      // .insert({
+      //   title,
+      //   document: documentName,
+      //   user: user.id,
+      // })
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

@@ -24,7 +24,7 @@ export async function GET(
         messages (*)
       `)
       .eq('id', params.chatId)
-      .eq('user', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (error) {
@@ -73,7 +73,7 @@ export async function DELETE(
       .from('chats')
       .delete()
       .eq('id', params.chatId)
-      .eq('user', user.id);
+      .eq('user_id', user.id);
 
     if (chatError) {
       return NextResponse.json({ error: chatError.message }, { status: 500 });
