@@ -1,28 +1,40 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { ChatList } from './ChatList';
-import { Chat, ChatFolder } from '@/types/chat';
-import { ChatService } from '@/lib/api/chatService';
-import { toast } from 'sonner';
-import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { ChatList } from './ChatList';
+
+import { Button } from "@/components/ui/button";
+import { ChatService } from '@/lib/api/chatService';
+import { Chat, ChatFolder } from '@/types/chat';
 
 interface ChatListContainerProps {
   onChatSelect: (chatId: string) => void;
   selectedChatId?: string;
+  ref?: React.RefObject<ChatListContainerRef | null>;
 }
 
-export function ChatListContainer({ onChatSelect, selectedChatId }: ChatListContainerProps) {
+export interface ChatListContainerRef {
+  handleCreateChat: (newChat: Chat) => Promise<void>;
+}
+
+export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatListContainerProps) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [folders, setFolders] = useState<ChatFolder[]>([
-    { id: 'default', name: 'All Chats', isExpanded: true },
-  ]);
+  const [folders, setFolders] = useState<ChatFolder[]>([]);
 
   useEffect(() => {
     loadChats();
   }, []);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        handleCreateChat
+      };
+    }
+  }, [ref, chats]);
 
   const loadChats = async () => {
     try {
@@ -48,9 +60,8 @@ export function ChatListContainer({ onChatSelect, selectedChatId }: ChatListCont
     }
   };
 
-  const handleCreateChat = async (title: string, documentName?: string) => {
+  const handleCreateChat = async (newChat: Chat) => {
     try {
-      const newChat = await ChatService.createChat(title, documentName);
       setChats([newChat, ...chats]);
       onChatSelect(newChat.id);
       toast('New chat created successfully');

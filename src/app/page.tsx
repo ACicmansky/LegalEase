@@ -1,19 +1,21 @@
 'use client';
 
-import { DocumentUpload } from "@/components/upload/DocumentUpload";
-import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { ChatListContainer } from "@/components/chat/ChatListContainer";
-import { ChatInterface } from "@/components/chat/ChatInterface";
-import { ChatService } from "@/lib/api/chatService";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
+import { ChatInterface } from "@/components/chat/ChatInterface";
+import { ChatListContainer, ChatListContainerRef } from "@/components/chat/ChatListContainer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { DocumentUpload } from "@/components/upload/DocumentUpload";
+import { useAuth } from "@/context/AuthContext";
+import { ChatService } from "@/lib/api/chatService";
 
 export default function Home() {
   const { signIn, user } = useAuth();
   const [selectedChatId, setSelectedChatId] = useState<string>();
+  const chatListRef = useRef<ChatListContainerRef>(null);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && !user) {
@@ -43,6 +45,7 @@ export default function Home() {
   const handleCreateNewChat = async () => {
     try {
       const newChat = await ChatService.createChat('New Chat ' + Date());
+      chatListRef.current?.handleCreateChat(newChat);
       setSelectedChatId(newChat.id);
     } catch (error) {
       console.error('Failed to create new chat:', error);
@@ -68,6 +71,7 @@ export default function Home() {
         {/* Document/Chat List */}
         <div className="flex-1">
           <ChatListContainer 
+            ref={chatListRef}
             onChatSelect={setSelectedChatId}
             selectedChatId={selectedChatId}
           />
