@@ -1,6 +1,6 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 // POST /api/chats/[chatId]/messages - Add a message to a chat
 export async function POST(
@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: { chatId: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createSupabaseServerClient();
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

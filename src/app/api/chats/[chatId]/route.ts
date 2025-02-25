@@ -1,6 +1,6 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 // GET /api/chats/[chatId] - Get a specific chat
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { chatId: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createSupabaseServerClient();
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -50,7 +50,7 @@ export async function DELETE(
   { params }: { params: { chatId: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createSupabaseServerClient();
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
