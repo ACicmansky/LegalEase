@@ -34,7 +34,7 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      const newMessage = await ChatService.addMessage(selectedChatId, message);
+      const newMessage = await ChatService.addMessage(selectedChatId, message, true);
       chatInterfaceRef.current?.handleCreateMessage(newMessage);
     } catch (error) {
       console.error('Failed to send message:', error);

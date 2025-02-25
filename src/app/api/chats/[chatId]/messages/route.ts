@@ -30,7 +30,7 @@ export async function POST(
     }
 
     // Get request body
-    const { content } = await request.json();
+    const { content, is_user } = await request.json();
 
     // Create message
     const { data: message, error: messageError } = await supabase
@@ -38,7 +38,7 @@ export async function POST(
       .insert({
         content,
         chat_id: chatId,
-        is_user: true,
+        is_user,
       })
       .select()
       .single();
