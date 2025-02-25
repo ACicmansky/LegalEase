@@ -1,53 +1,56 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Message } from './Message';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-interface ChatMessage {
-  id: string;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
-  sources?: Array<{
-    title: string;
-    page: number;
-  }>;
-}
+import { ChatService } from '@/lib/api/chatService';
+import { ChatMessage } from '@/types/chat';
+import { Message } from './Message';
 
 interface ChatInterfaceProps {
   chatId?: string;
   onSendMessage: (message: string) => Promise<void>;
+  ref?: React.RefObject<ChatInterfaceRef | null>;
 }
 
-export function ChatInterface({ chatId, onSendMessage }: ChatInterfaceProps) {
+export interface ChatInterfaceRef {
+  handleCreateMessage: (newChatMessage: ChatMessage) => Promise<void>;
+}
+
+export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps) {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
-  // Mock messages for now - would come from your backend
-  const [messages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      content: 'Hello! How can I help you analyze your legal documents today?',
-      isUser: false,
-      timestamp: new Date(),
-    },
-    {
-      id: '2',
-      content: 'Can you explain the liability clause in section 5?',
-      isUser: true,
-      timestamp: new Date(),
-    },
-    {
-      id: '3',
-      content: 'According to section 5.2 of the agreement, the liability is limited to the total amount paid for services. This excludes cases of gross negligence or willful misconduct.',
-      isUser: false,
-      timestamp: new Date(),
-      sources: [
-        { title: 'Service Agreement.pdf', page: 12 },
-      ],
-    },
-  ]);
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (!chatId) return;     
+      
+      setIsLoadingMessages(true);
+      try {
+        const chat = await ChatService.getChat(chatId);
+        if (chat.messages) {
+          setMessages(chat.messages);
+        }
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    loadMessages();
+  }, [chatId]);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        handleCreateMessage
+      };
+    }
+  }, [ref, messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,6 +72,15 @@ export function ChatInterface({ chatId, onSendMessage }: ChatInterfaceProps) {
       console.error('Failed to send message:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCreateMessage = async (newMessage: ChatMessage) => {
+    try {
+      setMessages([...messages, newMessage]);
+    } catch (error) {
+      console.error('Failed to create message:', error);
+      toast('Failed to create new message. Please try again.');
     }
   };
 

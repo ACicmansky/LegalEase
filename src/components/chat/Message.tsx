@@ -1,16 +1,8 @@
 'use client';
 
-interface MessageProps {
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
-  sources?: Array<{
-    title: string;
-    page: number;
-  }>;
-}
+import { ChatMessage } from '@/types/chat';
 
-export function Message({ content, isUser, timestamp, sources }: MessageProps) {
+export function Message({ content, isUser, created_at, sources }: ChatMessage) {
   return (
     <div
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
@@ -44,7 +36,7 @@ export function Message({ content, isUser, timestamp, sources }: MessageProps) {
         )}
         
         <div className="mt-2 text-xs text-gray-200 dark:text-gray-400">
-          {timestamp.toLocaleTimeString()}
+          {new Date(created_at).toLocaleTimeString()}
         </div>
       </div>
     </div>

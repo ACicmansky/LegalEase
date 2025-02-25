@@ -3,11 +3,11 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { ChatList } from './ChatList';
 
 import { Button } from "@/components/ui/button";
 import { ChatService } from '@/lib/api/chatService';
 import { Chat, ChatFolder } from '@/types/chat';
+import { ChatList } from './ChatList';
 
 interface ChatListContainerProps {
   onChatSelect: (chatId: string) => void;

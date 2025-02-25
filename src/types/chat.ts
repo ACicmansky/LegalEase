@@ -5,6 +5,10 @@ export interface ChatMessage {
   created_at: Date;
   chat_id: string;
   user_id: string;
+  sources?: Array<{
+    title: string;
+    page: number;
+  }>;
 }
 
 export interface Chat {

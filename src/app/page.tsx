@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { ChatInterface } from "@/components/chat/ChatInterface";
+import { ChatInterface, ChatInterfaceRef } from "@/components/chat/ChatInterface";
 import { ChatListContainer, ChatListContainerRef } from "@/components/chat/ChatListContainer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ export default function Home() {
   const { signIn, user } = useAuth();
   const [selectedChatId, setSelectedChatId] = useState<string>();
   const chatListRef = useRef<ChatListContainerRef>(null);
+  const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && !user) {
@@ -33,9 +34,8 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      await ChatService.addMessage(selectedChatId, message);
-      // You might want to update the chat list or current chat here
-      // depending on your real-time update strategy
+      const newMessage = await ChatService.addMessage(selectedChatId, message);
+      chatInterfaceRef.current?.handleCreateMessage(newMessage);
     } catch (error) {
       console.error('Failed to send message:', error);
       toast('Failed to send message. Please try again.');
@@ -95,7 +95,8 @@ export default function Home() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {selectedChatId ? (
-          <ChatInterface 
+          <ChatInterface
+            ref={chatInterfaceRef}
             chatId={selectedChatId}
             onSendMessage={handleSendMessage}
           />

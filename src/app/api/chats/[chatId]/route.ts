@@ -9,6 +9,7 @@ export async function GET(
 ) {
   try {
     const supabase = await createSupabaseServerClient();
+    const chatId = (await params).chatId;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -23,7 +24,7 @@ export async function GET(
         *,
         messages (*)
       `)
-      .eq('id', params.chatId)
+      .eq('id', chatId)
       .eq('user_id', user.id)
       .single();
 
