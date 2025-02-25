@@ -9,6 +9,7 @@ export async function POST(
 ) {
   try {
     const supabase = await createSupabaseServerClient();
+    const chatId = (await params).chatId;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -20,7 +21,7 @@ export async function POST(
     const { data: chat, error: chatError } = await supabase
       .from('chats')
       .select()
-      .eq('id', params.chatId)
+      .eq('id', chatId)
       .eq('user_id', user.id)
       .single();
 
@@ -36,7 +37,7 @@ export async function POST(
       .from('messages')
       .insert({
         content,
-        chat_id: params.chatId,
+        chat_id: chatId,
         is_user: true,
       })
       .select()
@@ -50,7 +51,7 @@ export async function POST(
     const { error: updateError } = await supabase
       .from('chats')
       .update({ last_message: content })
-      .eq('id', params.chatId);
+      .eq('id', chatId);
 
     if (updateError) {
       console.error('Failed to update chat last_message:', updateError);

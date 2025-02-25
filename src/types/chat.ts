@@ -4,6 +4,7 @@ export interface ChatMessage {
   isUser: boolean;
   created_at: Date;
   chat_id: string;
+  user_id: string;
 }
 
 export interface Chat {
@@ -11,7 +12,7 @@ export interface Chat {
   title?: string;
   last_message?: string;
   created_at: Date;
-  user: string;
+  user_id: string;
   document?: string;
   folder?: string;
   messages: ChatMessage[];

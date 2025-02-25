@@ -61,7 +61,8 @@ export class ChatService {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to add message');
+      //throw new Error('Failed to add message');
+      throw new Error(await response.text());
     }
 
     return response.json();
