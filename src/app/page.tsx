@@ -1,8 +1,9 @@
 'use client';
 
-import { Plus } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { ChatInterface, ChatInterfaceRef } from "@/components/chat/ChatInterface";
 import { ChatListContainer, ChatListContainerRef } from "@/components/chat/ChatListContainer";
@@ -13,7 +14,8 @@ import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
 
 export default function Home() {
-  const { signIn, user } = useAuth();
+  const { signIn, signOut, user } = useAuth();
+  const router = useRouter();
   const [selectedChatId, setSelectedChatId] = useState<string>();
   const chatListRef = useRef<ChatListContainerRef>(null);
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
@@ -80,13 +82,26 @@ export default function Home() {
         {/* User Settings */}
         <div className="p-4 border-t">
           {user && (
-            <div className="flex items-center">
-              <Avatar>
-                <AvatarFallback>
-                  {user.email?.[0]?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <span className="ml-2 text-sm text-muted-foreground">{user.email}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Avatar>
+                  <AvatarFallback>
+                    {user.email?.[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="ml-2 text-sm text-muted-foreground">{user.email}</span>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={async () => {
+                  await signOut();
+                  toast.success('Logged out successfully');
+                  router.refresh();
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
             </div>
           )}
         </div>
