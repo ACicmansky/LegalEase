@@ -49,25 +49,20 @@ export async function POST(request: Request) {
     }
 
     // Get request body
-    const { title, documentName } = await request.json();
+    const { title, document_id } = await request.json();
 
     // Create chat
     const { data: chat, error } = await supabase
       .from('chats')
       .insert({
-        title: title
+        title: title,
+        document_id: document_id,
       })
       .select(`
         *,
         messages (*)
       `)
       .single();
-
-      // .insert({
-      //   title,
-      //   document: documentName,
-      //   user: user.id,
-      // })
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

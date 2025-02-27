@@ -13,8 +13,8 @@ interface DropZoneProps {
 
 export const DropZone = ({
   onFilesDrop,
-  maxFileSize = 10 * 1024 * 1024, // 10MB default
-  acceptedFileTypes = ['.pdf', '.docx', '.txt'],
+  maxFileSize = 32 * 1024 * 1024, // 10MB default
+  acceptedFileTypes = ['.pdf'],
   maxFiles = 5,
 }: DropZoneProps) => {
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +43,7 @@ export const DropZone = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/pdf': ['.pdf'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-      'text/plain': ['.txt'],
+      'application/pdf': ['.pdf']
     },
     maxSize: maxFileSize,
     maxFiles,
@@ -75,7 +73,7 @@ export const DropZone = ({
             'Drop the files here...'
           ) : (
             <>
-              Drag and drop legal documents here, or click to select files
+              Drag and drop legal PDF documents here, or click to select files
               <br />
               <span className="text-xs mt-2 block">
                 Accepts {acceptedFileTypes.join(', ')} (max {(maxFileSize / (1024 * 1024)).toFixed(0)}MB per file)

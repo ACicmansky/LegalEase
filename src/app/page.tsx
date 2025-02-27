@@ -12,11 +12,13 @@ import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
   const { signIn, signOut, user } = useAuth();
   const router = useRouter();
   const [selectedChatId, setSelectedChatId] = useState<string>();
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const chatListRef = useRef<ChatListContainerRef>(null);
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
@@ -44,14 +46,26 @@ export default function Home() {
     }
   };
 
-  const handleCreateNewChat = async () => {
+  const handleOpenUploadDialog = () => {
+    setIsUploadDialogOpen(true);
+  };
+
+  const handleDocumentUploadSuccess = async (documentId: string, fileName: string) => {
     try {
-      const newChat = await ChatService.createChat('New Chat');
+      // Create a new chat with the document name
+      const newChat = await ChatService.createChat(`${fileName}`, documentId);
+            
       chatListRef.current?.handleCreateChat(newChat);
       setSelectedChatId(newChat.id);
+      
+      // Close the upload dialog
+      setIsUploadDialogOpen(false);
+      
+      // Show success message
+      toast.success(`Document uploaded and new chat created!`);
     } catch (error) {
-      console.error('Failed to create new chat:', error);
-      toast('Failed to create new chat. Please try again.');
+      console.error('Failed to create new chat after document upload:', error);
+      toast.error('Failed to create new chat. Please try again.');
     }
   };
 
@@ -62,7 +76,7 @@ export default function Home() {
         {/* New Chat Button */}
         <div className="p-4">
           <Button
-            onClick={handleCreateNewChat}
+            onClick={handleOpenUploadDialog}
             className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -121,11 +135,26 @@ export default function Home() {
               <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-center mb-8">
                 Chat with your Legal Documents
               </h1>
-              <DocumentUpload />
+              <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
             </div>
           </main>
         )}
       </div>
+
+      {/* Document Upload Dialog */}
+      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Upload a Document to Start a New Chat</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              Please upload a legal document to begin a new chat. The document will be processed and made available for your conversation.
+            </p>
+            <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

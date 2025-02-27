@@ -3,17 +3,17 @@ import { Chat, ChatMessage } from '@/types/chat';
 const API_BASE = '/api';
 
 export class ChatService {
-  static async createChat(title: string, documentName?: string): Promise<Chat> {
+  static async createChat(title: string, document_id?: string): Promise<Chat> {
+    
     const response = await fetch(`${API_BASE}/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title, documentName }),
+      body: JSON.stringify({ title, document_id }),
     });
 
     if (!response.ok) {
-      //throw new Error('Failed to create chat');
       throw new Error(await response.text());
     }
 
@@ -24,7 +24,6 @@ export class ChatService {
     const response = await fetch(`${API_BASE}/chats`);
 
     if (!response.ok) {
-      //throw new Error('Failed to fetch chats');
       throw new Error(await response.text());
     }
 
@@ -61,7 +60,6 @@ export class ChatService {
     });
 
     if (!response.ok) {
-      //throw new Error('Failed to add message');
       throw new Error(await response.text());
     }
 

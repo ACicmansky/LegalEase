@@ -13,9 +13,14 @@ interface UploadedFile {
   progress: number;
   error?: string;
   downloadUrl?: string;
+  documentId?: string;
 }
 
-export const DocumentUpload = () => {
+interface DocumentUploadProps {
+  onUploadSuccess?: (documentId: string, fileName: string) => void;
+}
+
+export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const handleFilesDrop = async (files: File[]) => {
@@ -79,14 +84,23 @@ export const DocumentUpload = () => {
         );
 
         // Process the document using the ingest utility
-        await processDocument(fileEntry.id, fileEntry.file);
+        const result = await processDocument(fileEntry.id, fileEntry.file);
+
+        if (!result.success) {
+          throw new Error(result.message);
+        }
 
         // Update status to complete
         setUploadedFiles((prev) =>
           prev.map((f) =>
-            f.id === fileEntry.id ? { ...f, status: 'complete' } : f
+            f.id === fileEntry.id ? { ...f, status: 'complete', documentId: fileEntry.id } : f
           )
         );
+
+        // Call the onUploadSuccess callback if provided
+        if (onUploadSuccess) {
+          onUploadSuccess(fileEntry.id, fileEntry.file.name);
+        }
       } catch (error) {
         // Update status to error
         const errorMessage = error instanceof Error 

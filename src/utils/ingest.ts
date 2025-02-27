@@ -18,6 +18,11 @@ interface IngestConfig {
   chunkOverlap?: number;
 }
 
+interface IngestResult {
+  success: boolean;
+  message: string;
+}
+
 const DEFAULT_CHUNK_SIZE = 1000;
 const DEFAULT_CHUNK_OVERLAP = 200;
 
@@ -65,8 +70,8 @@ export async function ingestDocument(
   id: string,
   input: string | File | Blob,
   config: IngestConfig = {}
-): Promise<{ success: boolean; message: string }> {
-  try {
+): Promise<IngestResult> {
+  try {    
     // Validate input
     if (!input) {
       throw new Error('Input is required');
@@ -109,30 +114,36 @@ export async function ingestDocument(
 
     if (result) {
       // Create document record in Supabase with user_id
-      const { error: documentError } = await (await createSupabaseServerClient())
+      const { data: document, error: documentError } = await (await createSupabaseServerClient())
         .from('documents')
         .insert({
           id,
           name: input instanceof File ? input.name : id,
-        });
+        })
+        .select()
+        .single();
 
       if (documentError) {
+        console.error('Failed to create document record:', documentError);
         throw new Error(`Failed to create document record: ${documentError.message}`);
       }
+
+      return {
+        success: true,
+        message: `Successfully processed document with ${finalChunks.length} chunks`,
+      };
     }
 
-    return {
-      success: true,
-      message: `Successfully processed document with ${finalChunks.length} chunks`,
-    };
+    throw new Error('Failed to store document chunks in vector store');
   } catch (error) {
+    console.error('Error in ingestDocument:', error);
     // If there's an error, clean up the document if it was created
     if (id) {
       (await createSupabaseServerClient()).from('documents').delete().match({ id });
     }
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      message: error instanceof Error ? error.message : 'An unknown error occurred'
     };
   }
 }
