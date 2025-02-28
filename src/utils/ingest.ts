@@ -1,14 +1,13 @@
 'use server';
 
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { TextLoader } from "langchain/document_loaders/fs/text";
-import { createSupabaseServerClient } from "@/utils/supabase/server";
 
-// import { loadMongoDBStore } from "@/utils/vector-store";
 import { vectorStore } from "@/utils/supabase/server";
 
 export type SupportedFileType = 'pdf' | 'docx' | 'txt';

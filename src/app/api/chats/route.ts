@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
 import { createSupabaseServerClient } from "@/utils/supabase/server";
-import { title } from 'process';
 
 // GET /api/chats - Get all chats for the current user
 export async function GET() {

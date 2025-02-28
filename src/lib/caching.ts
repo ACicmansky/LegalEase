@@ -189,7 +189,7 @@ export class VectorCache {
       if (entry.expiresAt < Date.now()) continue;
 
       const [cachedQuery] = key.split(':');
-      const cachedEmbedding = await this.embeddingCache.get(cachedQuery);
+      const cachedEmbedding = this.embeddingCache.get(cachedQuery);
 
       if (cachedEmbedding && 
           this.cosineSimilarity(embedding, cachedEmbedding.value) > this.similarityThreshold) {

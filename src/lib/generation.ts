@@ -1,8 +1,12 @@
-import { ChatGroq } from "@langchain/groq";
-import { RunnableSequence } from "@langchain/core/runnables";
+import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { Document } from "@langchain/core/documents";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { ChatGroq } from "@langchain/groq";
+
+if (!process.env.GROQ_API_KEY) {
+    throw new Error('Missing env.GROQ_API_KEY');
+  }
 
 export class GenerationEngine {
     public model: ChatGroq;

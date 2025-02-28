@@ -3,7 +3,7 @@ import { Embeddings } from "@langchain/core/embeddings";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatGroq } from "@langchain/groq";
 
-import { loadMongoDBStore } from "@/utils/vector-store";
+import { vectorStore } from "@/utils/supabase/server";
 
 interface SearchResult {
     document: Document;
@@ -55,10 +55,10 @@ export class HybridSearcher {
     }
 
     async search(query: string): Promise<SearchResult[]> {
-        const vectorStore = (await loadMongoDBStore()).vectorStore;
+        const vector = await vectorStore();
 
         // Get vector search results
-        const vectorResults = await vectorStore.similaritySearch(query, this.topK);
+        const vectorResults = await vector.similaritySearch(query, this.topK);
         
         // Calculate keyword scores
         const keywordScores = vectorResults.map(doc => 
@@ -66,7 +66,7 @@ export class HybridSearcher {
         );
         
         // Get vector similarity scores (assuming they're between 0 and 1)
-        const vectorScores = await vectorStore.similaritySearchWithScore(query, this.topK);
+        const vectorScores = await vector.similaritySearchWithScore(query, this.topK);
         
         // Normalize scores
         const normalizedKeywordScores = this.normalizeScores(keywordScores);

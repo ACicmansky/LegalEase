@@ -7,12 +7,12 @@ import { formatDocumentsAsString } from "langchain/util/document";
 
 import { VectorCache } from "@/lib/caching";
 import { GenerationEngine } from "@/lib/generation";
-import { loadMongoDBStore } from "@/utils/vector-store";
+import { vectorStore } from "@/utils/supabase/server";
 
 // Initialize components
 const initializeRetriever = async () => {
-  const vectorStore = (await loadMongoDBStore()).vectorStore;
-  return vectorStore.asRetriever({
+  const vector = await vectorStore();
+  return vector.asRetriever({
     searchType: "mmr",
     searchKwargs: {
       fetchK: 6,
@@ -38,7 +38,7 @@ const vectorCache = new VectorCache({
 
 // Create a cached retriever wrapper
 const createCachedRetriever = async () => {
-  const vectorStore = (await loadMongoDBStore()).vectorStore;
+  const vector = await vectorStore();
   return async (input: any) => {
     const query = typeof input === 'string' ? input : input.question;
     
@@ -46,7 +46,7 @@ const createCachedRetriever = async () => {
       // Try to get cached retrieval results
       const cachedResults = await vectorCache.getCachedRetrieval(
         query,
-        vectorStore,
+        vector,
         { timestamp: Date.now() }
       );
 
@@ -57,20 +57,19 @@ const createCachedRetriever = async () => {
 
       // On cache miss, perform retrieval and cache results
       console.debug('Cache miss for query:', query);
-      const results = (await initializeRetriever()).getRelevantDocuments(query);
+      const results = await (await initializeRetriever()).invoke(query);
       
       return results;
     } catch (error) {
       console.error('Cache retrieval error:', error);
       // Fallback to direct retrieval on cache error
-      return (await initializeRetriever()).getRelevantDocuments(query);
+      return await (await initializeRetriever()).invoke(query);
     }
   };
 };
 
 // Build the optimized pipeline
 export const createOptimizedPipeline = async () => {
-  const retriever = await initializeRetriever();
   const hallucinationDetector = new HallucinationDetector(0.85);
   const batcher = new AdaptiveBatcher({
     minBatchSize: 1,

@@ -1,28 +1,28 @@
-import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-// import { Document } from "@langchain/core/documents";
-import { MongoClient } from "mongodb";
+// import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
+// // import { Document } from "@langchain/core/documents";
+// import { MongoClient } from "mongodb";
 
-import { embeddings } from "@/lib/embeddings";
+// import { embeddings } from "@/lib/embeddings";
 
-export async function loadMongoDBStore() {
-    const mongoDbClient = new MongoClient(process.env.MONGODB_ATLAS_URI ?? '');
+// export async function loadMongoDBStore() {
+//     const mongoDbClient = new MongoClient(process.env.MONGODB_ATLAS_URI ?? '');
 
-    await mongoDbClient.connect();
+//     await mongoDbClient.connect();
 
-    const dbName = process.env.MONGODB_ATLAS_DB_NAME ?? '';
-    const collectionName = process.env.MONGODB_ATLAS_COLLECTION_NAME ?? '';
-    const collection = mongoDbClient.db(dbName).collection(collectionName);
+//     const dbName = process.env.MONGODB_ATLAS_DB_NAME ?? '';
+//     const collectionName = process.env.MONGODB_ATLAS_COLLECTION_NAME ?? '';
+//     const collection = mongoDbClient.db(dbName).collection(collectionName);
 
-    const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
-        indexName: process.env.MONGODB_ATLAS_INDEX_NAME ?? 'vector_index',
-        collection,
-    });
+//     const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
+//         indexName: process.env.MONGODB_ATLAS_INDEX_NAME ?? 'vector_index',
+//         collection,
+//     });
 
-    return {
-        vectorStore,
-        mongoDbClient,
-    };
-}
+//     return {
+//         vectorStore,
+//         mongoDbClient,
+//     };
+// }
 
 // let vectorStore: MongoDBAtlasVectorSearch | null = null;
 // let mongoClient: MongoClient | null = null;
