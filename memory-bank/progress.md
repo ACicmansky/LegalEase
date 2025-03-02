@@ -8,6 +8,10 @@
 - [x] Document upload functionality
 - [x] Initial LangChain integration
 - [x] Chat UI interface with message display and input
+- [x] Integration between RAG pipeline and chat history system
+  - [x] Modular API with separate message creation and processing
+  - [x] Document context passing between systems
+  - [x] Chat history incorporation for better responses
 
 ## In Progress
 
@@ -16,11 +20,13 @@
   - [x] Document chunking
   - [ ] Optimizing chunk size and overlap
 - [x] Vector embeddings generation and storage
-- [x] Chat API implementation (partial)
-  - [x] RAG pipeline for AI responses in `src/app/api/chat/route.ts`
-  - [x] Chat history management in `src/app/api/chats/*`
-  - [ ] Integration between RAG pipeline and chat history system
+- [x] Chat API implementation
+  - [x] Integrated chat system with RAG capabilities
 - [x] Context retrieval system (needs optimization)
+- [ ] Enhanced user experience
+  - [ ] Typing indicators
+  - [ ] Loading states
+  - [ ] Message queuing
 
 ## Pending Features
 
@@ -29,14 +35,21 @@
 - [ ] Advanced search functionality
 - [ ] User settings and preferences
 - [ ] Multi-language support
+- [ ] Response regeneration for existing messages
 
 ## Known Issues
 
-- Need to optimize vector search performance
-- Document processing for large files needs optimization
-- Chat history not currently used for contextual understanding in RAG system
-- API integration needed between `chat/route.ts` and `chats/[chatId]/messages/route.ts`
-- Need to implement proper error handling for AI responses
+- [ ] RAG pipeline response time needs optimization
+- [ ] Occasional hallucinations in AI responses
+- [ ] Ambiguous SQL column references in some queries
+- [ ] localStorage errors in server environment
+
+## Recent Fixes
+
+- [x] Fixed localStorage issues in server environment
+- [x] Resolved ambiguous column references in SQL queries
+- [x] Fixed runManager context access in RAG pipeline
+- [x] Refactored chat API for better separation of concerns
 
 ## Current Priorities
 
