@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
+import { addDocument } from "@/lib/documentService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
   const router = useRouter();
   const [selectedChatId, setSelectedChatId] = useState<string>();
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const chatListRef = useRef<ChatListContainerRef>(null);
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
@@ -38,11 +40,17 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      const newMessage = await ChatService.addMessage(selectedChatId, message, true);
-      chatInterfaceRef.current?.handleCreateMessage(newMessage);
+      setIsLoading(true);
+      const userMessage = await ChatService.addUserMessage(selectedChatId, message);
+      chatInterfaceRef.current?.handleCreateMessage(userMessage);      
+      
+      const aiMessage = await ChatService.processUserMessage(selectedChatId, message);      
+      chatInterfaceRef.current?.handleCreateMessage(aiMessage);      
     } catch (error) {
       console.error('Failed to send message:', error);
-      toast('Failed to send message. Please try again.');
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,6 +64,7 @@ export default function Home() {
       const newChat = await ChatService.createChat(`${fileName}`, documentId);
             
       chatListRef.current?.handleCreateChat(newChat);
+      await addDocument(documentId, fileName, newChat.id);
       setSelectedChatId(newChat.id);
       
       // Close the upload dialog

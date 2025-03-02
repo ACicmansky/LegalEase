@@ -1,6 +1,39 @@
 import { NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 
-import { createSupabaseServerClient } from "@/utils/supabase/server";
+/**
+ * Creates a message in the database
+ */
+async function createMessage(chatId: string, content: string) {
+  const supabase = await createSupabaseServerClient();
+
+  // Store message
+  const { data: message, error: messageError } = await supabase
+    .from('messages')
+    .insert({
+      content,
+      chat_id: chatId,
+      is_user: true
+    })
+    .select()
+    .single();
+
+  if (messageError) {
+    throw new Error(`Failed to create message: ${messageError.message}`);
+  }
+
+  // Update chat's last_message if it's a user message
+  const { error: updateError } = await supabase
+    .from('chats')
+    .update({ last_message: content })
+    .eq('id', chatId);
+
+  if (updateError) {
+    console.error('Failed to update chat last_message:', updateError);
+  }
+
+  return message;
+}
 
 // POST /api/chats/[chatId]/messages - Add a message to a chat
 export async function POST(
@@ -20,7 +53,7 @@ export async function POST(
     // Verify chat exists and belongs to user
     const { data: chat, error: chatError } = await supabase
       .from('chats')
-      .select()
+      .select(`*, documents(*)`)
       .eq('id', chatId)
       .eq('user_id', user.id)
       .single();
@@ -30,35 +63,13 @@ export async function POST(
     }
 
     // Get request body
-    const { content, is_user } = await request.json();
+    const { content } = await request.json();
 
-    // Create message
-    const { data: message, error: messageError } = await supabase
-      .from('messages')
-      .insert({
-        content,
-        chat_id: chatId,
-        is_user,
-      })
-      .select()
-      .single();
-
-    if (messageError) {
-      return NextResponse.json({ error: messageError.message }, { status: 500 });
-    }
-
-    // Update chat's last_message
-    const { error: updateError } = await supabase
-      .from('chats')
-      .update({ last_message: content })
-      .eq('id', chatId);
-
-    if (updateError) {
-      console.error('Failed to update chat last_message:', updateError);
-    }
-
-    return NextResponse.json(message);
+    // Create the message
+    const userMessage = await createMessage(chatId, content);
+    return NextResponse.json(userMessage);
   } catch (error) {
+    console.error('Message creation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

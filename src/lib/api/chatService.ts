@@ -3,8 +3,7 @@ import { Chat, ChatMessage } from '@/types/chat';
 const API_BASE = '/api';
 
 export class ChatService {
-  static async createChat(title: string, document_id?: string): Promise<Chat> {
-    
+  static async createChat(title: string, document_id?: string): Promise<Chat> {    
     const response = await fetch(`${API_BASE}/chats`, {
       method: 'POST',
       headers: {
@@ -50,13 +49,13 @@ export class ChatService {
     }
   }
 
-  static async addMessage(chatId: string, content: string, isUser: boolean): Promise<ChatMessage> {
+  static async addUserMessage(chatId: string, content: string): Promise<ChatMessage> {
     const response = await fetch(`${API_BASE}/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content, isUser }),
+      body: JSON.stringify({ content, is_user: true }),
     });
 
     if (!response.ok) {
@@ -64,5 +63,31 @@ export class ChatService {
     }
 
     return response.json();
+  }
+
+  /**
+   * Processes a message through the RAG pipeline and save AI response in database
+   */
+  static async processUserMessage(chatId: string, content: string): Promise<ChatMessage> {
+    try {
+      const response = await fetch(`${API_BASE}/chats/${chatId}/process`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error processing message:', errorText);
+        throw new Error(`Failed to process message: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('ChatService.processUserMessage error:', error);
+      throw error;
+    }
   }
 }

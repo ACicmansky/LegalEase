@@ -25,9 +25,11 @@ export class VectorCache {
 
   constructor(config: VectorCacheConfig = {}) {
     this.maxSize = config.maxSize || 1000;
-    this.ttlMs = config.ttlMs || 30 * 60 * 1000; // 30 minutes default
+    this.ttlMs = config.ttlMs || 60 * 60 * 1000; // 1 hour default TTL
     this.similarityThreshold = config.similarityThreshold || 0.95;
-    this.persistToLocalStorage = config.persistToLocalStorage || false;
+    this.persistToLocalStorage = 
+      typeof window !== 'undefined' && // Only enable if in browser
+      (config.persistToLocalStorage || false);
     
     this.embeddingCache = new Map();
     this.retrievalCache = new Map();
@@ -38,6 +40,11 @@ export class VectorCache {
   }
 
   private loadFromLocalStorage() {
+    // Only run in browser environment
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
+    
     try {
       const embeddingData = localStorage.getItem('vectorCache_embeddings');
       const retrievalData = localStorage.getItem('vectorCache_retrievals');
@@ -58,6 +65,11 @@ export class VectorCache {
 
   private saveToLocalStorage() {
     if (!this.persistToLocalStorage) return;
+    
+    // Only run in browser environment
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
 
     try {
       localStorage.setItem(
@@ -169,16 +181,22 @@ export class VectorCache {
       return cached.value;
     }
 
-    const results = await vectorStore.similaritySearch(query);
-    
-    this.retrievalCache.set(cacheKey, {
-      value: results,
-      timestamp: Date.now(),
-      expiresAt: Date.now() + this.ttlMs
-    });
+    try {
+      // Use the properly qualified field names in similarity search
+      const results = await vectorStore.similaritySearch(query, 4);
+      
+      this.retrievalCache.set(cacheKey, {
+        value: results,
+        timestamp: Date.now(),
+        expiresAt: Date.now() + this.ttlMs
+      });
 
-    this.cleanExpiredEntries();
-    return results;
+      this.cleanExpiredEntries();
+      return results;
+    } catch (error) {
+      console.error('Error searching for documents:', error);
+      throw error;
+    }
   }
 
   async findSimilarCachedQuery(

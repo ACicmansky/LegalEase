@@ -70,7 +70,7 @@ export async function ingestDocument(
   input: string | File | Blob,
   config: IngestConfig = {}
 ): Promise<IngestResult> {
-  try {    
+  try {
     // Validate input
     if (!input) {
       throw new Error('Input is required');
@@ -112,21 +112,6 @@ export async function ingestDocument(
     const result = await vector.addDocuments(finalChunks);
 
     if (result) {
-      // Create document record in Supabase with user_id
-      const { data: document, error: documentError } = await (await createSupabaseServerClient())
-        .from('documents')
-        .insert({
-          id,
-          name: input instanceof File ? input.name : id,
-        })
-        .select()
-        .single();
-
-      if (documentError) {
-        console.error('Failed to create document record:', documentError);
-        throw new Error(`Failed to create document record: ${documentError.message}`);
-      }
-
       return {
         success: true,
         message: `Successfully processed document with ${finalChunks.length} chunks`,
