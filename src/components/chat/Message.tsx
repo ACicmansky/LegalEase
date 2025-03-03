@@ -2,19 +2,29 @@
 
 import { ChatMessage } from '@/types/chat';
 
-export function Message({ content, isUser, created_at, sources }: ChatMessage) {
+export function Message({ content, is_user: is_user, created_at, sources }: ChatMessage) {
   return (
     <div
-      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
+      className={`flex ${is_user ? 'justify-end' : 'justify-start'} mb-4`}
     >
+      {!is_user && (
+        <div className="mr-2 mt-2">
+          <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+              <path d="M12 2a10 10 0 0110 10 10 10 0 01-10 10A10 10 0 012 12 10 10 0 0112 2zM7 9a1 1 0 100 2h10a1 1 0 100-2H7zm0 4a1 1 0 100 2h10a1 1 0 100-2H7z" />
+            </svg>
+          </div>
+        </div>
+      )}
       <div
         className={`max-w-[80%] rounded-lg p-4 ${
-          isUser
-            ? 'bg-purple-600 text-white'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+          is_user
+            ? 'bg-purple-600 text-white border-2 border-purple-700'
+            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-purple-600'
         }`}
       >
         <div className="prose dark:prose-invert max-w-none">
+          <p><strong>{is_user ? 'You' : 'Bot'}</strong></p>
           {content}
         </div>
         

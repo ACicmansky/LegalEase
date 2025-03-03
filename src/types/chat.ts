@@ -1,7 +1,7 @@
 export interface ChatMessage {
   id: string;
   content: string;
-  isUser: boolean;
+  is_user: boolean;
   created_at: Date;
   chat_id: string;
   user_id: string;
