@@ -5,6 +5,7 @@ import { createSupabaseClient } from '@/utils/supabase/client';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
 import { ingestDocument } from '@/utils/ingest';
+import { useTranslations } from 'next-intl';
 
 interface UploadedFile {
   id: string;
@@ -21,6 +22,7 @@ interface DocumentUploadProps {
 }
 
 export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
+  const t = useTranslations();
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const handleFilesDrop = async (files: File[]) => {
@@ -170,7 +172,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
                     {fileEntry.file.name}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {(fileEntry.file.size / 1024 / 1024).toFixed(2)} MB
+                    {t('upload.fileSize', { size: (fileEntry.file.size / 1024 / 1024).toFixed(2) })}
                   </p>
                 </div>
               </div>
@@ -179,28 +181,28 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
                 {/* Status indicator */}
                 <div className="flex items-center">
                   {fileEntry.status === 'pending' && (
-                    <span className="text-gray-400">Pending</span>
+                    <span className="text-gray-400">{t('common.pending')}</span>
                   )}
                   {fileEntry.status === 'uploading' && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-blue-500">{fileEntry.progress.toFixed(0)}%</span>
+                      <span className="text-blue-500">{t('common.uploading', { progress: fileEntry.progress.toFixed(0) })}</span>
                       <FiLoader className="w-4 h-4 text-blue-500 animate-spin" />
                     </div>
                   )}
                   {fileEntry.status === 'processing' && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-yellow-500">Processing</span>
+                      <span className="text-yellow-500">{t('common.processing')}</span>
                       <FiLoader className="w-4 h-4 text-yellow-500 animate-spin" />
                     </div>
                   )}
                   {fileEntry.status === 'complete' && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-green-500">Complete</span>
+                      <span className="text-green-500">{t('common.complete')}</span>
                       <FiCheck className="w-4 h-4 text-green-500" />
                     </div>
                   )}
                   {fileEntry.status === 'error' && (
-                    <span className="text-red-500">Error: {fileEntry.error}</span>
+                    <span className="text-red-500">{t('common.error')}: {fileEntry.error}</span>
                   )}
                 </div>
 

@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import { Button } from "@/components/ui/button";
 import { ChatService } from '@/lib/api/chatService';
@@ -20,6 +21,7 @@ export interface ChatListContainerRef {
 }
 
 export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatListContainerProps) {
+  const t = useTranslations();
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState<ChatFolder[]>([]);
@@ -43,7 +45,7 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
       setChats(fetchedChats);
     } catch (error) {
       console.error('Failed to load chats:', error);
-      toast('Failed to load chats. Please try again.');
+      toast(t('chat.failedToLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -53,10 +55,10 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
     try {
       await ChatService.deleteChat(chatId);
       setChats(chats.filter(chat => chat.id !== chatId));
-      toast('Chat deleted successfully');
+      toast(t('chat.deletedSuccessfully'));
     } catch (error) {
       console.error('Failed to delete chat:', error);
-      toast('Failed to delete chat. Please try again.');
+      toast(t('chat.failedToDelete'));
     }
   };
 
@@ -64,10 +66,10 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
     try {
       setChats([newChat, ...chats]);
       onChatSelect(newChat.id);
-      toast('New chat created successfully');
+      toast(t('upload.successToast'));
     } catch (error) {
       console.error('Failed to create chat:', error);
-      toast('Failed to create chat. Please try again.');
+      toast(t('upload.failedToCreateChat'));
     }
   };
 

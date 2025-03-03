@@ -1,0 +1,69 @@
+{
+  "common": {
+    "send": "Odoslať",
+    "loading": "Načítava sa...",
+    "error": "Chyba",
+    "pending": "Čaká sa",
+    "processing": "Spracováva sa",
+    "complete": "Dokončené",
+    "uploading": "{progress}%"
+  },
+  "auth": {
+    "login": {
+      "title": "Prihlásenie do vášho účtu",
+      "description": "Zadajte svoj email a heslo pre prihlásenie",
+      "emailLabel": "Emailová adresa",
+      "emailPlaceholder": "Zadajte svoj email",
+      "passwordLabel": "Heslo",
+      "passwordPlaceholder": "Zadajte svoje heslo",
+      "submitButton": "Prihlásiť sa",
+      "loadingButton": "Prihlasuje sa...",
+      "noAccountText": "Nemáte účet?",
+      "signUpLink": "Zaregistrujte sa"
+    },
+    "signup": {
+      "title": "Vytvorte si účet",
+      "description": "Zadajte svoj email a heslo pre registráciu",
+      "emailLabel": "Emailová adresa",
+      "emailPlaceholder": "Zadajte svoj email",
+      "passwordLabel": "Heslo",
+      "passwordPlaceholder": "Vytvorte heslo",
+      "confirmPasswordLabel": "Potvrďte heslo",
+      "confirmPasswordPlaceholder": "Potvrďte svoje heslo",
+      "submitButton": "Vytvoriť účet",
+      "loadingButton": "Vytvára sa účet...",
+      "hasAccountText": "Už máte účet?",
+      "loginLink": "Prihlásiť sa",
+      "errors": {
+        "passwordMismatch": "Heslá sa nezhodujú",
+        "passwordLength": "Heslo musí mať aspoň 6 znakov"
+      }
+    }
+  },
+  "chat": {
+    "newChat": "Nový Chat",
+    "title": "Chat s vašimi právnymi dokumentmi",
+    "inputPlaceholder": "Opýtajte sa na vaše dokumenty...",
+    "loadingMessages": "Načítavajú sa správy...",
+    "noMessages": "Zatiaľ žiadne správy. Začnite konverzáciu!",
+    "failedToLoad": "Nepodarilo sa načítať správy. Skúste to znova.",
+    "failedToSend": "Nepodarilo sa odoslať správu. Skúste to znova.",
+    "deletedSuccessfully": "Chat bol úspešne vymazaný",
+    "failedToDelete": "Nepodarilo sa vymazať chat. Skúste to znova.",
+    "you": "Vy",
+    "bot": "Bot",
+    "sources": "Zdroje",
+    "page": "Strana"
+  },
+  "upload": {
+    "dialogTitle": "Nahrajte dokument pre začatie nového chatu",
+    "dialogDescription": "Nahrajte právny dokument pre začatie nového chatu. Dokument bude spracovaný a dostupný pre vašu konverzáciu.",
+    "dropzoneActive": "Pustite súbory sem...",
+    "dropzoneIdle": "Pretiahnite a pustite právne PDF dokumenty sem, alebo kliknite pre výber súborov",
+    "fileAcceptedTypes": "Akceptuje {types} (max {size}MB na súbor)",
+    "fileSize": "{size} MB",
+    "successToast": "Dokument nahraný a nový chat vytvorený!",
+    "failedToCreateChat": "Nepodarilo sa vytvoriť nový chat. Skúste to znova.",
+    "failedUpload": "Nepodarilo sa nahrať dokument. Skúste to znova."
+  }
+}

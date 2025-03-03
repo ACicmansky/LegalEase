@@ -4,6 +4,7 @@ import { Plus, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 
 import { ChatInterface, ChatInterfaceRef } from "@/components/chat/ChatInterface";
 import { ChatListContainer, ChatListContainerRef } from "@/components/chat/ChatListContainer";
@@ -16,6 +17,7 @@ import { addDocument } from "@/lib/documentService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
+  const t = useTranslations();
   const { signIn, signOut, user } = useAuth();
   const router = useRouter();
   const [selectedChatId, setSelectedChatId] = useState<string>();
@@ -25,15 +27,15 @@ export default function Home() {
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && !user) {
-      const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
-      const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
+    // if (process.env.NODE_ENV === 'development' && !user) {
+    //   const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
+    //   const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
       
-      if (testEmail && testPassword) {
-        signIn(testEmail, testPassword)
-          .catch(error => console.error('Auto-login failed:', error));
-      }
-    }
+    //   if (testEmail && testPassword) {
+    //     signIn(testEmail, testPassword)
+    //       .catch(error => console.error('Auto-login failed:', error));
+    //   }
+    // }
   }, [signIn, user]);
 
   const handleSendMessage = async (message: string) => {
@@ -48,7 +50,7 @@ export default function Home() {
       chatInterfaceRef.current?.handleCreateMessage(aiMessage);      
     } catch (error) {
       console.error('Failed to send message:', error);
-      toast.error('Failed to send message. Please try again.');
+      toast.error(t('chat.failedToSend'));
     } finally {
       setIsLoading(false);
     }
@@ -71,10 +73,10 @@ export default function Home() {
       setIsUploadDialogOpen(false);
       
       // Show success message
-      toast.success(`Document uploaded and new chat created!`);
+      toast.success(t('upload.successToast'));
     } catch (error) {
       console.error('Failed to create new chat after document upload:', error);
-      toast.error('Failed to create new chat. Please try again.');
+      toast.error(t('upload.failedToCreateChat'));
     }
   };
 
@@ -89,7 +91,7 @@ export default function Home() {
             className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
-            New Chat
+            {t('chat.newChat')}
           </Button>
         </div>
         
@@ -142,7 +144,7 @@ export default function Home() {
           <main className="flex-1 p-6">
             <div className="max-w-4xl mx-auto">
               <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-center mb-8">
-                Chat with your Legal Documents
+                {t('chat.title')}
               </h1>
               <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
             </div>
@@ -154,11 +156,11 @@ export default function Home() {
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Upload a Document to Start a New Chat</DialogTitle>
+            <DialogTitle>{t('upload.dialogTitle')}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Please upload a legal document to begin a new chat. The document will be processed and made available for your conversation.
+              {t('upload.dialogDescription')}
             </p>
             <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
           </div>

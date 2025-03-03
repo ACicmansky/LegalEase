@@ -2,8 +2,10 @@
 
 import { ChatMessage } from '@/types/chat';
 import DOMPurify from 'dompurify';
+import { useTranslations } from 'next-intl';
 
 export function Message({ content, is_user: is_user, created_at, sources }: ChatMessage) {
+  const t = useTranslations();
   const sanitizedContent = DOMPurify.sanitize(content);
   return (
     <div
@@ -26,13 +28,13 @@ export function Message({ content, is_user: is_user, created_at, sources }: Chat
         }`}
       >
         <div className="prose dark:prose-invert max-w-none">
-          <p><strong>{is_user ? 'You' : 'Bot'}</strong></p>
+          <p><strong>{is_user ? t('chat.you') : t('chat.bot')}</strong></p>
           <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}/>
         </div>
         
         {sources && sources.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-200 dark:text-gray-400">Sources:</p>
+            <p className="text-sm text-gray-200 dark:text-gray-400">{t('chat.sources')}:</p>
             <ul className="mt-1 space-y-1">
               {sources.map((source, index) => (
                 <li
@@ -40,7 +42,7 @@ export function Message({ content, is_user: is_user, created_at, sources }: Chat
                   className="text-sm text-gray-200 dark:text-gray-400 flex items-center"
                 >
                   <span className="mr-2">📄</span>
-                  {source.title} (Page {source.page})
+                  {source.title} ({t('chat.page')} {source.page})
                 </li>
               ))}
             </ul>

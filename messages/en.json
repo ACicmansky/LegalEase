@@ -1,0 +1,69 @@
+{
+  "common": {
+    "send": "Send",
+    "loading": "Loading...",
+    "error": "Error",
+    "pending": "Pending",
+    "processing": "Processing",
+    "complete": "Complete",
+    "uploading": "{progress}%"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to your account",
+      "description": "Enter your email and password to log in",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submitButton": "Log in",
+      "loadingButton": "Logging in...",
+      "noAccountText": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "signup": {
+      "title": "Create your account",
+      "description": "Enter your email and password to sign up",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Create a password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submitButton": "Create account",
+      "loadingButton": "Creating account...",
+      "hasAccountText": "Already have an account?",
+      "loginLink": "Log in",
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "passwordLength": "Password must be at least 6 characters"
+      }
+    }
+  },
+  "chat": {
+    "newChat": "New Chat",
+    "title": "Chat with your Legal Documents",
+    "inputPlaceholder": "Ask a question about your documents...",
+    "loadingMessages": "Loading messages...",
+    "noMessages": "No messages yet. Start the conversation!",
+    "failedToLoad": "Failed to load messages. Please try again.",
+    "failedToSend": "Failed to send message. Please try again.",
+    "deletedSuccessfully": "Chat deleted successfully",
+    "failedToDelete": "Failed to delete chat. Please try again.",
+    "you": "You",
+    "bot": "Bot",
+    "sources": "Sources",
+    "page": "Page"
+  },
+  "upload": {
+    "dialogTitle": "Upload a Document to Start a New Chat",
+    "dialogDescription": "Please upload a legal document to begin a new chat. The document will be processed and made available for your conversation.",
+    "dropzoneActive": "Drop the files here...",
+    "dropzoneIdle": "Drag and drop legal PDF documents here, or click to select files",
+    "fileAcceptedTypes": "Accepts {types} (max {size}MB per file)",
+    "fileSize": "{size} MB",
+    "successToast": "Document uploaded and new chat created!",
+    "failedToCreateChat": "Failed to create new chat. Please try again.",
+    "failedUpload": "Failed to upload document. Please try again."
+  }
+}

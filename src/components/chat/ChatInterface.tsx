@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import { ChatService } from '@/lib/api/chatService';
 import { ChatMessage } from '@/types/chat';
@@ -18,6 +19,7 @@ export interface ChatInterfaceRef {
 }
 
 export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps) {
+  const t = useTranslations();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -80,7 +82,7 @@ export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps
       setMessages([...messages, newMessage]);
     } catch (error) {
       console.error('Failed to create message:', error);
-      toast('Failed to create new message. Please try again.');
+      toast(t('chat.failedToLoad'));
     }
   };
 
@@ -104,7 +106,7 @@ export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask a question about your documents..."
+              placeholder={t('chat.inputPlaceholder')}
               className="flex-1 min-w-0 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
               disabled={isLoading}
             />
@@ -130,7 +132,7 @@ export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps
                   />
                 </svg>
               ) : (
-                'Send'
+                t('common.send')
               )}
             </button>
           </div>

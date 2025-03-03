@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FiUploadCloud } from 'react-icons/fi';
+import { useTranslations } from 'next-intl';
 
 interface DropZoneProps {
   onFilesDrop: (files: File[]) => void;
@@ -17,6 +18,7 @@ export const DropZone = ({
   acceptedFileTypes = ['.pdf'],
   maxFiles = 5,
 }: DropZoneProps) => {
+  const t = useTranslations();
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = useCallback(
@@ -70,13 +72,16 @@ export const DropZone = ({
         
         <p className="text-sm text-center text-gray-600 dark:text-gray-400">
           {isDragActive ? (
-            'Drop the files here...'
+            t('upload.dropzoneActive')
           ) : (
             <>
-              Drag and drop legal PDF documents here, or click to select files
+              {t('upload.dropzoneIdle')}
               <br />
               <span className="text-xs mt-2 block">
-                Accepts {acceptedFileTypes.join(', ')} (max {(maxFileSize / (1024 * 1024)).toFixed(0)}MB per file)
+                {t('upload.fileAcceptedTypes', {
+                  types: acceptedFileTypes.join(', '),
+                  size: (maxFileSize / (1024 * 1024)).toFixed(0)
+                })}
               </span>
             </>
           )}
