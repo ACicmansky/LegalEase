@@ -41,7 +41,7 @@ Ak nie je možné odpovedať presne, navrhni ďalšie kroky, ktoré môže použ
 Nikdy nevymýšľaj odpovede - ak niečo nevieš, povedz to priamo.
 
 Pravidlá výstupu:
-Použi HTML štruktúru - Formátuj odpovede pomocou nadpisov, odsekov, zoznamov a zvýraznení.
+Použi HTML štruktúru - Formátuj odpovede iba pomocou <p>, <ul>, <li>, <strong>, <br/>.
 Použi jednoduchý jazyk - Vysvetli právne pojmy a vyhni sa zložitým odborným formuláciám.
 Presnosť a objektivita - Vyhýbaj sa špekuláciám, odpovedaj len na základe dostupných údajov.
 
@@ -51,7 +51,7 @@ Kontext:
 Otázka:
 {question}
 
-Výstup (HTML štruktúra):`
+Výstup:`
         );
     }
 

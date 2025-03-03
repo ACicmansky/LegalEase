@@ -38,8 +38,12 @@ async function processMessageThroughPipeline(chatId: string, content: string, do
     console.log('RAG pipeline response generated in', Date.now() - startTime, 'ms');
 
     // Extract response and sources
-    const aiContent = pipelineResponse.text || pipelineResponse;
+    let aiContent = pipelineResponse.text || pipelineResponse;
     const sources = pipelineResponse.sources || [];
+
+    if (typeof aiContent === 'string') {
+      aiContent = aiContent.replace(/```html|```/g, '');
+    }
 
     // Store AI response
     const { data: aiMessage, error: aiMessageError } = await supabase
