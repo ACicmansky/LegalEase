@@ -1,8 +1,10 @@
 'use client';
 
 import { ChatMessage } from '@/types/chat';
+import DOMPurify from 'dompurify';
 
 export function Message({ content, is_user: is_user, created_at, sources }: ChatMessage) {
+  const sanitizedContent = DOMPurify.sanitize(content);
   return (
     <div
       className={`flex ${is_user ? 'justify-end' : 'justify-start'} mb-4`}
@@ -25,7 +27,7 @@ export function Message({ content, is_user: is_user, created_at, sources }: Chat
       >
         <div className="prose dark:prose-invert max-w-none">
           <p><strong>{is_user ? 'You' : 'Bot'}</strong></p>
-          {content}
+          <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}/>
         </div>
         
         {sources && sources.length > 0 && (
