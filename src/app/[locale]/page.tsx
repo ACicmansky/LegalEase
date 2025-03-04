@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
 import { addDocument } from "@/lib/documentService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { routing } from '@/i18n/routing';
 
 export default function Home() {
   const t = useTranslations();
@@ -27,16 +28,22 @@ export default function Home() {
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
   useEffect(() => {
-    // if (process.env.NODE_ENV === 'development' && !user) {
-    //   const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
-    //   const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
+    // Check if user is authenticated, if not redirect to login
+    if (!user) {
+      router.push(`/${routing.defaultLocale}/login`);
+      return;
+    }
+    
+    if (process.env.NODE_ENV === 'development' && !user) {
+      const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
+      const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
       
-    //   if (testEmail && testPassword) {
-    //     signIn(testEmail, testPassword)
-    //       .catch(error => console.error('Auto-login failed:', error));
-    //   }
-    // }
-  }, [signIn, user]);
+      if (testEmail && testPassword) {
+        signIn(testEmail, testPassword)
+          .catch(error => console.error('Auto-login failed:', error));
+      }
+    }
+  }, [signIn, user, router]);
 
   const handleSendMessage = async (message: string) => {
     if (!selectedChatId) return;

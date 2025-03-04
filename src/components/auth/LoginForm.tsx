@@ -11,8 +11,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from '@/context/AuthContext';
+import { routing } from '@/i18n/routing';
 
-export default function LoginForm() {
+interface LoginFormProps {
+  returnTo?: string;
+}
+
+export default function LoginForm({ returnTo }: LoginFormProps = {}) {
   const t = useTranslations('auth.login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,9 +33,10 @@ export default function LoginForm() {
 
     try {
       await signIn(email, password);
-      router.push('/');
+      // Redirect to returnTo or home page
+      router.push(returnTo || '/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign in');
+      setError('Failed to sign in');
     } finally {
       setLoading(false);
     }
@@ -84,7 +90,7 @@ export default function LoginForm() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             {t('noAccountText')}{' '}
-            <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href={`/${routing.defaultLocale}/signup`} className="font-medium text-blue-600 hover:text-blue-500">
               {t('signUpLink')}
             </Link>
           </p>

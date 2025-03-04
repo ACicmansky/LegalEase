@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ChatService } from '@/lib/api/chatService';
 import { Chat, ChatFolder } from '@/types/chat';
 import { ChatList } from './ChatList';
+import { useAuth } from "@/context/AuthContext";
 
 interface ChatListContainerProps {
   onChatSelect: (chatId: string) => void;
@@ -25,6 +26,7 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState<ChatFolder[]>([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     loadChats();
@@ -39,6 +41,9 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
   }, [ref, chats]);
 
   const loadChats = async () => {
+    if (!user) {
+      return;
+    }
     try {
       setIsLoading(true);
       const fetchedChats = await ChatService.getAllChats();

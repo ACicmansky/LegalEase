@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from '@/context/AuthContext';
+import { routing } from '@/i18n/routing';
 
 export default function SignUpForm() {
   const t = useTranslations('auth.signup');
@@ -113,7 +114,7 @@ export default function SignUpForm() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             {t('hasAccountText')}{' '}
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href={`/${routing.defaultLocale}/login`} className="font-medium text-blue-600 hover:text-blue-500">
               {t('loginLink')}
             </Link>
           </p>
