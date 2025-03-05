@@ -28,21 +28,25 @@ export default function Home() {
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
   useEffect(() => {
-    // Check if user is authenticated, if not redirect to login
-    if (!user) {
-      router.push(`/${routing.defaultLocale}/login`);
-      return;
-    }
-    
-    if (process.env.NODE_ENV === 'development' && !user) {
-      const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
-      const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
-      
-      if (testEmail && testPassword) {
-        signIn(testEmail, testPassword)
-          .catch(error => console.error('Auto-login failed:', error));
+    const initAuth = async () => {
+      if (process.env.NODE_ENV === 'development' && !user) {
+        const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
+        const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
+        
+        if (testEmail && testPassword) {
+          await signIn(testEmail, testPassword)
+            .catch(error => console.error('Auto-login failed:', error));
+        }
       }
-    }
+  
+      // Check if user is authenticated, if not redirect to login
+      if (!user) {
+        router.push(`/${routing.defaultLocale}/login`);
+        return;
+      }
+    };
+  
+    initAuth();
   }, [signIn, user, router]);
 
   const handleSendMessage = async (message: string) => {
