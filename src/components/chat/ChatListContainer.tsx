@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { ChatService } from '@/lib/api/chatService';
-import { Chat, ChatFolder } from '@/types/chat';
-import { ChatList } from './ChatList';
+import { ChatService } from "@/lib/api/chatService";
+import { Chat, ChatFolder } from "@/types/chat";
+import { ChatList } from "./ChatList";
 import { useAuth } from "@/context/AuthContext";
 
 interface ChatListContainerProps {
@@ -21,26 +21,18 @@ export interface ChatListContainerRef {
   handleCreateChat: (newChat: Chat) => Promise<void>;
 }
 
-export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatListContainerProps) {
+export function ChatListContainer({
+  onChatSelect,
+  selectedChatId,
+  ref,
+}: ChatListContainerProps) {
   const t = useTranslations();
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState<ChatFolder[]>([]);
   const { user } = useAuth();
 
-  useEffect(() => {
-    loadChats();
-  }, []);
-
-  useEffect(() => {
-    if (ref) {
-      ref.current = {
-        handleCreateChat
-      };
-    }
-  }, [ref, chats]);
-
-  const loadChats = async () => {
+  const loadChats = useCallback(async () => {
     if (!user) {
       return;
     }
@@ -49,21 +41,35 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
       const fetchedChats = await ChatService.getAllChats();
       setChats(fetchedChats);
     } catch (error) {
-      console.error('Failed to load chats:', error);
-      toast(t('chat.failedToLoad'));
+      console.error("Failed to load chats:", error);
+      toast(t("chat.failedToLoad"));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, t]);
+
+  useEffect(() => {
+    if (user) {
+      loadChats();
+    }
+  }, [loadChats, user]);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        handleCreateChat,
+      };
+    }
+  }, [ref, chats]);
 
   const handleDeleteChat = async (chatId: string) => {
     try {
       await ChatService.deleteChat(chatId);
-      setChats(chats.filter(chat => chat.id !== chatId));
-      toast(t('chat.deletedSuccessfully'));
+      setChats(chats.filter((chat) => chat.id !== chatId));
+      toast(t("chat.deletedSuccessfully"));
     } catch (error) {
-      console.error('Failed to delete chat:', error);
-      toast(t('chat.failedToDelete'));
+      console.error("Failed to delete chat:", error);
+      toast(t("chat.failedToDelete"));
     }
   };
 
@@ -71,10 +77,10 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
     try {
       setChats([newChat, ...chats]);
       onChatSelect(newChat.id);
-      toast(t('upload.successToast'));
+      toast(t("upload.successToast"));
     } catch (error) {
-      console.error('Failed to create chat:', error);
-      toast(t('upload.failedToCreateChat'));
+      console.error("Failed to create chat:", error);
+      toast(t("upload.failedToCreateChat"));
     }
   };
 
@@ -90,9 +96,7 @@ export function ChatListContainer({ onChatSelect, selectedChatId, ref }: ChatLis
             onClick={() => {
               setFolders(
                 folders.map((f) =>
-                  f.id === folder.id
-                    ? { ...f, isExpanded: !f.isExpanded }
-                    : f
+                  f.id === folder.id ? { ...f, isExpanded: !f.isExpanded } : f
                 )
               );
             }}
