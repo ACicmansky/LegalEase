@@ -42,7 +42,7 @@ export const DropZone = ({
     [onFilesDrop]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: {
       'application/pdf': ['.pdf']
@@ -50,6 +50,56 @@ export const DropZone = ({
     maxSize: maxFileSize,
     maxFiles,
   });
+
+  // Function to render the idle text with a clickable part
+  const renderIdleText = () => {
+    const text = t('upload.dropzoneIdle');
+    
+    // For Slovak, we want to make the word "kliknite" clickable
+    if (text.includes('kliknite')) {
+      const parts = text.split('kliknite');
+      return (
+        <>
+          {parts[0]}
+          <button 
+            type="button" 
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline focus:outline-none" 
+            onClick={(e) => {
+              e.stopPropagation();
+              open();
+            }}
+          >
+            kliknite
+          </button>
+          {parts[1]}
+        </>
+      );
+    }
+    
+    // For English, we want to make the word "click" clickable
+    if (text.includes('click')) {
+      const parts = text.split('click');
+      return (
+        <>
+          {parts[0]}
+          <button 
+            type="button" 
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline focus:outline-none" 
+            onClick={(e) => {
+              e.stopPropagation();
+              open();
+            }}
+          >
+            click
+          </button>
+          {parts[1]}
+        </>
+      );
+    }
+    
+    // Fallback for other languages
+    return text;
+  };
 
   return (
     <div className="w-full">
@@ -75,7 +125,7 @@ export const DropZone = ({
             t('upload.dropzoneActive')
           ) : (
             <>
-              {t('upload.dropzoneIdle')}
+              {renderIdleText()}
               <br />
               <span className="text-xs mt-2 block">
                 {t('upload.fileAcceptedTypes', {
