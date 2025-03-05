@@ -28,13 +28,12 @@ export default function Home() {
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
 
   useEffect(() => {
-    const initAuth = async () => {
       if (process.env.NODE_ENV === 'development' && !user) {
         const testEmail = process.env.NEXT_PUBLIC_TEST_EMAIL;
         const testPassword = process.env.NEXT_PUBLIC_TEST_PASSWORD;
         
         if (testEmail && testPassword) {
-          await signIn(testEmail, testPassword)
+          signIn(testEmail, testPassword)
             .catch(error => console.error('Auto-login failed:', error));
         }
       }
@@ -44,9 +43,7 @@ export default function Home() {
         router.push(`/${routing.defaultLocale}/login`);
         return;
       }
-    };
   
-    initAuth();
   }, [signIn, user, router]);
 
   const handleSendMessage = async (message: string) => {
