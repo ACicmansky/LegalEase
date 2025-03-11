@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { createSupabaseClient } from '@/utils/supabase/client';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
-import { ingestDocument } from '@/utils/ingest';
 import { useTranslations } from 'next-intl';
 
 interface UploadedFile {
@@ -85,13 +84,6 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
           )
         );
 
-        // Process the document using the ingest utility
-        const result = await processDocument(fileEntry.id, fileEntry.file);
-
-        if (!result.success) {
-          throw new Error(result.message);
-        }
-
         // Update status to complete
         setUploadedFiles((prev) =>
           prev.map((f) =>
@@ -134,23 +126,6 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
       }
     }
     setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
-  };
-
-  // Process document using the ingest utility
-  const processDocument = async (id: string, file: File) => {
-    try {
-      // Process the document directly using the File object
-      const result = await ingestDocument(id, file);
-      
-      if (!result.success) {
-        throw new Error(result.message);
-      }
-      
-      return result;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to process document';
-      throw new Error(errorMessage);
-    }
   };
 
   return (
