@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@/utils/supabase/server';
 /**
  * Creates a message in the database
  */
-async function createMessage(chatId: string, content: string) {
+async function createMessage(chatId: string, content: string, isUser: boolean) {
   const supabase = await createSupabaseServerClient();
 
   // Store message
@@ -13,7 +13,7 @@ async function createMessage(chatId: string, content: string) {
     .insert({
       content,
       chat_id: chatId,
-      is_user: true
+      is_user: isUser
     })
     .select()
     .single();
@@ -63,10 +63,10 @@ export async function POST(
     }
 
     // Get request body
-    const { content } = await request.json();
+    const { content, is_user } = await request.json();
 
     // Create the message
-    const userMessage = await createMessage(chatId, content);
+    const userMessage = await createMessage(chatId, content, is_user);
     return NextResponse.json(userMessage);
   } catch (error) {
     console.error('Message creation error:', error);

@@ -49,13 +49,13 @@ export class ChatService {
     }
   }
 
-  static async addUserMessage(chatId: string, content: string): Promise<ChatMessage> {
+  static async addMessage(chatId: string, content: string, is_user: boolean): Promise<ChatMessage> {
     const response = await fetch(`${API_BASE}/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content, is_user: true }),
+      body: JSON.stringify({ content, is_user }),
     });
 
     if (!response.ok) {

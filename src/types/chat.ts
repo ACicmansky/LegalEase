@@ -17,8 +17,8 @@ export interface Chat {
   last_message?: string;
   created_at: Date;
   user_id: string;
-  document?: string;
-  folder?: string;
+  document_id: string;
+  folder_id?: string;
   messages: ChatMessage[];
 }
 

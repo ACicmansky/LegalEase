@@ -6,26 +6,16 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import {
-  ChatInterface,
-  ChatInterfaceRef,
-} from "@/components/chat/ChatInterface";
-import {
-  ChatListContainer,
-  ChatListContainerRef,
-} from "@/components/chat/ChatListContainer";
+import { ChatInterface, ChatInterfaceRef } from "@/components/chat/ChatInterface";
+import { ChatListContainer, ChatListContainerRef } from "@/components/chat/ChatListContainer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
 import { addDocument } from "@/lib/documentService";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DocumentAnalyzeService } from '@/lib/api/documentAnalyzeService';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { routing } from "@/i18n/routing";
 
 export default function Home() {
@@ -64,9 +54,10 @@ export default function Home() {
 
     try {
       setIsLoading(true);
-      const userMessage = await ChatService.addUserMessage(
+      const userMessage = await ChatService.addMessage(
         selectedChatId,
-        message
+        message,
+        true
       );
       chatInterfaceRef.current?.handleCreateMessage(userMessage);
 
@@ -87,26 +78,44 @@ export default function Home() {
     setIsUploadDialogOpen(true);
   };
 
-  const handleDocumentUploadSuccess = async (
+  const handleCreateChatFromDocument = async (
     documentId: string,
     fileName: string
   ) => {
     try {
-      // Create a new chat with the document name
+      setIsLoading(true);
+      
+      // Create a new chat
       const newChat = await ChatService.createChat(`${fileName}`, documentId);
 
       chatListRef.current?.handleCreateChat(newChat);
       await addDocument(documentId, fileName, newChat.id);
+
+      // Call documents analyze API
+      const analysisResult = await DocumentAnalyzeService.analyzeDocument(documentId);
+      
+      // If analysis was successful, add the summary as an assistant message
+      if (analysisResult.success && analysisResult.summary) {
+        await ChatService.addMessage(
+          newChat.id,
+          analysisResult.summary,
+          false // false means it's an assistant message
+        );
+      }
+
       setSelectedChatId(newChat.id);
 
       // Close the upload dialog
       setIsUploadDialogOpen(false);
-
-      // Show success message
-      toast.success(t("upload.successToast"));
     } catch (error) {
-      console.error("Failed to create new chat after document upload:", error);
-      toast.error(t("upload.failedToCreateChat"));
+      console.error('Error creating chat from document:', error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to create chat from document'
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -175,7 +184,7 @@ export default function Home() {
               <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-center mb-8">
                 {t("chat.title")}
               </h1>
-              <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
+              <DocumentUpload onUploadSuccess={handleCreateChatFromDocument} />
             </div>
           </main>
         )}
@@ -191,7 +200,7 @@ export default function Home() {
             <p className="text-sm text-muted-foreground mb-4">
               {t("upload.dialogDescription")}
             </p>
-            <DocumentUpload onUploadSuccess={handleDocumentUploadSuccess} />
+            <DocumentUpload onUploadSuccess={handleCreateChatFromDocument} />
           </div>
         </DialogContent>
       </Dialog>
