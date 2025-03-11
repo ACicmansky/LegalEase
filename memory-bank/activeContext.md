@@ -2,65 +2,68 @@
 
 ## Current Development Focus
 
-The project is currently in the implementation phase of the RAG (Retrieval Augmented Generation) system, which is a core component of the AI-powered legal assistant. This system enables the application to:
+The project is pivoting from the RAG (Retrieval Augmented Generation) approach to an AI Agents architecture. This decision was made to reduce complexity and create a more reliable system. The new approach will:
 
-1. Process and understand legal documents uploaded by users
-2. Retrieve relevant context from these documents when answering user queries
-3. Generate accurate, context-aware responses based on the document content
+1. Simplify the technical implementation
+2. Provide a more focused user experience
+3. Reduce dependency on complex vector stores and embedding integrations
+4. Allow for easier maintenance and future enhancements
 
 ## Key Components Under Development
 
-### 1. Document Processing Pipeline
-- Document upload and storage using Supabase
-- Text extraction and chunking for efficient processing
-- Vector embedding generation for semantic search
+### 1. Document Processing Agent
+- Document upload and storage (maintaining existing functionality)
+- Text extraction and analysis
+- Key information and law extraction 
+- Consistency checking
+- Document summary generation
+- Proper database structure for document analyses
 
-### 2. Chat System
+### 2. Conversational Agent
 - Context-aware chat interface
-- Integration with LangChain for AI orchestration
-- Document-based conversation history
-- Modular API with separate message creation and processing endpoints
+- Follow-up questions about documents
+- Guidance on legal next steps
+- Document-based conversation capabilities
 
 ### 3. API Routes
-- Chat API for handling user queries
-- Document management API for upload and retrieval
-- Authentication and user management
-- RAG pipeline integration with chat persistence
+- Document analysis endpoint 
+- Message creation with user/assistant designation
+- Document management API (maintaining existing functionality)
+- Authentication and user management (maintaining existing functionality)
 
 ## Current Challenges
 
-- Optimizing chunk size for effective retrieval
-- Balancing response quality with performance
-- Ensuring accurate context retrieval for legal documents
-- Handling different document formats and structures
-- ~~**Integrating separate chat backends**: There are currently two parallel chat implementations that need to be merged:~~
-  - ~~`src/app/api/chat/route.ts`: Implements the RAG pipeline for AI responses~~
-  - ~~`src/app/api/chats/*`: Manages chat persistence and history in Supabase~~
+- Optimizing agent performance for large documents
+- Ensuring secure and reliable document processing
+- Implementing robust error handling for edge cases
+- Integration testing across the complete pipeline
 
 ## Next Steps
 
-1. ~~**Merge chat API implementations**:~~
-   - ~~Integrate the RAG pipeline from `chat/route.ts` into the chat message handling in `chats/[chatId]/messages/route.ts`~~
-   - ~~Ensure AI-generated responses are properly stored in the database~~
-   - ~~Connect document context from chat history to the RAG pipeline~~
-2. **Enhance RAG pipeline performance**:
-   - Optimize response time
-   - Improve context relevance
-   - Add support for regenerating responses
-3. **Improve user experience**:
+1. **Complete Integration Testing**:
+   - Test document processing pipeline end-to-end
+   - Verify database structure alignment
+   - Ensure proper error handling throughout
+
+2. **Enhance Document Processing**:
+   - Add pagination for large documents
+   - Improve processing performance
+   - Create admin tools for monitoring processing status
+
+3. **Implement Conversational Agent**:
+   - Design agent for follow-up questions
+   - Enable document context awareness
+   - Create guidance for next legal steps
+   
+4. **Enhance User Experience**:
    - Add typing indicators
    - Implement loading states
    - Create message queuing system
-4. Complete the RAG implementation with LangChain
-5. Optimize document processing for legal documents
-6. Add support for document organization (folders)
-7. Implement basic document generation capabilities
 
 ## Recent Decisions
 
-- Using Supabase Vector Store for embeddings storage
-- Implementing hybrid search (keyword + semantic) for better results
-- Following Next.js App Router architecture
-- Using TypeScript for type safety across the application
-- Splitting the chat API into separate message creation and processing endpoints
-- Removing the standalone chat route in favor of integrated approach
+- Refactored DocumentProcessingAgent to use a functional approach
+- Created proper TypeScript interfaces for the database schema
+- Fixed JSON parsing from AI model responses
+- Streamlined UI components and user flow
+- Updated document analysis API to use the new function-based approach

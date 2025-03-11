@@ -6,23 +6,30 @@
 - [x] Supabase integration for authentication and database
 - [x] Basic UI components using ShadCN/UI
 - [x] Document upload functionality
-- [x] Initial LangChain integration
 - [x] Chat UI interface with message display and input
-- [x] Integration between RAG pipeline and chat history system
-  - [x] Modular API with separate message creation and processing
-  - [x] Document context passing between systems
-  - [x] Chat history incorporation for better responses
+- [x] Initial RAG pipeline implementation (being pivoted to agents approach)
+- [x] Document processing agent implementation
+  - [x] Functional approach refactoring
+  - [x] Text extraction
+  - [x] Key information extraction
+  - [x] Legal analysis
+  - [x] Consistency checking
+  - [x] Summary generation
+  - [x] Database structure alignment
+- [x] API route updates
+  - [x] Document analysis endpoint
+  - [x] Message creation with user/assistant designation
 
 ## In Progress
 
-- [ ] Document processing pipeline
-  - [x] Text extraction
-  - [x] Document chunking
-  - [ ] Optimizing chunk size and overlap
-- [x] Vector embeddings generation and storage
-- [x] Chat API implementation
-  - [x] Integrated chat system with RAG capabilities
-- [x] Context retrieval system (needs optimization)
+- [ ] Document processing system enhancements
+  - [ ] Integration testing
+  - [ ] Performance optimization for large documents
+  - [ ] Admin monitoring tools
+- [ ] Conversational agent development
+  - [ ] Document-aware chat capabilities
+  - [ ] Question answering about documents
+  - [ ] Legal guidance generation
 - [ ] Enhanced user experience
   - [ ] Typing indicators
   - [ ] Loading states
@@ -39,26 +46,27 @@
 
 ## Known Issues
 
-- [ ] RAG pipeline response time needs optimization
-- [ ] Occasional hallucinations in AI responses
-- [ ] Ambiguous SQL column references in some queries
-- [ ] localStorage errors in server environment
+- [ ] Need to validate JSON parsing robustness with various AI model outputs
+- [ ] Consider potential timeout issues with large document processing
+- [ ] Add more comprehensive error recovery mechanisms
 
 ## Recent Fixes
 
-- [x] Fixed localStorage issues in server environment
-- [x] Resolved ambiguous column references in SQL queries
-- [x] Fixed runManager context access in RAG pipeline
-- [x] Refactored chat API for better separation of concerns
+- [x] Refactored DocumentProcessingAgent to functional approach
+- [x] Fixed JSON parsing from AI model responses (handling markdown code blocks)
+- [x] Created proper database schema TypeScript interfaces
+- [x] Updated document analysis API to use function-based approach
+- [x] Streamlined UI components and removed unused elements
+- [x] Fixed message creation to properly handle assistant messages
 
 ## Current Priorities
 
-1. Merge chat API implementations for unified functionality
-2. Complete the RAG implementation
-3. Optimize document processing
-4. Add basic document organization
-5. Improve error handling and user feedback
+1. Complete integration testing of document processing pipeline
+2. Implement conversational agent for document interaction
+3. Optimize performance for large document processing
+4. Enhance error handling and user feedback
+5. Improve UI experience with loading states and indicators
 
 ## Next Milestone
 
-Complete the core RAG functionality with document upload, processing, and context-aware chat by the end of Week 3 (as per project timeline).
+Complete the document processing pipeline integration testing and begin implementing the conversational agent by the end of Week 3 (as per project timeline).
