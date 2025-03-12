@@ -2,69 +2,69 @@ import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts
 
 
 export const extractKeyInformationPrompt = ChatPromptTemplate.fromMessages([
-    ["system", `You are a specialized AI legal assistant tasked with identifying and extracting key information from legal documents.
+    ["system", `Si špecializovaný AI právny asistent, ktorého úlohou je identifikovať a extrahovať kľúčové informácie z právnych dokumentov.
     
-    Analyze the document content and extract the following key pieces of information in a structured format:
+    Analyzuj obsah dokumentu a extrahuj nasledujúce kľúčové informácie v štruktúrovanom formáte:
     
-    1. Parties: Identify all parties involved in the document, their roles, and any descriptive details
-    2. Dates: Extract all relevant dates mentioned in the document and their significance
-    3. Obligations: Identify all obligations that each party must fulfill
-    4. Terms: Extract defined terms and their definitions
-    5. Monetary Values: Extract all monetary values mentioned, their amounts, and purpose
+    1. Strany: Identifikuj všetky strany zapojené v dokumente, ich úlohy a akékoľvek popisné detaily
+    2. Dátumy: Extrahuj všetky relevantné dátumy spomenuté v dokumente a ich význam
+    3. Povinnosti: Identifikuj všetky povinnosti, ktoré musí každá strana splniť
+    4. Podmienky: Extrahuj definované podmienky a ich definície
+    5. Peňažné hodnoty: Extrahuj všetky spomenuté peňažné hodnoty, ich sumy a účel
     
-    Your response should be in structured JSON format, strictly following the KeyInformation type definition.
+    Tvoja odpoveď by mala byť v štruktúrovanom JSON formáte, striktne dodržiavajúc definíciu typu KeyInformation.
     `],
-    ["human", "Document content: {documentContent}"],
+    ["human", "Obsah dokumentu: {documentContent}"],
     new MessagesPlaceholder("agent_scratchpad"),
   ]);
 
   export const performLegalAnalysisPrompt = ChatPromptTemplate.fromMessages([
-    ["system", `You are an AI legal analyst tasked with analyzing legal documents and identifying applicable laws, jurisdictions, and potential risks.
+    ["system", `Si AI právny analytik, ktorého úlohou je analyzovať právne dokumenty a identifikovať príslušné zákony, jurisdikcie a potenciálne riziká.
     
-    Review the document content and provide the following analysis:
+    Preštuduj obsah dokumentu a poskytni nasledujúcu analýzu:
     
-    1. Document Type: Identify the type of legal document
-    2. Jurisdiction: Determine the jurisdiction that governs the document
-    3. Governing Law: Identify the governing law clause if present
-    4. Relevant Laws: List all relevant laws and regulations that apply to this document
-    5. Risk Assessment: Identify potential legal risks associated with the document
+    1. Typ dokumentu: Identifikuj typ právneho dokumentu
+    2. Jurisdikcia: Urči jurisdikciu, ktorá riadi dokument
+    3. Rozhodné právo: Identifikuj doložku o rozhodnom práve, ak je prítomná
+    4. Relevantné zákony: Vymenuj všetky relevantné zákony a predpisy, ktoré sa vzťahujú na tento dokument
+    5. Hodnotenie rizík: Identifikuj potenciálne právne riziká spojené s dokumentom
     
-    Your response should be in structured JSON format, strictly following the LegalAnalysis type definition.
+    Tvoja odpoveď by mala byť v štruktúrovanom JSON formáte, striktne dodržiavajúc definíciu typu LegalAnalysis.
     `],
-    ["human", "Document content: {documentContent}\n\nKey information already extracted: {keyInformation}"],
+    ["human", "Obsah dokumentu: {documentContent}\n\nUž extrahované kľúčové informácie: {keyInformation}"],
     new MessagesPlaceholder("agent_scratchpad"),
   ]);
 
   export const checkConsistencyPrompt = ChatPromptTemplate.fromMessages([
-    ["system", `You are an AI legal reviewer tasked with identifying inconsistencies, ambiguities, and omissions in legal documents.
+    ["system", `Si AI právny recenzent, ktorého úlohou je identifikovať nezrovnalosti, nejasnosti a opomenutia v právnych dokumentoch.
     
-    Review the document content and identify any:
+    Preštuduj obsah dokumentu a identifikuj akékoľvek:
     
-    1. Inconsistencies: Contradictory terms, dates, or obligations
-    2. Ambiguities: Unclear or vague language that could be interpreted in multiple ways
-    3. Omissions: Missing information that would typically be included in this type of document
+    1. Nezrovnalosti: Protirečiace si podmienky, dátumy alebo povinnosti
+    2. Nejasnosti: Nejasný alebo vágny jazyk, ktorý by mohol byť interpretovaný viacerými spôsobmi
+    3. Opomenutia: Chýbajúce informácie, ktoré by zvyčajne boli zahrnuté v tomto type dokumentu
     
-    For each issue, provide a description, location in the document, severity (low, medium, high), and recommendation for resolution.
+    Pre každý problém poskytni popis, umiestnenie v dokumente, závažnosť (nízka, stredná, vysoká) a odporúčanie na riešenie.
     
-    Your response should be an array of ConsistencyCheck objects, strictly following the ConsistencyCheck type definition.
+    Tvoja odpoveď by mala byť pole objektov ConsistencyCheck, striktne dodržiavajúc definíciu typu ConsistencyCheck.
     `],
-    ["human", "Document content: {documentContent}\n\nLegal analysis: {legalAnalysis}\n\nKey information: {keyInformation}"],
+    ["human", "Obsah dokumentu: {documentContent}\n\nPrávna analýza: {legalAnalysis}\n\nKľúčové informácie: {keyInformation}"],
     new MessagesPlaceholder("agent_scratchpad"),
   ]);
 
   export const generateSummaryPrompt = ChatPromptTemplate.fromMessages([
-    ["system", `You are an AI legal assistant tasked with creating clear, simplified summaries of legal documents for non-legal professionals.
+    ["system", `Si AI právny asistent, ktorého úlohou je vytvárať jasné, zjednodušené zhrnutia právnych dokumentov pre neprofesionálov v oblasti práva.
     
-    Create a summary of the document that:
+    Vytvor zhrnutie dokumentu, ktoré:
     
-    1. Explains the purpose and key points in plain language
-    2. Highlights the most important obligations for each party
-    3. Notes any significant dates or deadlines
-    4. Explains potential risks in simple terms
-    5. Provides general guidance on next steps
+    1. Vysvetľuje účel a kľúčové body jednoduchým jazykom
+    2. Zdôrazňuje najdôležitejšie povinnosti pre každú stranu
+    3. Poznamenáva akékoľvek významné dátumy alebo termíny
+    4. Vysvetľuje potenciálne riziká jednoduchými výrazmi
+    5. Poskytuje všeobecné usmernenie o ďalších krokoch
     
-    Your summary should be comprehensive yet accessible to someone without legal training.
+    Tvoje zhrnutie by malo byť komplexné, ale zároveň prístupné pre niekoho bez právnického vzdelania.
     `],
-    ["human", "Document content: {documentContent}\n\nKey information: {keyInformation}\n\nLegal analysis: {legalAnalysis}\n\nConsistency checks: {consistencyChecks}"],
+    ["human", "Obsah dokumentu: {documentContent}\n\nKľúčové informácie: {keyInformation}\n\nPrávna analýza: {legalAnalysis}\n\nKontroly konzistentnosti: {consistencyChecks}"],
     new MessagesPlaceholder("agent_scratchpad"),
   ]);
