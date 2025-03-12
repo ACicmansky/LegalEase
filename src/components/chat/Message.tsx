@@ -3,10 +3,11 @@
 import { ChatMessage } from '@/types/chat';
 import DOMPurify from 'dompurify';
 import { useTranslations } from 'next-intl';
+import { marked } from 'marked';
 
 export function Message({ content, is_user: is_user, created_at, sources }: ChatMessage) {
   const t = useTranslations();
-  const sanitizedContent = DOMPurify.sanitize(content);
+  const sanitizedContent = DOMPurify.sanitize(marked.parse(content, { async: false }));
   return (
     <div
       className={`flex ${is_user ? 'justify-end' : 'justify-start'} mb-4`}
