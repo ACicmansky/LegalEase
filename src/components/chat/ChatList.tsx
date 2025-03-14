@@ -40,11 +40,11 @@ export function ChatList({ chats, onChatSelect, selectedChatId, onDeleteChat }: 
                     {new Date(chat.created_at).toLocaleDateString()}
                   </span>
                 </div>
-                {chat.last_message && (
+                {/* {chat.last_message && (
                   <p className="text-sm text-muted-foreground mt-1 truncate">
                     {chat.last_message}
                   </p>
-                )}
+                )} */}
               </div>
             </Button>
             

@@ -7,18 +7,20 @@ import { useTranslations } from 'next-intl';
 import { ChatService } from '@/lib/api/chatService';
 import { ChatMessage } from '@/types/chat';
 import { Message } from './Message';
+import { Spinner } from '@/components/ui/spinner';
 
 interface ChatInterfaceProps {
   chatId?: string;
   onSendMessage: (message: string) => Promise<void>;
   ref?: React.RefObject<ChatInterfaceRef | null>;
+  isDocumentAnalyzing?: boolean;
 }
 
 export interface ChatInterfaceRef {
   handleCreateMessage: (newChatMessage: ChatMessage) => Promise<void>;
 }
 
-export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps) {
+export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing = false }: ChatInterfaceProps) {
   const t = useTranslations();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +93,13 @@ export function ChatInterface({ chatId, onSendMessage, ref }: ChatInterfaceProps
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-3xl mx-auto">
+          {isDocumentAnalyzing && (
+            <div className="flex justify-center my-4">
+              <Spinner size="medium">
+                <span className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('chat.analyzingDocument')}</span>
+              </Spinner>
+            </div>
+          )}
           {messages.map((message) => (
             <Message key={message.id} {...message} />
           ))}

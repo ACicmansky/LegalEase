@@ -53,7 +53,8 @@
     "you": "You",
     "bot": "Bot",
     "sources": "Sources",
-    "page": "Page"
+    "page": "Page",
+    "analyzingDocument": "Analyzing document..."
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",

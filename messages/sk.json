@@ -53,7 +53,8 @@
     "you": "Vy",
     "bot": "Bot",
     "sources": "Zdroje",
-    "page": "Strana"
+    "page": "Strana",
+    "analyzingDocument": "Spracovávam dokument..."
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",
