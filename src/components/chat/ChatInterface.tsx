@@ -91,24 +91,26 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
   return (
     <div className="flex flex-col h-full">
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className="max-w-3xl mx-auto">
-          {isDocumentAnalyzing && (
-            <div className="flex justify-center my-4">
-              <Spinner size="medium">
-                <span className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('chat.analyzingDocument')}</span>
-              </Spinner>
-            </div>
-          )}
-          {messages.map((message) => (
-            <Message key={message.id} {...message} />
-          ))}
-          <div ref={messagesEndRef} />
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="p-4">
+          <div className="max-w-3xl mx-auto">
+            {isDocumentAnalyzing && (
+              <div className="flex justify-center my-4">
+                <Spinner size="medium">
+                  <span className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('chat.analyzingDocument')}</span>
+                </Spinner>
+              </div>
+            )}
+            {messages.map((message) => (
+              <Message key={message.id} {...message} />
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+      {/* Input Area - Fixed at bottom */}
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex-shrink-0">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="flex items-center space-x-4">
             <input

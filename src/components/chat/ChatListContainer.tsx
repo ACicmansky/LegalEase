@@ -112,18 +112,20 @@ export function ChatListContainer({
       </div>
 
       {/* Chat List Section */}
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
           </div>
         ) : (
-          <ChatList
-            chats={chats}
-            onChatSelect={onChatSelect}
-            selectedChatId={selectedChatId}
-            onDeleteChat={handleDeleteChat}
-          />
+          <div className="h-full overflow-auto custom-scrollbar">
+            <ChatList
+              chats={chats}
+              onChatSelect={onChatSelect}
+              selectedChatId={selectedChatId}
+              onDeleteChat={handleDeleteChat}
+            />
+          </div>
         )}
       </div>
     </div>

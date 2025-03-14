@@ -126,9 +126,9 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Left Sidebar */}
-      <div className="w-64 border-r flex flex-col">
+      <div className="w-64 border-r flex flex-col h-full overflow-hidden">
         {/* New Chat Button */}
         <div className="p-4">
           <Button onClick={handleOpenUploadDialog} className="w-full">
@@ -138,7 +138,7 @@ export default function Home() {
         </div>
 
         {/* Document/Chat List */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <ChatListContainer
             ref={chatListRef}
             onChatSelect={setSelectedChatId}
