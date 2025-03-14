@@ -30,6 +30,11 @@
   - [ ] Document-aware chat capabilities
   - [ ] Question answering about documents
   - [ ] Legal guidance generation
+  - [ ] Implementation with functional programming approach
+  - [ ] Slovak language prompts for user interactions
+  - [ ] Database access through dedicated tools
+  - [ ] Type extensions for conversation state tracking
+  - [ ] Integration with existing chat persistence system
 - [ ] Enhanced user experience
   - [ ] Typing indicators
   - [ ] Loading states

@@ -24,6 +24,9 @@ The project is pivoting from the RAG (Retrieval Augmented Generation) approach t
 - Follow-up questions about documents
 - Guidance on legal next steps
 - Document-based conversation capabilities
+- Implementation with functional approach aligned with existing architecture
+- Slovak language prompts for better localization
+- Database access through dedicated tools instead of direct queries
 
 ### 3. API Routes
 - Document analysis endpoint 

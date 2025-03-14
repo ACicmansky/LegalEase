@@ -111,6 +111,14 @@ Login/Register → JWT Token → Secure Session → Row Level Security
 - **Responsibility:** Engage in follow-up discussions about documents
 - **Capabilities:** Question answering, next-step guidance, clarification
 - **Inputs:** User query, document context, conversation history
+- **Architecture:** Functional approach with processing stages
+- **Key Components:**
+  - Intent classification (document question, legal guidance, clarification, general)
+  - Context-aware response generation
+  - Dedicated tools for database access
+  - Structured output parsers
+- **Prompts:** Slovak language prompts with JSON output schema
+- **Integration:** Uses chat persistence system for message storage
 
 ### 3. Agent Communication
 - **Message Format:** Structured data with clear input/output contracts
