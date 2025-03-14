@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
 import { ChatService } from "@/lib/api/chatService";
-import { addDocument } from "@/lib/documentService";
+import { addDocument } from "@/lib/services/documentService";
 import { DocumentAnalyzeService } from '@/lib/api/documentAnalyzeService';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { routing } from "@/i18n/routing";
