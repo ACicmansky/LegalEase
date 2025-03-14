@@ -54,7 +54,8 @@
     "bot": "Bot",
     "sources": "Zdroje",
     "page": "Strana",
-    "analyzingDocument": "Spracovávam dokument..."
+    "analyzingDocument": "Spracovávam dokument...",
+    "noChats": "Zatiaľ žiadne chaty."
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",

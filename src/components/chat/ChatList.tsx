@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface ChatListProps {
   chats: Chat[];
@@ -14,6 +15,7 @@ interface ChatListProps {
 }
 
 export function ChatList({ chats, onChatSelect, selectedChatId, onDeleteChat }: ChatListProps) {
+  const t = useTranslations();
   return (
     <ScrollArea className="h-full">
       <div className="space-y-2 p-2">
@@ -63,7 +65,7 @@ export function ChatList({ chats, onChatSelect, selectedChatId, onDeleteChat }: 
         ))}
         {chats.length === 0 && (
           <div className="text-center py-4 text-muted-foreground">
-            No chats yet
+            {t('chat.noChats')}
           </div>
         )}
       </div>

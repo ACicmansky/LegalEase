@@ -54,7 +54,8 @@
     "bot": "Bot",
     "sources": "Sources",
     "page": "Page",
-    "analyzingDocument": "Analyzing document..."
+    "analyzingDocument": "Analyzing document...",
+    "noChats": "No chats yet."
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",
