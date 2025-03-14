@@ -50,36 +50,42 @@ export async function processDocument(documentId: string, documentName: string):
   
   try {
     // Step 1: Extract content
+    console.debug(initialState.processingStage);
     const contentState = await extractContent(initialState);
     if (contentState.processingStage === ProcessingStage.Error) {
       return contentState;
     }
     
     // Step 2: Extract key information
+    console.debug(contentState.processingStage);
     const keyInfoState = await extractKeyInformation(contentState);
     if (keyInfoState.processingStage === ProcessingStage.Error) {
       return keyInfoState;
     }
     
     // Step 3: Perform legal analysis
+    console.debug(keyInfoState.processingStage);
     const legalAnalysisState = await performLegalAnalysis(keyInfoState);
     if (legalAnalysisState.processingStage === ProcessingStage.Error) {
       return legalAnalysisState;
     }
     
     // Step 4: Check consistency
+    console.debug(legalAnalysisState.processingStage);
     const consistencyState = await checkConsistency(legalAnalysisState);
     if (consistencyState.processingStage === ProcessingStage.Error) {
       return consistencyState;
     }
     
     // Step 5: Generate summary
+    console.debug(consistencyState.processingStage);
     const summaryState = await generateSummary(consistencyState);
     if (summaryState.processingStage === ProcessingStage.Error) {
       return summaryState;
     }
     
     // Step 6: Store results
+    console.debug(summaryState.processingStage);
     const finalState = await storeResults(summaryState);
     return finalState;
     
