@@ -36,9 +36,9 @@ export function ChatList({ chats, onChatSelect, selectedChatId, onDeleteChat }: 
                 <h3 className="font-medium truncate">
                   {chat.title}
                 </h3>
-                <span className="text-xs text-muted-foreground">
+                {/* <span className="text-xs text-muted-foreground">
                   {new Date(chat.created_at).toLocaleDateString()}
-                </span>
+                </span> */}
               </div>
               {/* {chat.last_message && (
                 <p className="text-sm text-muted-foreground mt-1 truncate">
