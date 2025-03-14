@@ -3,7 +3,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
-import { embeddings } from "@/lib/embeddings";
+import { embeddings } from "@/lib/rag/embeddings";
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
   throw new Error('Missing env.NEXT_PUBLIC_SUPABASE_URL');

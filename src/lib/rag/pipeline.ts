@@ -1,13 +1,13 @@
-import { AdaptiveBatcher } from "@/utils/adaptive-batcher";
-import { HallucinationDetector } from "@/lib/hallucination-detector";
-import { ResponseValidator } from "@/lib/response-validator";
+import { AdaptiveBatcher } from "@/lib/utils/adaptive-batcher";
+import { HallucinationDetector } from "@/lib/rag/hallucination-detector";
+import { ResponseValidator } from "@/lib/rag/response-validator";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
 
-import { VectorCache } from "@/lib/caching";
-import { GenerationEngine } from "@/lib/generation";
-import { vectorStore } from "@/utils/supabase/server";
+import { VectorCache } from "@/lib/rag/caching";
+import { GenerationEngine } from "@/lib/rag/generation";
+import { vectorStore } from "@/lib/utils/supabase/server";
 
 // Initialize components
 const initializeRetriever = async (documentId: string) => {

@@ -1,6 +1,6 @@
 'use server';
 
-import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 
 // Create document record in Supabase
 export async function addDocument(id: string, name: string, chat_id: string) {

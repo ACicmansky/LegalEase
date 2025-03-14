@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 
 // GET /api/chats/[chatId] - Get a specific chat
 export async function GET(

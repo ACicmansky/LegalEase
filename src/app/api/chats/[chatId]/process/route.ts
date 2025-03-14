@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
-import { createOptimizedPipeline } from '@/lib/pipeline';
+import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
+import { createOptimizedPipeline } from '@/lib/rag/pipeline';
 
 /**
  * Processes a message through the RAG pipeline and creates an AI response

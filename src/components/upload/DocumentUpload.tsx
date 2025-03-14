@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createSupabaseClient } from '@/utils/supabase/client';
+import { createSupabaseClient } from '@/lib/utils/supabase/client';
 import { DropZone } from './DropZone';
 import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
 import { useTranslations } from 'next-intl';

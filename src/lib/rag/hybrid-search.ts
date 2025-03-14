@@ -3,7 +3,7 @@ import { Embeddings } from "@langchain/core/embeddings";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatGroq } from "@langchain/groq";
 
-import { vectorStore } from "@/utils/supabase/server";
+import { vectorStore } from "@/lib/utils/supabase/server";
 
 interface SearchResult {
     document: Document;

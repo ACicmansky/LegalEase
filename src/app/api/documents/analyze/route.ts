@@ -1,7 +1,7 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
 import { processDocument } from '@/lib/agents/documentProcessingAgent';
 import { ProcessingStage } from '@/lib/agents/types';
 
