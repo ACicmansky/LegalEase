@@ -55,7 +55,10 @@
     "sources": "Zdroje",
     "page": "Strana",
     "analyzingDocument": "Spracovávam dokument...",
-    "noChats": "Zatiaľ žiadne chaty."
+    "noChats": "Zatiaľ žiadne chaty.",
+    "welcomeTitle": "Vitajte vo vašom Dokumentovom Asistentovi",
+    "welcomeDescription": "Nahrajte dokument pre začatie novej konverzácie alebo vyberte existujúci chat z bočného panela.",
+    "disclaimer": "Tento AI asistent poskytuje informácie na základe vašich dokumentov. Vždy si overte dôležité informácie."
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",

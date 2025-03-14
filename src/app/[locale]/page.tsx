@@ -128,10 +128,10 @@ export default function Home() {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Left Sidebar */}
-      <div className="w-64 border-r flex flex-col h-full overflow-hidden">
+      <div className="w-72 border-r flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-slate-950/50">
         {/* New Chat Button */}
-        <div className="p-4">
-          <Button onClick={handleOpenUploadDialog} className="w-full">
+        <div className="p-4 border-b">
+          <Button onClick={handleOpenUploadDialog} className="w-full shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
             {t("chat.newChat")}
           </Button>
@@ -147,7 +147,7 @@ export default function Home() {
         </div>
 
         {/* User Settings */}
-        <div className="p-4 border-t">
+        <div className="p-4 border-t bg-slate-100/80 dark:bg-slate-900/30">
           {user && (
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -176,24 +176,27 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      {/* Right Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-b from-transparent to-background">
+        {/* Show chat interface when chat is selected */}
         {selectedChatId ? (
           <ChatInterface
             ref={chatInterfaceRef}
-            chatId={selectedChatId ?? ''}
+            chatId={selectedChatId}
             onSendMessage={handleSendMessage}
             isDocumentAnalyzing={isDocumentAnalyzing}
           />
         ) : (
-          <main className="flex-1 p-6">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-center mb-8">
-                {t("chat.title")}
-              </h1>
-              <DocumentUpload onUploadSuccess={handleCreateChatFromDocument} />
+          <div className="flex flex-col items-center justify-center h-full p-8">
+            <div className="max-w-md text-center space-y-5">
+              <h2 className="text-2xl font-semibold tracking-tight">{t("chat.welcomeTitle")}</h2>
+              <p className="text-muted-foreground">{t("chat.welcomeDescription")}</p>
+              <Button onClick={handleOpenUploadDialog} className="mt-4">
+                <Plus className="mr-2 h-4 w-4" />
+                {t("chat.newChat")}
+              </Button>
             </div>
-          </main>
+          </div>
         )}
       </div>
 

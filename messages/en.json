@@ -55,7 +55,10 @@
     "sources": "Sources",
     "page": "Page",
     "analyzingDocument": "Analyzing document...",
-    "noChats": "No chats yet."
+    "noChats": "No chats yet.",
+    "welcomeTitle": "Welcome to your Document Assistant",
+    "welcomeDescription": "Upload a document to start a new conversation or select an existing chat from the sidebar.",
+    "disclaimer": "This AI assistant provides information based on your documents. Always verify important information."
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",
