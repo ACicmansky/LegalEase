@@ -3,6 +3,11 @@ import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
 
 /**
  * Creates a message in the database
+ * 
+ * @param chatId - The ID of the chat
+ * @param content - The message content
+ * @param isUser - Whether the message is from a user
+ * @returns The created message
  */
 async function createMessage(chatId: string, content: string, isUser: boolean) {
   const supabase = await createSupabaseServerClient();
@@ -23,13 +28,15 @@ async function createMessage(chatId: string, content: string, isUser: boolean) {
   }
 
   // Update chat's last_message if it's a user message
-  const { error: updateError } = await supabase
-    .from('chats')
-    .update({ last_message: content })
-    .eq('id', chatId);
+  if (isUser) {
+    const { error: updateError } = await supabase
+      .from('chats')
+      .update({ last_message: content })
+      .eq('id', chatId);
 
-  if (updateError) {
-    console.error('Failed to update chat last_message:', updateError);
+    if (updateError) {
+      console.error('Failed to update chat last_message:', updateError);
+    }
   }
 
   return message;
@@ -66,12 +73,12 @@ export async function POST(
     const { content, is_user } = await request.json();
 
     // Create the message
-    const userMessage = await createMessage(chatId, content, is_user);
-    return NextResponse.json(userMessage);
+    const message = await createMessage(chatId, content, is_user);
+    return NextResponse.json(message);
   } catch (error) {
     console.error('Message creation error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }

@@ -1,91 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
-import { createOptimizedPipeline } from '@/lib/rag/pipeline';
+import { processConversation } from '@/lib/agents/conversationalAgent';
+import { ConversationProcessingStage } from '@/lib/agents/types';
+import { MessageRecord } from '@/types/chat';
 
-/**
- * Processes a message through the RAG pipeline and creates an AI response
- */
-async function processMessageThroughPipeline(chatId: string, content: string, documentId: string) {
-  const supabase = await createSupabaseServerClient();
-
-  // Get chat history for context
-  const { data: messageHistory } = await supabase
-    .from('messages')
-    .select('*')
-    .eq('chat_id', chatId)
-    .order('created_at', { ascending: true })
-    .limit(10); // Last 10 messages for context
-
-  console.log('Processing message through RAG pipeline:', {
-    question: content,
-    sessionId: chatId,
-    documentId: documentId,
-    historyLength: messageHistory?.length || 0
-  });
-
-  try {
-    const pipeline = await createOptimizedPipeline(documentId);
-
-    // Process the request through the pipeline
-    const startTime = Date.now();
-    const pipelineResponse = await pipeline.invoke({
-      question: content,
-      sessionId: chatId,
-      documentId: documentId || null,
-      history: messageHistory || [],
-    });
-
-    console.log('RAG pipeline response generated in', Date.now() - startTime, 'ms');
-
-    // Extract response and sources
-    let aiContent = pipelineResponse.text || pipelineResponse;
-    const sources = pipelineResponse.sources || [];
-
-    if (typeof aiContent === 'string') {
-      aiContent = aiContent.replace(/```html|```/g, '');
-    }
-
-    // Store AI response
-    const { data: aiMessage, error: aiMessageError } = await supabase
-      .from('messages')
-      .insert({
-        content: aiContent,
-        chat_id: chatId,
-        is_user: false,
-        sources: sources,
-      })
-      .select()
-      .single();
-
-    if (aiMessageError) {
-      throw new Error(`Failed to create AI message: ${aiMessageError.message}`);
-    }
-
-    return aiMessage;
-  } catch (pipelineError) {
-    console.error('Pipeline execution error:', pipelineError);
-
-    // Create a fallback AI message with error information
-    const { data: errorMessage, error: errorMsgError } = await supabase
-      .from('messages')
-      .insert({
-        content: "I'm sorry, I encountered an error processing your request. Please try again.",
-        chat_id: chatId,
-        is_user: false,
-      })
-      .select()
-      .single();
-
-    if (errorMsgError) {
-      throw new Error(`Failed to create error message: ${errorMsgError.message}`);
-    }
-
-    return errorMessage;
-  }
-}
-
-
-// POST /api/chats/[chatId]/process - Process a message through the RAG pipeline
+// POST /api/chats/[chatId]/process - Process a message through the Conversational Agent
 export async function POST(
   request: Request,
   { params }: { params: { chatId: string } }
@@ -118,15 +37,59 @@ export async function POST(
       return NextResponse.json({ error: 'Content is required' }, { status: 400 });
     }
 
-    // Process the message and get AI response
-    const aiMessage = await processMessageThroughPipeline(chatId, content, chat.document_id);
-
-    // Return the AI message
-    return NextResponse.json(aiMessage);
+    try {
+      // Process the message through the conversational agent
+      const result = await processConversation(chatId, content, chat.document_id);
+      
+      if (result.processingStage === ConversationProcessingStage.Error) {
+        throw new Error(result.error || "Error processing message");
+      }
+      
+      // Prepare message record based on conversation result
+      const messageData: Partial<MessageRecord> = {
+        chat_id: chatId,
+        content: result.response || "I'm sorry, I couldn't process your request.",
+        is_user: false,
+        sources: result.sources || [],
+        metadata: {
+          intent: result.intent,
+          guidance: result.guidance,
+          followUpQuestions: result.followUpQuestions
+        }
+      };
+      
+      // Store the assistant response in the database
+      const { data, error } = await supabase
+        .from('messages')
+        .insert(messageData)
+        .select()
+        .single();
+        
+      if (error) {
+        throw new Error(`Failed to create assistant message: ${error.message}`);
+      }
+      
+      return NextResponse.json(data);
+    } catch (processingError) {
+      console.error("Error processing user message:", processingError);
+      
+      // Create fallback response
+      const { data } = await supabase
+        .from('messages')
+        .insert({
+          chat_id: chatId,
+          content: "I'm sorry, I encountered an error processing your request. Please try again.",
+          is_user: false
+        })
+        .select()
+        .single();
+        
+      return NextResponse.json(data);
+    }
   } catch (error) {
     console.error('Message processing error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }

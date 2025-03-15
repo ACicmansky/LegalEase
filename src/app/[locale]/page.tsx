@@ -55,17 +55,10 @@ export default function Home() {
 
     try {
       setIsLoading(true);
-      const userMessage = await ChatService.addMessage(
-        selectedChatId,
-        message,
-        true
-      );
+      const userMessage = await ChatService.addMessage(selectedChatId, message, true);
       chatInterfaceRef.current?.handleCreateMessage(userMessage);
 
-      const aiMessage = await ChatService.processUserMessage(
-        selectedChatId,
-        message
-      );
+      const aiMessage = await ChatService.processUserMessage(selectedChatId, message);
       chatInterfaceRef.current?.handleCreateMessage(aiMessage);
     } catch (error) {
       console.error("Failed to send message:", error);

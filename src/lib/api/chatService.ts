@@ -66,7 +66,7 @@ export class ChatService {
   }
 
   /**
-   * Processes a message through the RAG pipeline and save AI response in database
+   * Processes a message and save AI response in database
    */
   static async processUserMessage(chatId: string, content: string): Promise<ChatMessage> {
     try {

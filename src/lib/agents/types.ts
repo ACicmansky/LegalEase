@@ -117,3 +117,42 @@ export interface DocumentAnalysisRecord {
   created_at?: string;            // Timestamp with time zone, auto-generated
   updated_at?: string;            // Timestamp with time zone, auto-generated
 }
+
+import { ConversationIntent, LegalGuidance, MessageSource } from '@/types/chat';
+
+/**
+ * Interface representing a source document
+ * @deprecated Use MessageSource from @/types/chat instead
+ */
+export interface Source extends MessageSource {}
+
+/**
+ * Processing stages for conversation
+ */
+export enum ConversationProcessingStage {
+  Started = 'started',
+  ContextGathered = 'context_gathered',
+  IntentDetermined = 'intent_determined',
+  ResponseGenerated = 'response_generated',
+  GuidanceGenerated = 'guidance_generated',
+  Complete = 'complete',
+  Error = 'error'
+}
+
+/**
+ * Conversation state for tracking processing
+ */
+export interface ConversationState {
+  chatId: string;
+  messageContent: string;
+  documentId?: string;
+  processingStage: ConversationProcessingStage;
+  conversationHistory?: string;
+  documentContext?: string;
+  response?: string;
+  intent?: ConversationIntent;
+  sources?: MessageSource[];
+  guidance?: LegalGuidance;
+  followUpQuestions?: string[];
+  error?: string;
+}

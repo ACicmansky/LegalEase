@@ -1,11 +1,11 @@
 'use client';
 
-import { ChatMessage } from '@/types/chat';
+import { ChatMessage, MessageSource } from '@/types/chat';
 import DOMPurify from 'dompurify';
 import { useTranslations } from 'next-intl';
 import { marked } from 'marked';
 
-export function Message({ content, is_user: is_user, created_at, sources }: ChatMessage) {
+export function Message({ content, is_user, created_at, sources }: ChatMessage) {
   const t = useTranslations();
   const sanitizedContent = DOMPurify.sanitize(marked.parse(content, { async: false }));
   return (
@@ -37,13 +37,14 @@ export function Message({ content, is_user: is_user, created_at, sources }: Chat
           <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-200 dark:text-gray-400">{t('chat.sources')}:</p>
             <ul className="mt-1 space-y-1">
-              {sources.map((source, index) => (
+              {sources.map((source: MessageSource, index: number) => (
                 <li
                   key={index}
                   className="text-sm text-gray-200 dark:text-gray-400 flex items-center"
                 >
                   <span className="mr-2">📄</span>
-                  {source.title} ({t('chat.page')} {source.page})
+                  {source.title} {source.page && `(${t('chat.page')} ${source.page})`}
+                  {source.section && <span className="ml-1">- {source.section}</span>}
                 </li>
               ))}
             </ul>
