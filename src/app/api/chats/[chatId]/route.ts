@@ -5,11 +5,11 @@ import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 // GET /api/chats/[chatId] - Get a specific chat
 export async function GET(
   request: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
     const supabase = await createSupabaseServerClient();
-    const chatId = (await params).chatId;
+    const { chatId } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -49,11 +49,11 @@ export async function GET(
 // DELETE /api/chats/[chatId] - Delete a chat
 export async function DELETE(
   request: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
     const supabase = await createSupabaseServerClient();
-    const chatId = (await params).chatId;
+    const { chatId } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

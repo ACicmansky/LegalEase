@@ -45,11 +45,11 @@ async function createMessage(chatId: string, content: string, isUser: boolean) {
 // POST /api/chats/[chatId]/messages - Add a message to a chat
 export async function POST(
   request: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
     const supabase = await createSupabaseServerClient();
-    const chatId = (await params).chatId;
+    const { chatId } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

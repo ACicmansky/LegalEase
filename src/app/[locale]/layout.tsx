@@ -41,7 +41,7 @@ export default async function RootLayout({
   children,
   params
 }: RootLayoutProps) {
-  const locale = (await params).locale;
+  const { locale } = await params;
   
   // Validate that the locale is supported
   if (!routing.locales.includes(locale as typeof routing.locales[number])) {

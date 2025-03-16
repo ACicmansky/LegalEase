@@ -7,11 +7,11 @@ import { MessageRecord } from '@/types/chat';
 // POST /api/chats/[chatId]/process - Process a message through the Conversational Agent
 export async function POST(
   request: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
     const supabase = await createSupabaseServerClient();
-    const chatId = (await params).chatId;
+    const { chatId } = await params;
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
