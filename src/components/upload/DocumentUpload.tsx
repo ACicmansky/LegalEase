@@ -57,7 +57,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
         );
 
         // Upload file to Supabase storage
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from('documents')
           .upload(filePath, fileEntry.file);
 

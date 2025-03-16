@@ -2,8 +2,6 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
-import { embeddings } from "@/lib/rag/embeddings";
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
   throw new Error('Missing env.NEXT_PUBLIC_SUPABASE_URL');
@@ -40,15 +38,16 @@ export async function createSupabaseServerClient() {
   );
 }
 
-export async function vectorStore(filter?: any) {
-  return new SupabaseVectorStore(embeddings, {
-    client: await createSupabaseServerClient(),
-    tableName: "embeddings",
-    queryName: "match_documents",
-    filter: filter || {}
-  });
-}
+// RAG code that is currently not used
+// export async function vectorStore(filter?: Record<string, unknown>) {
+//   return new SupabaseVectorStore(embeddings, {
+//     client: await createSupabaseServerClient(),
+//     tableName: "embeddings",
+//     queryName: "match_documents",
+//     filter: filter || {}
+//   });
+// }
 
-export async function getRetriever(filter: any) {
-  return (await vectorStore(filter)).asRetriever();
-}
+// export async function getRetriever(filter: Record<string, unknown>) {
+//   return (await vectorStore(filter)).asRetriever();
+// }

@@ -29,6 +29,7 @@ export async function GET() {
 
     return NextResponse.json(chats);
   } catch (error) {
+    console.error('Error fetching chats:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(chat);
   } catch (error) {
+    console.error('Error creating chat:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

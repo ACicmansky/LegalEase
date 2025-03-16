@@ -54,13 +54,20 @@ export function ChatListContainer({
     }
   }, [loadChats, user]);
 
+  // Define handleCreateChat with useCallback to avoid dependency issues
+  const handleCreateChat = useCallback(async (newChat: Chat) => {
+    setChats((prevChats) => [newChat, ...prevChats]);
+    onChatSelect(newChat.id);
+    toast(t("upload.successToast"));
+  }, [onChatSelect, t]);
+
   useEffect(() => {
     if (ref) {
       ref.current = {
         handleCreateChat,
       };
     }
-  }, [ref, chats]);
+  }, [ref, handleCreateChat]);
 
   const handleDeleteChat = async (chatId: string) => {
     try {
@@ -70,17 +77,6 @@ export function ChatListContainer({
     } catch (error) {
       console.error("Failed to delete chat:", error);
       toast(t("chat.failedToDelete"));
-    }
-  };
-
-  const handleCreateChat = async (newChat: Chat) => {
-    try {
-      setChats([newChat, ...chats]);
-      onChatSelect(newChat.id);
-      toast(t("upload.successToast"));
-    } catch (error) {
-      console.error("Failed to create chat:", error);
-      toast(t("upload.failedToCreateChat"));
     }
   };
 

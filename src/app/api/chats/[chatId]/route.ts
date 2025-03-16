@@ -38,6 +38,7 @@ export async function GET(
 
     return NextResponse.json(chat);
   } catch (error) {
+    console.error('Error fetching chat:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -83,6 +84,7 @@ export async function DELETE(
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
+    console.error('Error deleting chat:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -18,4 +18,6 @@ export async function addDocument(id: string, name: string, chat_id: string) {
     console.error('Failed to create document record:', documentError);
     throw new Error(`Failed to create document record: ${documentError.message}`);
   }
+
+  return document;
 }

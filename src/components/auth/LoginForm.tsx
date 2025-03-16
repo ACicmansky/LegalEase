@@ -35,7 +35,8 @@ export default function LoginForm({ returnTo }: LoginFormProps = {}) {
       await signIn(email, password);
       // Redirect to returnTo or home page
       router.push(returnTo || '/');
-    } catch (err) {
+    } catch (error) {
+      console.error('Sign in error:', error);
       setError('Failed to sign in');
     } finally {
       setLoading(false);

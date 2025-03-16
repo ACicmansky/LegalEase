@@ -121,12 +121,6 @@ export interface DocumentAnalysisRecord {
 import { ConversationIntent, LegalGuidance, MessageSource } from '@/types/chat';
 
 /**
- * Interface representing a source document
- * @deprecated Use MessageSource from @/types/chat instead
- */
-export interface Source extends MessageSource {}
-
-/**
  * Processing stages for conversation
  */
 export enum ConversationProcessingStage {

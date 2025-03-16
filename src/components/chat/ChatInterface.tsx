@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowUp } from 'lucide-react';
 
@@ -9,7 +8,6 @@ import { ChatService } from '@/lib/api/chatService';
 import { ChatMessage } from '@/types/chat';
 import { Message } from './Message';
 import { Spinner } from '@/components/ui/spinner';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
 interface ChatInterfaceProps {
@@ -28,27 +26,35 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Define handleCreateMessage with useCallback to avoid dependency issues
+  const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage) => {
+    setMessages((prevMessages) => [...prevMessages, newChatMessage]);
+  }, []);
+
   useEffect(() => {
+    const isMounted = { current: true };
+    
     const loadMessages = async () => {
       if (!chatId) return;     
       
-      setIsLoadingMessages(true);
       try {
         const chat = await ChatService.getChat(chatId);
-        if (chat.messages) {
+        if (isMounted.current && chat.messages) {
           setMessages(chat.messages);
         }
       } catch (error) {
         console.error('Failed to load messages:', error);
-      } finally {
-        setIsLoadingMessages(false);
       }
     };
-
+  
     loadMessages();
+    
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+    };
   }, [chatId]);
 
   useEffect(() => {
@@ -57,7 +63,7 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
         handleCreateMessage
       };
     }
-  }, [ref, messages]);
+  }, [ref, handleCreateMessage]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -79,15 +85,6 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
       console.error('Failed to send message:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCreateMessage = async (newMessage: ChatMessage) => {
-    try {
-      setMessages([...messages, newMessage]);
-    } catch (error) {
-      console.error('Failed to create message:', error);
-      toast(t('chat.failedToLoad'));
     }
   };
 

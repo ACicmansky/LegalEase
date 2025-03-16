@@ -24,7 +24,6 @@ export default function Home() {
   const router = useRouter();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isDocumentAnalyzing, setIsDocumentAnalyzing] = useState(false);
   const chatListRef = useRef<ChatListContainerRef>(null);
   const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
@@ -54,7 +53,6 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      setIsLoading(true);
       const userMessage = await ChatService.addMessage(selectedChatId, message, true);
       chatInterfaceRef.current?.handleCreateMessage(userMessage);
 
@@ -63,8 +61,6 @@ export default function Home() {
     } catch (error) {
       console.error("Failed to send message:", error);
       toast.error(t("chat.failedToSend"));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -77,8 +73,6 @@ export default function Home() {
     fileName: string
   ) => {
     try {
-      setIsLoading(true);
-      
       // Create a new chat
       const newChat = await ChatService.createChat(`${fileName}`, documentId);
       chatListRef.current?.handleCreateChat(newChat);
@@ -91,19 +85,19 @@ export default function Home() {
 
       // Set document analyzing state to true
       setIsDocumentAnalyzing(true);
-      
+
       // Call documents analyze API
       const analysisResult = await DocumentAnalyzeService.analyzeDocument(documentId);
-      
+
       // If analysis was successful, add the summary as an assistant message
       if (analysisResult.success && analysisResult.summary) {
-        const summaryMessage =await ChatService.addMessage(
+        const summaryMessage = await ChatService.addMessage(
           newChat.id,
           analysisResult.summary,
           false // false means it's an assistant message
         );
         chatInterfaceRef.current?.handleCreateMessage(summaryMessage);
-      }      
+      }
     } catch (error) {
       console.error('Error creating chat from document:', error);
       toast.error(
@@ -112,7 +106,6 @@ export default function Home() {
           : 'Failed to create chat from document'
       );
     } finally {
-      setIsLoading(false);
       // Set document analyzing state to false
       setIsDocumentAnalyzing(false);
     }
