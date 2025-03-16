@@ -35,22 +35,22 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
 
   useEffect(() => {
     const isMounted = { current: true };
-    
+
     const loadMessages = async () => {
-      if (!chatId) return;     
-      
+      if (!chatId) return;
+
       try {
         const chat = await ChatService.getChat(chatId);
         if (isMounted.current && chat.messages) {
-          setMessages(chat.messages);
+          setMessages(chat.messages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
         }
       } catch (error) {
         console.error('Failed to load messages:', error);
       }
     };
-  
+
     loadMessages();
-    
+
     // Cleanup function
     return () => {
       isMounted.current = false;
