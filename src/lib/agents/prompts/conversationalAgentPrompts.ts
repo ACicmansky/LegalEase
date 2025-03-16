@@ -31,7 +31,6 @@ DÔLEŽITÉ:
 - Pri odkazovaní na obsah dokumentu vždy uveď zdroje
 - Pri právnom poradenstve sa zameraj na praktické kroky podľa slovenského práva
 - Zahrň 2-3 prirodzené následné otázky
-- Uisti sa, že tvoja odpoveď je platný JSON
 `],
   ["human", "HISTÓRIA KONVERZÁCIE:\n{conversationHistory}\n\nKONTEXT DOKUMENTU:\n{documentContext}\n\nSPRÁVA POUŽÍVATEĽA:\n{message}"],
   new MessagesPlaceholder("agent_scratchpad"),
