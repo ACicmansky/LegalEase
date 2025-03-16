@@ -50,9 +50,15 @@ export async function processConversation(
 
   try {
     // Process conversation through a series of steps
+    console.debug(initialState.processingStage);
     const withContext = await gatherContext(initialState);
+
+    console.debug(withContext.processingStage);
     const withResponse = await generateResponse(withContext);
+
+    console.debug(withResponse.processingStage);
     const finalState = await generateGuidance(withResponse);
+    console.debug(finalState.processingStage);
     
     // Return the final state
     return {
