@@ -19,6 +19,7 @@ interface ChatListContainerProps {
 
 export interface ChatListContainerRef {
   handleCreateChat: (newChat: Chat) => Promise<void>;
+  getSelectedChatTitle: () => string | null;
 }
 
 export function ChatListContainer({
@@ -61,13 +62,21 @@ export function ChatListContainer({
     toast(t("upload.successToast"));
   }, [onChatSelect, t]);
 
+  // Get the title of the selected chat
+  const getSelectedChatTitle = useCallback(() => {
+    if (!selectedChatId) return null;
+    const selectedChat = chats.find(chat => chat.id === selectedChatId);
+    return selectedChat?.title || null;
+  }, [selectedChatId, chats]);
+
   useEffect(() => {
     if (ref) {
       ref.current = {
         handleCreateChat,
+        getSelectedChatTitle,
       };
     }
-  }, [ref, handleCreateChat]);
+  }, [ref, handleCreateChat, getSelectedChatTitle]);
 
   const handleDeleteChat = async (chatId: string) => {
     try {

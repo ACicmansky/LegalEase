@@ -58,7 +58,9 @@
     "noChats": "No chats yet.",
     "welcomeTitle": "Welcome to your Document Assistant",
     "welcomeDescription": "Upload a document to start a new conversation or select an existing chat from the sidebar.",
-    "disclaimer": "This AI assistant provides information based on your documents. Always verify important information."
+    "disclaimer": "This AI assistant provides information based on your documents. Always verify important information.",
+    "delete": "Delete",
+    "deleteConfirmation": "Are you sure you want to delete this chat?"
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",

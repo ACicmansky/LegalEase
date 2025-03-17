@@ -48,7 +48,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
         const supabase = createSupabaseClient();
         const userId = (await supabase.auth.getUser()).data.user?.id;
         const filePath = `${userId}/${fileEntry.id}/${fileEntry.file.name}`;
-        
+
         // Set initial progress
         setUploadedFiles((prev) =>
           prev.map((f) =>
@@ -97,10 +97,10 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
         }
       } catch (error) {
         // Update status to error
-        const errorMessage = error instanceof Error 
-          ? error.message 
+        const errorMessage = error instanceof Error
+          ? error.message
           : 'An unknown error occurred';
-          
+
         setUploadedFiles((prev) =>
           prev.map((f) =>
             f.id === fileEntry.id
@@ -129,64 +129,67 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-4 sm:space-y-6">
       <DropZone onFilesDrop={handleFilesDrop} />
 
       {/* File List */}
       {uploadedFiles.length > 0 && (
-        <div className="mt-6 space-y-2">
+        <div className="mt-4 sm:mt-6 space-y-2">
           {uploadedFiles.map((fileEntry) => (
             <div
               key={fileEntry.id}
-              className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2 sm:p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
             >
-              <div className="flex items-center space-x-3">
-                <FiFile className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-1 sm:mb-0">
+                <FiFile className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
                     {fileEntry.file.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                     {t('upload.fileSize', { size: (fileEntry.file.size / 1024 / 1024).toFixed(2) })}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-4">
                 {/* Status indicator */}
                 <div className="flex items-center">
                   {fileEntry.status === 'pending' && (
-                    <span className="text-gray-400">{t('common.pending')}</span>
+                    <span className="text-[10px] sm:text-xs text-gray-400">{t('common.pending')}</span>
                   )}
                   {fileEntry.status === 'uploading' && (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-blue-500">{t('common.uploading', { progress: fileEntry.progress.toFixed(0) })}</span>
-                      <FiLoader className="w-4 h-4 text-blue-500 animate-spin" />
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <span className="text-[10px] sm:text-xs text-blue-500">{t('common.uploading', { progress: fileEntry.progress.toFixed(0) })}</span>
+                      <FiLoader className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 animate-spin" />
                     </div>
                   )}
                   {fileEntry.status === 'processing' && (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-yellow-500">{t('common.processing')}</span>
-                      <FiLoader className="w-4 h-4 text-yellow-500 animate-spin" />
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <span className="text-[10px] sm:text-xs text-yellow-500">{t('common.processing')}</span>
+                      <FiLoader className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500 animate-spin" />
                     </div>
                   )}
                   {fileEntry.status === 'complete' && (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-green-500">{t('common.complete')}</span>
-                      <FiCheck className="w-4 h-4 text-green-500" />
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <span className="text-[10px] sm:text-xs text-green-500">{t('common.complete')}</span>
+                      <FiCheck className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                     </div>
                   )}
                   {fileEntry.status === 'error' && (
-                    <span className="text-red-500">{t('common.error')}: {fileEntry.error}</span>
+                    <span className="text-[10px] sm:text-xs text-red-500 truncate max-w-[150px] sm:max-w-none">
+                      {t('common.error')}: {fileEntry.error}
+                    </span>
                   )}
                 </div>
 
                 {/* Remove button */}
                 <button
                   onClick={() => removeFile(fileEntry.id)}
-                  className="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                  className="p-1.5 sm:p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                  aria-label={t('common.remove')}
                 >
-                  <FiX className="w-4 h-4" />
+                  <FiX className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

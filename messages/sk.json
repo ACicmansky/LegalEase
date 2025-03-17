@@ -58,7 +58,9 @@
     "noChats": "Zatiaľ žiadne chaty.",
     "welcomeTitle": "Vitajte vo vašom Dokumentovom Asistentovi",
     "welcomeDescription": "Nahrajte dokument pre začatie novej konverzácie alebo vyberte existujúci chat z bočného panela.",
-    "disclaimer": "Tento AI asistent poskytuje informácie na základe vašich dokumentov. Vždy si overte dôležité informácie."
+    "disclaimer": "Tento AI asistent poskytuje informácie na základe vašich dokumentov. Vždy si overte dôležité informácie.",
+    "delete": "Vymazať",
+    "deleteConfirmation": "Naozaj chcete vymazať tento chat?"
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",
