@@ -20,7 +20,7 @@ export default function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signUp, signIn } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +43,7 @@ export default function SignUpForm() {
       // First sign up the user
       await signUp(email, password);
       // Then sign them in automatically
-      await signIn(email, password);
+      // await signIn(email, password);
       // Redirect to root path
       router.push('/');
     } catch (err) {
