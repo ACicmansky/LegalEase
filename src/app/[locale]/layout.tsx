@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   // Use params to potentially customize metadata based on locale in the future
-  const locale = params.locale;
+  const { locale } = await params;
   return {
     title: "Legal Document Chat",
     description: `Chat with your legal documents using AI (${locale})`,
@@ -42,12 +42,12 @@ export default async function RootLayout({
   params
 }: RootLayoutProps) {
   const { locale } = await params;
-  
+
   // Validate that the locale is supported
   if (!routing.locales.includes(locale as typeof routing.locales[number])) {
     notFound();
   }
-  
+
   // Get messages for client components
   let messages;
   try {
@@ -57,7 +57,7 @@ export default async function RootLayout({
     // Fallback to empty messages object to prevent errors
     messages = {};
   }
-  
+
   return (
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
