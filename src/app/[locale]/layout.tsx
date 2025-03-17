@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { Providers } from "@/components/providers";
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import type { Metadata } from "next";
 import { routing } from '@/i18n/routing';
 
@@ -65,7 +64,7 @@ export default async function RootLayout({
           <Providers>
             <div className="min-h-screen flex flex-col">
               <div className="absolute top-4 right-4 z-50">
-                <LanguageSwitcher />
+                {/* <LanguageSwitcher /> */}
               </div>
               {children}
             </div>
