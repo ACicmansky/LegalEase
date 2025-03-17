@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   // Use params to potentially customize metadata based on locale in the future
   const { locale } = await params;
   return {
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 
 interface RootLayoutProps {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
 export function generateStaticParams() {
@@ -63,9 +63,9 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
             <div className="min-h-screen flex flex-col">
-              <div className="absolute top-4 right-4 z-50">
-                {/* <LanguageSwitcher /> */}
-              </div>
+              {/* <div className="absolute top-4 right-4 z-50">
+                <LanguageSwitcher />
+              </div> */}
               {children}
             </div>
             <Toaster />
