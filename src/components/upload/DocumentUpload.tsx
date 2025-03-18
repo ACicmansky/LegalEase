@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/utils/supabase/client';
 import { DropZone } from './DropZone';
-import { FiFile, FiX, FiCheck, FiLoader } from 'react-icons/fi';
+import { FiFile, FiCheck, FiLoader } from 'react-icons/fi';
 import { useTranslations } from 'next-intl';
 
 interface UploadedFile {
@@ -112,22 +112,6 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
     }
   };
 
-  const removeFile = async (id: string) => {
-    const fileToRemove = uploadedFiles.find(f => f.id === id);
-    if (fileToRemove?.downloadUrl) {
-      try {
-        const supabase = createSupabaseClient();
-        const filePath = fileToRemove.downloadUrl.split('/').pop();
-        await supabase.storage
-          .from('documents')
-          .remove([filePath!]);
-      } catch (error) {
-        console.error('Error removing file from storage:', error);
-      }
-    }
-    setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
-  };
-
   return (
     <div className="w-full max-w-3xl mx-auto space-y-4 sm:space-y-6">
       <DropZone onFilesDrop={handleFilesDrop} />
@@ -182,15 +166,6 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
                     </span>
                   )}
                 </div>
-
-                {/* Remove button */}
-                <button
-                  onClick={() => removeFile(fileEntry.id)}
-                  className="p-1.5 sm:p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                  aria-label={t('common.remove')}
-                >
-                  <FiX className="w-3 h-3 sm:w-4 sm:h-4" />
-                </button>
               </div>
             </div>
           ))}
