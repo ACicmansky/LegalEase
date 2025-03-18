@@ -7,6 +7,7 @@ import "@/app/globals.css";
 import { Providers } from "@/components/providers";
 import type { Metadata } from "next";
 import { routing } from '@/i18n/routing';
+import { Analytics } from "@vercel/analytics/react"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,6 +68,7 @@ export default async function RootLayout({
                 <LanguageSwitcher />
               </div> */}
               {children}
+              <Analytics />
             </div>
             <Toaster />
           </Providers>
