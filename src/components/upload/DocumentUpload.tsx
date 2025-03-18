@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/utils/supabase/client';
+import { uploadFile } from '@/lib/services/storageService';
 import { DropZone } from './DropZone';
 import { FiFile, FiCheck, FiLoader } from 'react-icons/fi';
 import { useTranslations } from 'next-intl';
@@ -57,11 +58,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
         );
 
         // Upload file to Supabase storage
-        const { error } = await supabase.storage
-          .from('documents')
-          .upload(filePath, fileEntry.file);
-
-        if (error) throw error;
+        await uploadFile(filePath, fileEntry.file);
 
         // Set progress to 100% when upload is complete
         setUploadedFiles((prev) =>

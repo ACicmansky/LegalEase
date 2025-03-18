@@ -21,3 +21,16 @@ export async function addDocument(id: string, name: string, chat_id: string) {
 
   return document;
 }
+
+// Delete document record from Supabase
+export async function deleteDocument(id: string) {
+  const { error: documentError } = await (await createSupabaseServerClient())
+    .from('documents')
+    .delete()
+    .eq('id', id);
+
+  if (documentError) {
+    console.error('Failed to delete document record:', documentError);
+    throw new Error(`Failed to delete document record: ${documentError.message}`);
+  }
+} 
