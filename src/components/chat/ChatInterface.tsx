@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowUp } from 'lucide-react';
 
-import { ChatService } from '@/lib/api/chatService';
+import { ChatAPIService } from '@/lib/api/chatAPIService';
 import { ChatMessage } from '@/types/chat';
 import { Message } from './Message';
 import { Spinner } from '@/components/ui/spinner';
@@ -41,7 +41,7 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
       if (!chatId) return;
 
       try {
-        const chat = await ChatService.getChat(chatId);
+        const chat = await ChatAPIService.getChat(chatId);
         if (isMounted.current && chat.messages) {
           setMessages(chat.messages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
         }

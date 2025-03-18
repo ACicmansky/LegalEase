@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
-import { ChatService } from "@/lib/api/chatService";
+import { ChatAPIService } from "@/lib/api/chatAPIService";
 import { addDocument } from "@/lib/services/documentService";
 import { DocumentAnalyzeService } from '@/lib/api/documentAnalyzeService';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -42,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     const handleResize = () => {
       const isDesktop = window.innerWidth >= 768;
-      
+
       // Only auto-change sidebar state if window size category changes
       // and the user hasn't manually toggled the sidebar
       if (!userHasToggledSidebar) {
@@ -85,10 +85,10 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      const userMessage = await ChatService.addMessage(selectedChatId, message, true);
+      const userMessage = await ChatAPIService.addMessage(selectedChatId, message, true);
       chatInterfaceRef.current?.handleCreateMessage(userMessage);
 
-      const aiMessage = await ChatService.processUserMessage(selectedChatId, message);
+      const aiMessage = await ChatAPIService.processUserMessage(selectedChatId, message);
       chatInterfaceRef.current?.handleCreateMessage(aiMessage);
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -116,7 +116,7 @@ export default function Home() {
   ) => {
     try {
       // Create a new chat
-      const newChat = await ChatService.createChat(`${fileName}`, documentId);
+      const newChat = await ChatAPIService.createChat(`${fileName}`, documentId);
       chatListRef.current?.handleCreateChat(newChat);
       setSelectedChatId(newChat.id);
 
@@ -138,7 +138,7 @@ export default function Home() {
 
       // If analysis was successful, add the summary as an assistant message
       if (analysisResult.success && analysisResult.summary) {
-        const summaryMessage = await ChatService.addMessage(
+        const summaryMessage = await ChatAPIService.addMessage(
           newChat.id,
           analysisResult.summary,
           false // false means it's an assistant message
@@ -165,22 +165,22 @@ export default function Home() {
         <div className="flex items-center h-full">
           {/* Hamburger Menu Button - Always visible in the top bar */}
           <div className="flex items-center mr-2">
-            <Sling 
-              toggled={isSidebarOpen} 
+            <Sling
+              toggled={isSidebarOpen}
               toggle={setIsSidebarOpen}
               onToggle={() => setUserHasToggledSidebar(true)}
-              size={18} 
+              size={18}
               color={isSidebarOpen ? "#6366f1" : "#64748b"}
               rounded
               hideOutline
               duration={0.3}
             />
           </div>
-          
+
           {/* Page Title / Chat Title */}
           <div className="text-sm font-medium truncate ml-1">
-            {selectedChatId ? 
-              selectedChatTitle || t("chat.newChat") : 
+            {selectedChatId ?
+              selectedChatTitle || t("chat.newChat") :
               t("chat.welcomeTitle")}
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function Home() {
       {/* Main content below the header */}
       <div className="flex flex-1 mt-12 md:mt-14 overflow-hidden">
         {/* Left Sidebar - Fixed position on mobile, part of the layout on desktop */}
-        <aside 
+        <aside
           className={`fixed md:relative h-[calc(100vh-48px)] md:h-auto z-20 w-72 border-r bg-slate-50/95 dark:bg-slate-950/90 
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
             transition-transform duration-300 ease-in-out flex flex-col overflow-hidden`}

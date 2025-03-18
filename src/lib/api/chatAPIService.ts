@@ -2,8 +2,8 @@ import { Chat, ChatMessage } from '@/types/chat';
 
 const API_BASE = '/api';
 
-export class ChatService {
-  static async createChat(title: string, document_id?: string): Promise<Chat> {    
+export class ChatAPIService {
+  static async createChat(title: string, document_id?: string): Promise<Chat> {
     const response = await fetch(`${API_BASE}/chats`, {
       method: 'POST',
       headers: {

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { ChatService } from "@/lib/api/chatService";
+import { ChatAPIService } from "@/lib/api/chatAPIService";
 import { Chat, ChatFolder } from "@/types/chat";
 import { ChatList } from "./ChatList";
 import { useAuth } from "@/context/AuthContext";
@@ -39,7 +39,7 @@ export function ChatListContainer({
     }
     try {
       setIsLoading(true);
-      const fetchedChats = await ChatService.getAllChats();
+      const fetchedChats = await ChatAPIService.getAllChats();
       setChats(fetchedChats);
     } catch (error) {
       console.error("Failed to load chats:", error);
@@ -80,7 +80,10 @@ export function ChatListContainer({
 
   const handleDeleteChat = async (chatId: string) => {
     try {
-      await ChatService.deleteChat(chatId);
+      await ChatAPIService.deleteChat(chatId);
+
+      //also need to remove document
+
       setChats(chats.filter((chat) => chat.id !== chatId));
       toast(t("chat.deletedSuccessfully"));
     } catch (error) {
