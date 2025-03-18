@@ -15,8 +15,6 @@ export async function deleteFile(filePath: string) {
     }
 }
 
-// Delete file by chatId
-
 // Upload file to supabase storage
 export async function uploadFile(filePath: string, file: File) {
     const { error } = await (await createSupabaseServerClient())

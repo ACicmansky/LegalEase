@@ -5,6 +5,7 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
 import { DocumentAnalysisRecord } from '../types';
+import { getDocumentById } from "@/lib/services/documentService";
 
 // Tool for extracting text content from documents
 export class DocumentContentExtractor extends Tool {
@@ -18,27 +19,23 @@ export class DocumentContentExtractor extends Tool {
   async _call(documentId: string): Promise<string> {
     try {
       // Fetch document metadata from database
-      const supabase = await createSupabaseServerClient();
-      const { data: document, error } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('id', documentId)
-        .single();
+      const supabaseClient = await createSupabaseServerClient();
+      const { data: document, error } = await getDocumentById(documentId, supabaseClient);
 
       if (error || !document) {
         throw new Error(`Document not found: ${error?.message || 'Unknown error'}`);
       }
 
       // Get document file from storage
-      const { data: userData } = await supabase.auth.getUser();
+      const { data: userData } = await supabaseClient.auth.getUser();
       const userId = userData.user?.id;
-      
+
       if (!userId) {
         throw new Error('User not authenticated');
       }
 
       // List files in the folder to find the document
-      const { data: files, error: listError } = await supabase.storage
+      const { data: files, error: listError } = await supabaseClient.storage
         .from('documents')
         .list(`${userId}/${documentId}`);
 
@@ -49,9 +46,9 @@ export class DocumentContentExtractor extends Tool {
       // Get the first file (there should only be one per document ID)
       const fileName = files[0].name;
       const filePath = `${userId}/${documentId}/${fileName}`;
-      
+
       // Download the file
-      const { data: fileData, error: downloadError } = await supabase.storage
+      const { data: fileData, error: downloadError } = await supabaseClient.storage
         .from('documents')
         .download(filePath);
 
@@ -80,7 +77,7 @@ export class DocumentContentExtractor extends Tool {
       // Load and extract text
       const docs = await loader.load();
       const fullText = docs.map(doc => doc.pageContent).join('\n\n');
-      
+
       if (!fullText.trim()) {
         throw new Error('No text content extracted from document');
       }
@@ -106,13 +103,13 @@ export class DocumentAnalysisStore extends Tool {
     try {
       const analysisData = JSON.parse(input) as DocumentAnalysisRecord;
       const { document_id } = analysisData;
-      
+
       if (!document_id) {
         throw new Error('Document ID is required');
       }
 
       const supabase = await createSupabaseServerClient();
-      
+
       // Check if analysis already exists
       const { data: existingAnalysis } = await supabase
         .from('document_analyses')
@@ -136,7 +133,7 @@ export class DocumentAnalysisStore extends Tool {
         if (error) {
           throw new Error(`Failed to update analysis: ${error.message}`);
         }
-        
+
         return `Successfully updated analysis for document ${document_id}`;
       } else {
         // Create new analysis
@@ -153,7 +150,7 @@ export class DocumentAnalysisStore extends Tool {
         if (error) {
           throw new Error(`Failed to store analysis: ${error.message}`);
         }
-        
+
         return `Successfully stored analysis for document ${document_id}`;
       }
     } catch (error) {

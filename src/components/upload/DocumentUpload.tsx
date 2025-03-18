@@ -13,7 +13,6 @@ interface UploadedFile {
   status: 'pending' | 'uploading' | 'processing' | 'complete' | 'error';
   progress: number;
   error?: string;
-  downloadUrl?: string;
   documentId?: string;
 }
 
@@ -67,16 +66,11 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
           )
         );
 
-        // Get the public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('documents')
-          .getPublicUrl(filePath);
-
         // Update status to processing
         setUploadedFiles((prev) =>
           prev.map((f) =>
             f.id === fileEntry.id
-              ? { ...f, status: 'processing', downloadUrl: publicUrl }
+              ? { ...f, status: 'processing' }
               : f
           )
         );

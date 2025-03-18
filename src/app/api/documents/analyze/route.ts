@@ -1,9 +1,9 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
 import { processDocument } from '@/lib/agents/documentProcessingAgent';
 import { ProcessingStage } from '@/lib/agents/types';
+import { getDocumentById } from '@/lib/services/documentService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,15 +15,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Get document info from database
-    const supabase = await createSupabaseServerClient();
-    const { data: document, error: docError } = await supabase
-      .from('documents')
-      .select('*')
-      .eq('id', documentId)
-      .single();
+    const { data: document, error: docError } = await getDocumentById(documentId);
 
     if (docError || !document) {
-      console.error('Error fetching document:', docError);
       return NextResponse.json(
         { error: `Document not found: ${docError?.message || 'Unknown error'}` },
         { status: 404 }
