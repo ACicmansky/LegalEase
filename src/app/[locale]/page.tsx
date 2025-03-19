@@ -76,7 +76,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!getUserLoading && !user) {
-      router.push(`/${routing.defaultLocale}/auth/login`);
+      router.push(`/${routing.defaultLocale}/login`);
     }
   }, [getUserLoading, user, router, routing.defaultLocale]);
 
