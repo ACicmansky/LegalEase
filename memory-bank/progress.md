@@ -27,7 +27,7 @@
   - [x] Document analysis endpoint
   - [x] Message creation with user/assistant designation
 - [x] Message type system improvements
-  - [x] Tiered message hierarchy (BaseMessage, ChatMessage, MessageRecord)
+  - [x] Tiered message hierarchy (ChatMessage, MessageRecord)
   - [x] Enhanced MessageSource with optional fields
   - [x] Integration across components, API routes, and agents
 

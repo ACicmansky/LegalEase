@@ -33,7 +33,6 @@ The project continues to improve the AI Agents architecture with a focus on type
 
 ### 3. Consolidated Type System
 - Tiered message type hierarchy
-  - BaseMessage: Core fields for all messages
   - ChatMessage: Extended for frontend display with user attribution
   - MessageRecord: Extended for backend/agent processing with metadata
 - Enhanced MessageSource type with optional fields

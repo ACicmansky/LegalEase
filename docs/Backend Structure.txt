@@ -64,7 +64,6 @@ Handled by Supabase Auth
 - document: uuid (Optional, reference to document)
 - folder: uuid (Optional, reference to folder)
 - title: text (Optional)
-- last_message: text (Optional)
 
 ### **4.2 Messages Table**
 - id: uuid (Primary Key)
