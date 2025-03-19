@@ -63,7 +63,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
             </ul>
           </div>
         )}
-        
+
         {!isUser && followUpQuestions && followUpQuestions.length > 0 && (
           <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-2">
             {followUpQuestions.map((question, index) => (
@@ -71,10 +71,11 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
                 key={index}
                 variant="outline"
                 size="sm"
-                className="text-xs sm:text-sm bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600"
+                className="text-xs sm:text-sm bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600 max-w-full truncate"
+                title={question}
                 onClick={() => handleFollowUpClick(question)}
               >
-                {question}
+                <span className="truncate block">{question}</span>
               </Button>
             ))}
           </div>
