@@ -22,24 +22,20 @@ export enum ConversationIntent {
   General = "general",
 }
 
-// Base message type for frontend display (minimal fields needed)
-export interface BaseMessage {
+
+// Display optimized message type with user information
+export interface ChatMessage {
   id: string;
   content: string;
   is_user: boolean;
   created_at: Date | string;
   chat_id: string;
   sources?: MessageSource[];
-}
-
-// Display optimized message type with user information
-export interface ChatMessage extends BaseMessage {
   user_id: string;
 }
 
 // Extended message type for database and agent processing
-export interface MessageRecord extends BaseMessage {
-  user_id?: string;
+export interface ChatMessageExtended extends ChatMessage {
   metadata?: {
     intent?: ConversationIntent;
     guidance?: LegalGuidance;
@@ -50,7 +46,6 @@ export interface MessageRecord extends BaseMessage {
 export interface Chat {
   id: string;
   title?: string;
-  last_message?: string;
   created_at: Date;
   user_id: string;
   document_id: string;

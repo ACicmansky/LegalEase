@@ -1,46 +1,9 @@
+'use server';
+
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
-
-/**
- * Creates a message in the database
- * 
- * @param chatId - The ID of the chat
- * @param content - The message content
- * @param isUser - Whether the message is from a user
- * @returns The created message
- */
-async function createMessage(chatId: string, content: string, isUser: boolean) {
-  const supabase = await createSupabaseServerClient();
-
-  // Store message
-  const { data: message, error: messageError } = await supabase
-    .from('messages')
-    .insert({
-      content,
-      chat_id: chatId,
-      is_user: isUser
-    })
-    .select()
-    .single();
-
-  if (messageError) {
-    throw new Error(`Failed to create message: ${messageError.message}`);
-  }
-
-  // Update chat's last_message if it's a user message
-  if (isUser) {
-    const { error: updateError } = await supabase
-      .from('chats')
-      .update({ last_message: content })
-      .eq('id', chatId);
-
-    if (updateError) {
-      console.error('Failed to update chat last_message:', updateError);
-    }
-  }
-
-  return message;
-}
+import { getChatById } from '@/lib/services/chatsService';
+import { createMessage } from '@/lib/services/messagesService';
 
 // POST /api/chats/[chatId]/messages - Add a message to a chat
 export async function POST(
@@ -48,24 +11,19 @@ export async function POST(
   { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const supabase = await createSupabaseServerClient();
     const { chatId } = await params;
+    const supabaseClient = await createSupabaseServerClient();
 
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify chat exists and belongs to user
-    const { data: chat, error: chatError } = await supabase
-      .from('chats')
-      .select(`*, documents(*)`)
-      .eq('id', chatId)
-      .eq('user_id', user.id)
-      .single();
+    const chat = await getChatById(chatId, user.id, false, supabaseClient);
 
-    if (chatError || !chat) {
+    if (!chat) {
       return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
@@ -73,7 +31,7 @@ export async function POST(
     const { content, is_user } = await request.json();
 
     // Create the message
-    const message = await createMessage(chatId, content, is_user);
+    const message = await createMessage(chatId, content, is_user, supabaseClient);
     return NextResponse.json(message);
   } catch (error) {
     console.error('Message creation error:', error);

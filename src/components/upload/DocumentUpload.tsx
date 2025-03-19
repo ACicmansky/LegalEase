@@ -45,8 +45,8 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
           )
         );
 
-        const supabase = createSupabaseClient();
-        const userId = (await supabase.auth.getUser()).data.user?.id;
+        const supabaseClient = createSupabaseClient();
+        const userId = (await supabaseClient.auth.getUser()).data.user?.id;
         const filePath = `${userId}/${fileEntry.id}/${fileEntry.file.name}`;
 
         // Set initial progress

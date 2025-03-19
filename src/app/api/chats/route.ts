@@ -1,30 +1,25 @@
-import { NextResponse } from 'next/server';
+'use server';
 
+import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
+import { getChats, createChat } from "@/lib/services/chatsService";
 
 // GET /api/chats - Get all chats for the current user
 export async function GET() {
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabaseClient = await createSupabaseServerClient();
 
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get all chats for the user
-    const { data: chats, error } = await supabase
-      .from('chats')
-      .select(`
-        *,
-        messages (*)
-      `)
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    const chats = await getChats(user.id, supabaseClient);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!chats) {
+      return NextResponse.json({ error: 'Failed to fetch chats' }, { status: 500 });
     }
 
     return NextResponse.json(chats);
@@ -52,20 +47,10 @@ export async function POST(request: Request) {
     const { title, document_id } = await request.json();
 
     // Create chat
-    const { data: chat, error } = await supabase
-      .from('chats')
-      .insert({
-        title: title,
-        document_id: document_id,
-      })
-      .select(`
-        *,
-        messages (*)
-      `)
-      .single();
+    const chat = await createChat(title, document_id, supabase);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!chat) {
+      return NextResponse.json({ error: 'Failed to create chat' }, { status: 500 });
     }
 
     return NextResponse.json(chat);

@@ -8,7 +8,7 @@ import {
   KeyInformation,
   LegalAnalysis,
   ConsistencyCheck,
-  DocumentAnalysisRecord
+  DocumentAnalysis
 } from "./types";
 import { DocumentContentExtractor, DocumentAnalysisStore } from "./tools/documentTools";
 import { extractKeyInformationPrompt, performLegalAnalysisPrompt, checkConsistencyPrompt, generateSummaryPrompt } from "@/lib/agents/prompts/documentProcessingAgentPrompts";
@@ -48,7 +48,7 @@ export async function processDocument(documentId: string, documentName: string):
     documentContent: "",
     processingStage: ProcessingStage.Started
   };
-  
+
   try {
     // Step 1: Extract content
     console.debug(initialState.processingStage);
@@ -56,40 +56,40 @@ export async function processDocument(documentId: string, documentName: string):
     if (contentState.processingStage === ProcessingStage.Error) {
       return contentState;
     }
-    
+
     // Step 2: Extract key information
     console.debug(contentState.processingStage);
     const keyInfoState = await extractKeyInformation(contentState);
     if (keyInfoState.processingStage === ProcessingStage.Error) {
       return keyInfoState;
     }
-    
+
     // Step 3: Perform legal analysis
     console.debug(keyInfoState.processingStage);
     const legalAnalysisState = await performLegalAnalysis(keyInfoState);
     if (legalAnalysisState.processingStage === ProcessingStage.Error) {
       return legalAnalysisState;
     }
-    
+
     // Step 4: Check consistency
     console.debug(legalAnalysisState.processingStage);
     const consistencyState = await checkConsistency(legalAnalysisState);
     if (consistencyState.processingStage === ProcessingStage.Error) {
       return consistencyState;
     }
-    
+
     // Step 5: Generate summary
     console.debug(consistencyState.processingStage);
     const summaryState = await generateSummary(consistencyState);
     if (summaryState.processingStage === ProcessingStage.Error) {
       return summaryState;
     }
-    
+
     // Step 6: Store results
     console.debug(summaryState.processingStage);
     const finalState = await storeResults(summaryState);
     return finalState;
-    
+
   } catch (error) {
     console.error("Error processing document:", error);
     return {
@@ -109,7 +109,7 @@ async function extractContent(state: DocumentState): Promise<DocumentState> {
   try {
     // Use document content extractor tool
     const content = await documentContentExtractor.invoke(state.documentId);
-    
+
     return {
       ...state,
       documentContent: content,
@@ -138,11 +138,11 @@ async function extractKeyInformation(state: DocumentState): Promise<DocumentStat
         documentContent: state.documentContent,
         agent_scratchpad: []
       });
-    
+
     // Extract and parse the JSON result
     const jsonString = extractJsonFromString(chainResult);
     const keyInformation = JSON.parse(jsonString) as KeyInformation;
-    
+
     return {
       ...state,
       keyInformation,
@@ -172,11 +172,11 @@ async function performLegalAnalysis(state: DocumentState): Promise<DocumentState
         keyInformation: JSON.stringify(state.keyInformation),
         agent_scratchpad: []
       });
-    
+
     // Extract and parse the JSON result
     const jsonString = extractJsonFromString(chainResult);
     const legalAnalysis = JSON.parse(jsonString) as LegalAnalysis;
-    
+
     return {
       ...state,
       legalAnalysis,
@@ -207,11 +207,11 @@ async function checkConsistency(state: DocumentState): Promise<DocumentState> {
         legalAnalysis: JSON.stringify(state.legalAnalysis),
         agent_scratchpad: []
       });
-    
+
     // Extract and parse the JSON result
     const jsonString = extractJsonFromString(chainResult);
     const consistencyChecks = JSON.parse(jsonString) as ConsistencyCheck[];
-    
+
     return {
       ...state,
       consistencyChecks,
@@ -243,7 +243,7 @@ async function generateSummary(state: DocumentState): Promise<DocumentState> {
         consistencyChecks: JSON.stringify(state.consistencyChecks),
         agent_scratchpad: []
       });
-    
+
     return {
       ...state,
       summary: chainResult,
@@ -265,17 +265,17 @@ async function generateSummary(state: DocumentState): Promise<DocumentState> {
 async function storeResults(state: DocumentState): Promise<DocumentState> {
   try {
     // Prepare the data to store in the correct database format
-    const analysisData: DocumentAnalysisRecord = {
+    const analysisData: DocumentAnalysis = {
       document_id: state.documentId,
       key_information: state.keyInformation!,
       legal_analysis: state.legalAnalysis!,
       consistency_checks: state.consistencyChecks!,
       summary: state.summary!
     };
-    
+
     // Store the results
     await documentAnalysisStore.invoke(JSON.stringify(analysisData));
-    
+
     return {
       ...state,
       processingStage: ProcessingStage.Complete

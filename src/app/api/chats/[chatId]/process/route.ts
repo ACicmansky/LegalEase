@@ -1,8 +1,11 @@
+'use server';
+
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
 import { processConversation } from '@/lib/agents/conversationalAgent';
 import { ConversationProcessingStage } from '@/lib/agents/types';
-import { MessageRecord } from '@/types/chat';
+import { getChatById } from '@/lib/services/chatsService';
+import { createMessageExtended, createMessage } from '@/lib/services/messagesService';
 
 // POST /api/chats/[chatId]/process - Process a message through the Conversational Agent
 export async function POST(
@@ -10,24 +13,19 @@ export async function POST(
   { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const supabase = await createSupabaseServerClient();
     const { chatId } = await params;
+    const supabaseClient = await createSupabaseServerClient();
 
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify chat exists and belongs to user
-    const { data: chat, error: chatError } = await supabase
-      .from('chats')
-      .select(`*, documents(*)`)
-      .eq('id', chatId)
-      .eq('user_id', user.id)
-      .single();
+    const chat = await getChatById(chatId, user.id, false, supabaseClient);
 
-    if (chatError || !chat) {
+    if (!chat) {
       return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
@@ -40,51 +38,45 @@ export async function POST(
     try {
       // Process the message through the conversational agent
       const result = await processConversation(chatId, content, chat.document_id);
-      
+
       if (result.processingStage === ConversationProcessingStage.Error) {
         throw new Error(result.error || "Error processing message");
       }
-      
-      // Prepare message record based on conversation result
-      const messageData: Partial<MessageRecord> = {
-        chat_id: chatId,
-        content: result.response || "I'm sorry, I couldn't process your request.",
-        is_user: false,
-        sources: result.sources || [],
-        metadata: {
+
+      // Store the assistant response in the database
+      const message = await createMessageExtended(
+        chatId,
+        result.response || "Prepáčte, nepodarilo sa mi spracovať vašu požiadavku.",
+        false,
+        result.sources || [],
+        {
           intent: result.intent,
           guidance: result.guidance,
           followUpQuestions: result.followUpQuestions
-        }
-      };
-      
-      // Store the assistant response in the database
-      const { data, error } = await supabase
-        .from('messages')
-        .insert(messageData)
-        .select()
-        .single();
-        
-      if (error) {
-        throw new Error(`Failed to create assistant message: ${error.message}`);
+        },
+        supabaseClient
+      );
+
+      if (!message) {
+        throw new Error('Failed to create assistant message');
       }
-      
-      return NextResponse.json(data);
+
+      return NextResponse.json(message);
     } catch (processingError) {
       console.error("Error processing user message:", processingError);
-      
+
       // Create fallback response
-      const { data } = await supabase
-        .from('messages')
-        .insert({
-          chat_id: chatId,
-          content: "I'm sorry, I encountered an error processing your request. Please try again.",
-          is_user: false
-        })
-        .select()
-        .single();
-        
-      return NextResponse.json(data);
+      const message = await createMessage(
+        chatId,
+        "Prepáčte, nepodarilo sa mi spracovať vašu požiadavku. Opýtajte sa znova prosím.",
+        false,
+        supabaseClient)
+
+      if (!message) {
+        throw new Error('Failed to create fallback message');
+      };
+
+      return NextResponse.json(message);
     }
   } catch (error) {
     console.error('Message processing error:', error);

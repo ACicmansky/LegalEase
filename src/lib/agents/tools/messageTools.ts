@@ -1,5 +1,7 @@
 import { Tool } from "@langchain/core/tools";
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
+import { getMessagesByChatId } from "@/lib/services/messagesService";
+import { getDocumentAnalysis } from "@/lib/services/documentAnalysesService";
 
 /**
  * Tool for fetching conversation history
@@ -14,21 +16,14 @@ export class ConversationHistoryFetcher extends Tool {
 
   async _call(chatId: string): Promise<string> {
     try {
-      const supabase = await createSupabaseServerClient();
+      const messages = await getMessagesByChatId(chatId, 10);
 
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('chat_id', chatId)
-        .order('created_at', { ascending: true })
-        .limit(10);
-
-      if (error) {
-        throw new Error(`Failed to fetch conversation history: ${error.message}`);
+      if (!messages) {
+        return "No conversation history available.";
       }
 
       // Format conversation history
-      const formattedHistory = (data || [])
+      const formattedHistory = messages
         .map(msg => `${msg.is_user ? 'User' : 'Assistant'}: ${msg.content}`)
         .join('\n\n');
 
@@ -59,30 +54,22 @@ export class DocumentContextFetcher extends Tool {
 
       const supabase = await createSupabaseServerClient();
 
-      const { data, error } = await supabase
-        .from('document_analyses')
-        .select('*')
-        .eq('document_id', documentId)
-        .single();
+      const analysis = await getDocumentAnalysis(documentId, supabase);
 
-      if (error) {
-        throw new Error(`Failed to fetch document analysis: ${error.message}`);
-      }
-
-      if (!data) {
+      if (!analysis) {
         return "Document analysis not found.";
       }
 
       // Format document context
       return `
 DOCUMENT SUMMARY:
-${data.summary}
+${analysis.summary}
 
 KEY INFORMATION:
-${JSON.stringify(data.key_information, null, 2)}
+${JSON.stringify(analysis.key_information, null, 2)}
 
 LEGAL ANALYSIS:
-${JSON.stringify(data.legal_analysis, null, 2)}
+${JSON.stringify(analysis.legal_analysis, null, 2)}
       `;
     } catch (error) {
       console.error('Error fetching document context:', error);

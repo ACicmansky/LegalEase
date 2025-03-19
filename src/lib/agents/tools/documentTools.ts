@@ -4,8 +4,9 @@ import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { BaseDocumentLoader } from "langchain/document_loaders/base";
-import { DocumentAnalysisRecord } from '../types';
+import { DocumentAnalysis } from '../types';
 import { getDocumentById } from "@/lib/services/documentService";
+import { createDocumentAnalysis, checkDocumentAnalysisExists, updateDocumentAnalysis } from "@/lib/services/documentAnalysesService";
 
 // Tool for extracting text content from documents
 export class DocumentContentExtractor extends Tool {
@@ -20,10 +21,10 @@ export class DocumentContentExtractor extends Tool {
     try {
       // Fetch document metadata from database
       const supabaseClient = await createSupabaseServerClient();
-      const { data: document, error } = await getDocumentById(documentId, supabaseClient);
+      const document = await getDocumentById(documentId, supabaseClient);
 
-      if (error || !document) {
-        throw new Error(`Document not found: ${error?.message || 'Unknown error'}`);
+      if (!document) {
+        throw new Error(`Document not found`);
       }
 
       // Get document file from storage
@@ -101,7 +102,7 @@ export class DocumentAnalysisStore extends Tool {
 
   async _call(input: string): Promise<string> {
     try {
-      const analysisData = JSON.parse(input) as DocumentAnalysisRecord;
+      const analysisData = JSON.parse(input) as DocumentAnalysis;
       const { document_id } = analysisData;
 
       if (!document_id) {
@@ -111,44 +112,23 @@ export class DocumentAnalysisStore extends Tool {
       const supabase = await createSupabaseServerClient();
 
       // Check if analysis already exists
-      const { data: existingAnalysis } = await supabase
-        .from('document_analyses')
-        .select('id')
-        .eq('document_id', document_id)
-        .maybeSingle();
+      const existingAnalysis = await checkDocumentAnalysisExists(document_id, supabase);
 
       if (existingAnalysis) {
         // Update existing analysis
-        const { error } = await supabase
-          .from('document_analyses')
-          .update({
-            key_information: analysisData.key_information,
-            legal_analysis: analysisData.legal_analysis,
-            consistency_checks: analysisData.consistency_checks,
-            summary: analysisData.summary,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', existingAnalysis.id);
+        const updatedAnalysis = await updateDocumentAnalysis(document_id, analysisData, supabase);
 
-        if (error) {
-          throw new Error(`Failed to update analysis: ${error.message}`);
+        if (!updatedAnalysis) {
+          throw new Error('Failed to update document analysis');
         }
 
         return `Successfully updated analysis for document ${document_id}`;
       } else {
         // Create new analysis
-        const { error } = await supabase
-          .from('document_analyses')
-          .insert({
-            document_id: document_id,
-            key_information: analysisData.key_information,
-            legal_analysis: analysisData.legal_analysis,
-            consistency_checks: analysisData.consistency_checks,
-            summary: analysisData.summary
-          });
+        const documentAnalysis = await createDocumentAnalysis(analysisData, supabase);
 
-        if (error) {
-          throw new Error(`Failed to store analysis: ${error.message}`);
+        if (!documentAnalysis) {
+          throw new Error('Failed to create document analysis');
         }
 
         return `Successfully stored analysis for document ${document_id}`;

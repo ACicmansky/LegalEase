@@ -1,6 +1,7 @@
 'use server';
 
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
+import { Document } from "@/types/document";
 
 // Create document record in Supabase
 export async function addDocument(
@@ -8,7 +9,7 @@ export async function addDocument(
   name: string,
   chat_id: string,
   supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>
-) {
+): Promise<Document> {
   const client = supabaseClient || await createSupabaseServerClient();
 
   const { data: document, error: documentError } = await client
@@ -29,23 +30,8 @@ export async function addDocument(
   return document;
 }
 
-// Delete document record from Supabase
-export async function deleteDocument(id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>) {
-  const client = supabaseClient || await createSupabaseServerClient();
-
-  const { error: documentError } = await client
-    .from('documents')
-    .delete()
-    .eq('id', id);
-
-  if (documentError) {
-    console.error('Failed to delete document record:', documentError);
-    throw new Error(`Failed to delete document record: ${documentError.message}`);
-  }
-}
-
 // Get document by ID
-export async function getDocumentById(id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>) {
+export async function getDocumentById(id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<Document> {
   const client = supabaseClient || await createSupabaseServerClient();
 
   const { data: document, error: documentError } = await client
@@ -60,4 +46,19 @@ export async function getDocumentById(id: string, supabaseClient?: Awaited<Retur
   }
 
   return document;
+}
+
+// Delete document record from Supabase
+export async function deleteDocument(id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>) {
+  const client = supabaseClient || await createSupabaseServerClient();
+
+  const { error: documentError } = await client
+    .from('documents')
+    .delete()
+    .eq('id', id);
+
+  if (documentError) {
+    console.error('Failed to delete document record:', documentError);
+    throw new Error(`Failed to delete document record: ${documentError.message}`);
+  }
 }

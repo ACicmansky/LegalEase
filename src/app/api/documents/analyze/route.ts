@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Get document info from database
-    const { data: document, error: docError } = await getDocumentById(documentId);
+    const document = await getDocumentById(documentId);
 
-    if (docError || !document) {
+    if (!document) {
       return NextResponse.json(
-        { error: `Document not found: ${docError?.message || 'Unknown error'}` },
+        { error: `Document not found` },
         { status: 404 }
       );
     }

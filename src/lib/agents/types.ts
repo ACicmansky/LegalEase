@@ -5,13 +5,13 @@ export interface DocumentState {
   documentId: string;
   documentContent: string;
   documentName: string;
-  
+
   // Analysis results
   keyInformation?: KeyInformation;
   legalAnalysis?: LegalAnalysis;
   consistencyChecks?: ConsistencyCheck[];
   summary?: string;
-  
+
   // Processing metadata
   processingStage: ProcessingStage;
   error?: string;
@@ -107,7 +107,7 @@ export interface ConsistencyCheck {
 /**
  * Document analysis record structure matching the database schema
  */
-export interface DocumentAnalysisRecord {
+export interface DocumentAnalysis {
   id?: string;                    // UUID, auto-generated
   document_id: string;            // Foreign key to documents table
   key_information: KeyInformation;
