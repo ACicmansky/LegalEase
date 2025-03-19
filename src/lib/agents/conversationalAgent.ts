@@ -14,7 +14,7 @@ import { extractJsonFromString } from "@/lib/utils/textProcessing";
 // Create a model instance
 const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-  modelName: "gemini-2.0-flash-lite",
+  modelName: "gemini-2.0-flash",
   temperature: 0.2,
 });
 
@@ -59,7 +59,7 @@ export async function processConversation(
     console.debug(withResponse.processingStage);
     const finalState = await generateGuidance(withResponse);
     console.debug(finalState.processingStage);
-    
+
     // Return the final state
     return {
       ...finalState,
@@ -82,13 +82,13 @@ async function gatherContext(state: ConversationState): Promise<ConversationStat
   try {
     // Fetch conversation history
     const conversationHistory = await conversationHistoryFetcher.invoke(state.chatId);
-    
+
     // Fetch document context if available
     let documentContext = "";
     if (state.documentId) {
       documentContext = await documentContextFetcher.invoke(state.documentId);
     }
-    
+
     // Update state with gathered context
     return {
       ...state,
@@ -117,15 +117,15 @@ async function generateResponse(state: ConversationState): Promise<ConversationS
         documentContext: state.documentContext || "No document context available.",
         agent_scratchpad: [] // Required placeholder for the prompt template
       });
-    
+
     // Extract and parse JSON from the 
     const jsonString = extractJsonFromString(chainResult);
     const parsedResponse = JSON.parse(jsonString);
-    
+
     if (!parsedResponse || typeof parsedResponse !== 'object') {
       throw new Error("Failed to parse response as JSON");
     }
-    
+
     // Extract components from the response
     const {
       text = "I'm sorry, I couldn't process your request.",
@@ -138,7 +138,7 @@ async function generateResponse(state: ConversationState): Promise<ConversationS
       sources: MessageSource[];
       followUpQuestions: string[];
     };
-    
+
     // Update state with response information
     return {
       ...state,
@@ -165,7 +165,7 @@ async function generateGuidance(state: ConversationState): Promise<ConversationS
       processingStage: ConversationProcessingStage.Complete
     };
   }
-  
+
   try {
     // Use guidance prompt to generate structured legal guidance
     const guidanceResult = await guidancePrompt
@@ -178,15 +178,15 @@ async function generateGuidance(state: ConversationState): Promise<ConversationS
         initialResponse: state.response || "",
         agent_scratchpad: [] // Required placeholder for the prompt template
       });
-    
+
     // Extract and parse JSON from the guidance response
     const jsonString = extractJsonFromString(guidanceResult);
     const parsedGuidance = JSON.parse(jsonString);
-    
+
     if (!parsedGuidance || typeof parsedGuidance !== 'object') {
       throw new Error("Failed to parse guidance as JSON");
     }
-    
+
     // Extract guidance components
     const {
       steps = [],
@@ -194,7 +194,7 @@ async function generateGuidance(state: ConversationState): Promise<ConversationS
       timeframe = "",
       risks = []
     } = parsedGuidance as LegalGuidance;
-    
+
     // Create structured legal guidance
     const guidance: LegalGuidance = {
       steps,
@@ -202,7 +202,7 @@ async function generateGuidance(state: ConversationState): Promise<ConversationS
       timeframe,
       risks
     };
-    
+
     // Update state with guidance information
     return {
       ...state,
