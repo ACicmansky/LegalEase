@@ -6,6 +6,7 @@ import { processConversation } from '@/lib/agents/conversationalAgent';
 import { ConversationProcessingStage } from '@/lib/agents/types';
 import { getChatById } from '@/lib/services/chatsService';
 import { createMessageExtended, createMessage } from '@/lib/services/messagesService';
+import { MessageType } from '@/types/chat';
 
 // POST /api/chats/[chatId]/process - Process a message through the Conversational Agent
 export async function POST(
@@ -44,10 +45,11 @@ export async function POST(
       }
 
       // Store the assistant response in the database
+      const type = result.response ? MessageType.Assistant : MessageType.Error;
       const message = await createMessageExtended(
         chatId,
         result.response || "Prepáčte, nepodarilo sa mi spracovať vašu požiadavku.",
-        false,
+        type,
         result.sources || [],
         {
           intent: result.intent,
@@ -69,7 +71,7 @@ export async function POST(
       const message = await createMessage(
         chatId,
         "Prepáčte, nepodarilo sa mi spracovať vašu požiadavku. Opýtajte sa znova prosím.",
-        false,
+        MessageType.Error,
         supabaseClient)
 
       if (!message) {

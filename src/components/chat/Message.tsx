@@ -1,18 +1,19 @@
 'use client';
 
-import { ChatMessage, MessageSource } from '@/types/chat';
+import { ChatMessage, MessageSource, MessageType } from '@/types/chat';
 import DOMPurify from 'dompurify';
 import { useTranslations } from 'next-intl';
 import { marked } from 'marked';
 
-export function Message({ content, is_user, created_at, sources }: ChatMessage) {
+export function Message({ content, type, created_at, sources }: ChatMessage) {
   const t = useTranslations();
+  const isUser = type === MessageType.User;
   const sanitizedContent = DOMPurify.sanitize(marked.parse(content, { async: false }));
   return (
     <div
-      className={`flex ${is_user ? 'justify-end' : 'justify-start'} mb-4`}
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
     >
-      {!is_user && (
+      {!isUser && (
         <div className="flex-shrink-0 mr-2 mt-2">
           <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-purple-600 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5 text-white">
@@ -22,13 +23,13 @@ export function Message({ content, is_user, created_at, sources }: ChatMessage) 
         </div>
       )}
       <div
-        className={`max-w-[85%] sm:max-w-[80%] rounded-lg p-3 sm:p-4 ${is_user
-            ? 'bg-purple-600 text-white border-2 border-purple-700'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-purple-600'
+        className={`max-w-[85%] sm:max-w-[80%] rounded-lg p-3 sm:p-4 ${isUser
+          ? 'bg-purple-600 text-white border-2 border-purple-700'
+          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-purple-600'
           }`}
       >
         <div className="prose dark:prose-invert max-w-none prose-sm sm:prose-base break-words">
-          <p className="text-sm sm:text-base font-semibold mb-1">{is_user ? t('chat.you') : t('chat.bot')}</p>
+          <p className="text-sm sm:text-base font-semibold mb-1">{isUser ? t('chat.you') : t('chat.bot')}</p>
           <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
         </div>
 

@@ -1,13 +1,13 @@
 'use server';
 
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
-import { ChatMessage, ChatMessageExtended, MessageSource } from "@/types/chat";
+import { ChatMessage, ChatMessageExtended, MessageSource, MessageType } from "@/types/chat";
 
 //Create ChatMessage
 export async function createMessage(
     chat_id: string,
     content: string,
-    isUser: boolean,
+    type: MessageType,
     supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>
 ): Promise<ChatMessage> {
     const client = supabaseClient || await createSupabaseServerClient();
@@ -18,7 +18,7 @@ export async function createMessage(
         .insert({
             content,
             chat_id,
-            is_user: isUser
+            type
         })
         .select()
         .single();
@@ -34,7 +34,7 @@ export async function createMessage(
 export async function createMessageExtended(
     chat_id: string,
     content: string,
-    isUser: boolean,
+    type: MessageType,
     sources: MessageSource[],
     metadata: ChatMessageExtended['metadata'],
     supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>
@@ -46,8 +46,8 @@ export async function createMessageExtended(
         .from('messages')
         .insert({
             content,
+            type,
             chat_id,
-            is_user: isUser,
             sources,
             metadata
         })
@@ -62,13 +62,14 @@ export async function createMessageExtended(
 }
 
 //Get ChatMessageExtended by chat_id with limit
-export async function getMessagesByChatId(chat_id: string, limit: number, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<ChatMessageExtended[]> {
+export async function getMessagesByChatId(chat_id: string, type: MessageType[], limit: number, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<ChatMessageExtended[]> {
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: messages, error: messagesError } = await client
         .from('messages')
         .select('*')
         .eq('chat_id', chat_id)
+        .in('type', type)
         .order('created_at', { ascending: true })
         .limit(limit);
 

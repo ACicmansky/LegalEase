@@ -2,6 +2,7 @@ import { Tool } from "@langchain/core/tools";
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 import { getMessagesByChatId } from "@/lib/services/messagesService";
 import { getDocumentAnalysis } from "@/lib/services/documentAnalysesService";
+import { MessageType } from "@/types/chat";
 
 /**
  * Tool for fetching conversation history
@@ -16,7 +17,7 @@ export class ConversationHistoryFetcher extends Tool {
 
   async _call(chatId: string): Promise<string> {
     try {
-      const messages = await getMessagesByChatId(chatId, 10);
+      const messages = await getMessagesByChatId(chatId, [MessageType.User, MessageType.Assistant], 10);
 
       if (!messages) {
         return "No conversation history available.";
@@ -24,7 +25,7 @@ export class ConversationHistoryFetcher extends Tool {
 
       // Format conversation history
       const formattedHistory = messages
-        .map(msg => `${msg.is_user ? 'User' : 'Assistant'}: ${msg.content}`)
+        .map(msg => `${msg.type === MessageType.User ? 'User' : 'Assistant'}: ${msg.content}`)
         .join('\n\n');
 
       return formattedHistory;
@@ -52,9 +53,9 @@ export class DocumentContextFetcher extends Tool {
         return "No document context available.";
       }
 
-      const supabase = await createSupabaseServerClient();
+      const supabaseClient = await createSupabaseServerClient();
 
-      const analysis = await getDocumentAnalysis(documentId, supabase);
+      const analysis = await getDocumentAnalysis(documentId, supabaseClient);
 
       if (!analysis) {
         return "Document analysis not found.";

@@ -22,12 +22,19 @@ export enum ConversationIntent {
   General = "general",
 }
 
+// Message type for filtering and categorization
+export enum MessageType {
+  User = "user",
+  Assistant = "assistant",
+  Summary = "summary",
+  Error = "error"
+}
 
 // Display optimized message type with user information
 export interface ChatMessage {
   id: string;
   content: string;
-  is_user: boolean;
+  type: MessageType;
   created_at: Date | string;
   chat_id: string;
   sources?: MessageSource[];

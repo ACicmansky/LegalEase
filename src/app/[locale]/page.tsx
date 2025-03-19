@@ -18,6 +18,7 @@ import { addDocument } from "@/lib/services/documentService";
 import { DocumentAnalyzeService } from '@/lib/api/documentAnalyzeService';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { routing } from "@/i18n/routing";
+import { MessageType } from "@/types/chat";
 
 export default function Home() {
   const t = useTranslations();
@@ -85,7 +86,7 @@ export default function Home() {
     if (!selectedChatId) return;
 
     try {
-      const userMessage = await ChatAPIService.addMessage(selectedChatId, message, true);
+      const userMessage = await ChatAPIService.addMessage(selectedChatId, message, MessageType.User);
       chatInterfaceRef.current?.handleCreateMessage(userMessage);
 
       const aiMessage = await ChatAPIService.processUserMessage(selectedChatId, message);
@@ -136,12 +137,12 @@ export default function Home() {
       // Call documents analyze API
       const analysisResult = await DocumentAnalyzeService.analyzeDocument(documentId);
 
-      // If analysis was successful, add the summary as an assistant message
+      // If analysis was successful, add the summary
       if (analysisResult.success && analysisResult.summary) {
         const summaryMessage = await ChatAPIService.addMessage(
           newChat.id,
           analysisResult.summary,
-          false // false means it's an assistant message
+          MessageType.Summary
         );
         chatInterfaceRef.current?.handleCreateMessage(summaryMessage);
       }

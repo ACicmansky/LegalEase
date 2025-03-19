@@ -28,10 +28,10 @@ export async function POST(
     }
 
     // Get request body
-    const { content, is_user } = await request.json();
+    const { content, type } = await request.json();
 
     // Create the message
-    const message = await createMessage(chatId, content, is_user, supabaseClient);
+    const message = await createMessage(chatId, content, type, supabaseClient);
     return NextResponse.json(message);
   } catch (error) {
     console.error('Message creation error:', error);

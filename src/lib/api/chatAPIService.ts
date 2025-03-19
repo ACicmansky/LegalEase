@@ -1,4 +1,4 @@
-import { Chat, ChatMessage } from '@/types/chat';
+import { Chat, ChatMessage, MessageType } from '@/types/chat';
 
 const API_BASE = '/api';
 
@@ -49,13 +49,13 @@ export class ChatAPIService {
     }
   }
 
-  static async addMessage(chatId: string, content: string, is_user: boolean): Promise<ChatMessage> {
+  static async addMessage(chatId: string, content: string, type: MessageType): Promise<ChatMessage> {
     const response = await fetch(`${API_BASE}/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content, is_user }),
+      body: JSON.stringify({ content, type }),
     });
 
     if (!response.ok) {
