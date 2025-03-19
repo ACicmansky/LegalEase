@@ -3,16 +3,16 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowUp } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { ChatAPIService } from '@/lib/api/chatAPIService';
-import { ChatMessage } from '@/types/chat';
+import { ChatMessage, MessageType } from '@/types/chat';
 import { Message } from './Message';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 
 interface ChatInterfaceProps {
   chatId?: string;
-  onSendMessage: (message: string) => Promise<void>;
   ref?: React.RefObject<ChatInterfaceRef | null>;
   isDocumentAnalyzing?: boolean;
 }
@@ -21,7 +21,7 @@ export interface ChatInterfaceRef {
   handleCreateMessage: (newChatMessage: ChatMessage) => Promise<void>;
 }
 
-export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing = false }: ChatInterfaceProps) {
+export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false }: ChatInterfaceProps) {
   const t = useTranslations();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +33,25 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
   const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage) => {
     setMessages((prevMessages) => [...prevMessages, newChatMessage]);
   }, []);
+
+  // Handle sending messages - moved from page.tsx
+  const handleSendMessage = async (message: string) => {
+    if (!chatId) return;
+
+    setIsLoading(true);
+    try {
+      const userMessage = await ChatAPIService.addMessage(chatId, message, MessageType.User);
+      await handleCreateMessage(userMessage);
+
+      const aiMessage = await ChatAPIService.processUserMessage(chatId, message);
+      await handleCreateMessage(aiMessage);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast.error(t("chat.failedToSend"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const isMounted = { current: true };
@@ -66,6 +85,24 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
     }
   }, [ref, handleCreateMessage]);
 
+  // Add event listener for follow-up question clicks - moved from page.tsx
+  useEffect(() => {
+    const handleFollowUpQuestionClick = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { question } = customEvent.detail;
+      
+      if (question && chatId) {
+        handleSendMessage(question);
+      }
+    };
+
+    document.addEventListener('followUpQuestionClicked', handleFollowUpQuestionClick);
+
+    return () => {
+      document.removeEventListener('followUpQuestionClicked', handleFollowUpQuestionClick);
+    };
+  }, [chatId]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -78,16 +115,13 @@ export function ChatInterface({ chatId, onSendMessage, ref, isDocumentAnalyzing 
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
-    setIsLoading(true);
     try {
-      await onSendMessage(inputValue);
+      await handleSendMessage(inputValue);
       setInputValue('');
       // Focus back on input after sending
       inputRef.current?.focus();
     } catch (error) {
       console.error('Failed to send message:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

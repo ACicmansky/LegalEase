@@ -75,27 +75,10 @@ export default function Home() {
   }, [signIn, user]);
 
   useEffect(() => {
-    if (!getUserLoading) {
-      if (!user) {
-        router.push(`/${routing.defaultLocale}/login`);
-      }
+    if (!getUserLoading && !user) {
+      router.push(`/${routing.defaultLocale}/auth/login`);
     }
-  }, [getUserLoading, user, router]);
-
-  const handleSendMessage = async (message: string) => {
-    if (!selectedChatId) return;
-
-    try {
-      const userMessage = await ChatAPIService.addMessage(selectedChatId, message, MessageType.User);
-      chatInterfaceRef.current?.handleCreateMessage(userMessage);
-
-      const aiMessage = await ChatAPIService.processUserMessage(selectedChatId, message);
-      chatInterfaceRef.current?.handleCreateMessage(aiMessage);
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      toast.error(t("chat.failedToSend"));
-    }
-  };
+  }, [getUserLoading, user, router, routing.defaultLocale]);
 
   // Update the selected chat title whenever the selectedChatId changes
   useEffect(() => {
@@ -263,7 +246,6 @@ export default function Home() {
             <ChatInterface
               ref={chatInterfaceRef}
               chatId={selectedChatId}
-              onSendMessage={handleSendMessage}
               isDocumentAnalyzing={isDocumentAnalyzing}
             />
           ) : (
