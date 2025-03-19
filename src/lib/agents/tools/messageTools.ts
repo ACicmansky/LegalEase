@@ -17,7 +17,7 @@ export class ConversationHistoryFetcher extends Tool {
 
   async _call(chatId: string): Promise<string> {
     try {
-      const messages = await getMessagesByChatId(chatId, [MessageType.User, MessageType.Assistant], 10);
+      const messages = await getMessagesByChatId(chatId, [MessageType.User, MessageType.Assistant], 6);
 
       if (!messages) {
         return "No conversation history available.";
