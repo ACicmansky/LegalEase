@@ -55,7 +55,7 @@ export interface Chat {
   title?: string;
   created_at: Date;
   user_id: string;
-  document_id: string;
+  document_id?: string;
   folder_id?: string;
   messages: ChatMessage[];
 }

@@ -66,14 +66,14 @@ export async function getChatById(
 }
 
 // Create chat
-export async function createChat(title: string, document_id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<Chat> {
+export async function createChat(title: string, document_id?: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<Chat> {
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: chat, error } = await client
         .from('chats')
         .insert({
             title,
-            document_id
+            document_id: document_id || null
         })
         .select(`*, messages (*)`)
         .single();
@@ -86,7 +86,26 @@ export async function createChat(title: string, document_id: string, supabaseCli
     return chat;
 }
 
-//Delete chat by id and user_id
+// Update chat title by id
+export async function updateChatTitle(chatId: string, title: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<Chat> {
+    const client = supabaseClient || await createSupabaseServerClient();
+
+    const { data: chat, error } = await client
+        .from('chats')
+        .update({ title })
+        .eq('id', chatId)
+        .select(`*`)
+        .single();
+
+    if (error) {
+        console.error('Failed to update chat:', error);
+        throw new Error(`Failed to update chat: ${error.message}`);
+    }
+
+    return chat;
+}
+
+// Delete chat by id and user_id
 export async function deleteChat(chatId: string, user_id: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>): Promise<void> {
     const client = supabaseClient || await createSupabaseServerClient();
 

@@ -20,6 +20,7 @@ interface ChatListContainerProps {
 export interface ChatListContainerRef {
   handleCreateChat: (newChat: Chat) => Promise<void>;
   getSelectedChatTitle: () => string | null;
+  updateChatTitle: (chatId: string, newTitle: string) => void;
 }
 
 export function ChatListContainer({
@@ -69,14 +70,26 @@ export function ChatListContainer({
     return selectedChat?.title || null;
   }, [selectedChatId, chats]);
 
+  // Update the title of a chat
+  const updateChatTitle = useCallback((chatId: string, newTitle: string) => {
+    setChats((prevChats) => 
+      prevChats.map(chat => 
+        chat.id === chatId 
+          ? { ...chat, title: newTitle } 
+          : chat
+      )
+    );
+  }, []);
+
   useEffect(() => {
     if (ref) {
       ref.current = {
         handleCreateChat,
         getSelectedChatTitle,
+        updateChatTitle,
       };
     }
-  }, [ref, handleCreateChat, getSelectedChatTitle]);
+  }, [ref, handleCreateChat, getSelectedChatTitle, updateChatTitle]);
 
   const handleDeleteChat = async (chatId: string) => {
     try {

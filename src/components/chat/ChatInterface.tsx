@@ -10,18 +10,20 @@ import { ChatMessage, MessageType } from '@/types/chat';
 import { Message } from './Message';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
+import { createChatTitle } from '@/lib/agents/chatTitleCreationAgent';
 
 interface ChatInterfaceProps {
   chatId?: string;
   ref?: React.RefObject<ChatInterfaceRef | null>;
   isDocumentAnalyzing?: boolean;
+  onTitleCreated?: (title: string) => void;
 }
 
 export interface ChatInterfaceRef {
   handleCreateMessage: (newChatMessage: ChatMessage) => Promise<void>;
 }
 
-export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false }: ChatInterfaceProps) {
+export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitleCreated }: ChatInterfaceProps) {
   const t = useTranslations();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,12 +36,20 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false }: Chat
     setMessages((prevMessages) => [...prevMessages, newChatMessage]);
   }, []);
 
-  // Handle sending messages - moved from page.tsx
+  // Handle sending messages
   const handleSendMessage = async (message: string) => {
     if (!chatId) return;
 
     setIsLoading(true);
     try {
+      if (messages.length === 0) {
+        const title = await createChatTitle(chatId, message);
+        // Notify parent component about the new title
+        if (onTitleCreated) {
+          onTitleCreated(title);
+        }
+      }
+
       const userMessage = await ChatAPIService.addMessage(chatId, message, MessageType.User);
       await handleCreateMessage(userMessage);
 
@@ -90,7 +100,7 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false }: Chat
     const handleFollowUpQuestionClick = (event: Event) => {
       const customEvent = event as CustomEvent;
       const { question } = customEvent.detail;
-      
+
       if (question && chatId) {
         handleSendMessage(question);
       }

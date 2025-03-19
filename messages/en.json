@@ -42,8 +42,9 @@
   },
   "chat": {
     "newChat": "New Chat",
+    "newChatWithDocument": "New Chat with Document",
     "title": "Chat with your Legal Documents",
-    "inputPlaceholder": "Ask a question about your documents...",
+    "inputPlaceholder": "Ask a question...",
     "loadingMessages": "Loading messages...",
     "noMessages": "No messages yet. Start the conversation!",
     "failedToLoad": "Failed to load messages. Please try again.",
@@ -69,7 +70,7 @@
     "dropzoneIdle": "Drag and drop legal PDF documents here, or click to select files",
     "fileAcceptedTypes": "Accepts {types} (max {size}MB per file)",
     "fileSize": "{size} MB",
-    "successToast": "Document uploaded and new chat created!",
+    "successToast": "New chat created!",
     "failedToCreateChat": "Failed to create new chat. Please try again.",
     "failedUpload": "Failed to upload document. Please try again."
   }

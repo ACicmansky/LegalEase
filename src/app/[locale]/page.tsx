@@ -94,6 +94,17 @@ export default function Home() {
     setIsUploadDialogOpen(true);
   };
 
+  const handleCreateChat = async () => {
+    const newChat = await ChatAPIService.createChat(t("chat.newChat"));
+    chatListRef.current?.handleCreateChat(newChat);
+    setSelectedChatId(newChat.id);
+
+    // Close sidebar on mobile after selecting a chat
+    if (window.innerWidth < 768) {
+      handleSidebarToggle(false);
+    }
+  };
+
   const handleCreateChatFromDocument = async (
     documentId: string,
     fileName: string
@@ -149,16 +160,7 @@ export default function Home() {
         <div className="flex items-center h-full">
           {/* Hamburger Menu Button - Always visible in the top bar */}
           <div className="flex items-center mr-2">
-            <Sling
-              toggled={isSidebarOpen}
-              toggle={setIsSidebarOpen}
-              onToggle={() => setUserHasToggledSidebar(true)}
-              size={18}
-              color={isSidebarOpen ? "#6366f1" : "#64748b"}
-              rounded
-              hideOutline
-              duration={0.3}
-            />
+            <Sling toggled={isSidebarOpen} toggle={setIsSidebarOpen} onToggle={() => setUserHasToggledSidebar(true)} size={18} color={isSidebarOpen ? "#6366f1" : "#64748b"} rounded hideOutline duration={0.3} />
           </div>
 
           {/* Page Title / Chat Title */}
@@ -173,16 +175,18 @@ export default function Home() {
       {/* Main content below the header */}
       <div className="flex flex-1 mt-12 md:mt-14 overflow-hidden">
         {/* Left Sidebar - Fixed position on mobile, part of the layout on desktop */}
-        <aside
-          className={`fixed md:relative h-[calc(100vh-48px)] md:h-auto z-20 w-72 border-r bg-slate-50/95 dark:bg-slate-950/90 
+        <aside className={`fixed md:relative h-[calc(100vh-48px)] md:h-auto z-20 w-72 border-r bg-slate-50/95 dark:bg-slate-950/90 
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-            transition-transform duration-300 ease-in-out flex flex-col overflow-hidden`}
-        >
-          {/* New Chat Button */}
-          <div className="p-4 border-b">
-            <Button onClick={handleOpenUploadDialog} className="w-full shadow-sm">
+            transition-transform duration-300 ease-in-out flex flex-col overflow-hidden`}>
+          <div className="p-4 space-y-3 border-b">
+            <Button onClick={handleCreateChat} className="w-full rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
               <Plus className="mr-2 h-4 w-4" />
               {t("chat.newChat")}
+            </Button>
+
+            <Button onClick={handleOpenUploadDialog} className="w-full rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("chat.newChatWithDocument")}
             </Button>
           </div>
 
@@ -215,14 +219,11 @@ export default function Home() {
                     {user.email}
                   </span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={async () => {
-                    await signOut();
-                    toast.success("Logged out successfully");
-                    router.refresh();
-                  }}
+                <Button variant="ghost" size="icon" onClick={async () => {
+                  await signOut();
+                  toast.success("Logged out successfully");
+                  router.refresh();
+                }}
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
@@ -233,10 +234,7 @@ export default function Home() {
 
         {/* Backdrop for mobile sidebar */}
         {isSidebarOpen && (
-          <div
-            className="md:hidden fixed inset-0 bg-black/30 z-10 mt-12"
-            onClick={() => handleSidebarToggle(false)}
-          />
+          <div className="md:hidden fixed inset-0 bg-black/30 z-10 mt-12" onClick={() => handleSidebarToggle(false)} />
         )}
 
         {/* Right Content Area - Use flex-grow to fill remaining space */}
@@ -247,16 +245,30 @@ export default function Home() {
               ref={chatInterfaceRef}
               chatId={selectedChatId}
               isDocumentAnalyzing={isDocumentAnalyzing}
+              onTitleCreated={(title) => {
+                setSelectedChatTitle(title);
+                // Also update the title in the chat list
+                if (chatListRef.current && selectedChatId) {
+                  chatListRef.current.updateChatTitle(selectedChatId, title);
+                }
+              }}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full p-4 md:p-8">
               <div className="max-w-md text-center space-y-5">
                 <h2 className="text-xl md:text-2xl font-semibold tracking-tight">{t("chat.welcomeTitle")}</h2>
                 <p className="text-sm md:text-base text-muted-foreground">{t("chat.welcomeDescription")}</p>
-                <Button onClick={handleOpenUploadDialog} className="mt-4">
-                  <Plus className="mr-2 h-4 w-4" />
-                  {t("chat.newChat")}
-                </Button>
+                <div className="p-4 space-y-3">
+                  <Button onClick={handleCreateChat} className="w-full max-w-xs mx-auto rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    <Plus className="mr-2 h-4 w-4" />
+                    {t("chat.newChat")}
+                  </Button>
+
+                  <Button onClick={handleOpenUploadDialog} className="w-full max-w-xs mx-auto rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    <Plus className="mr-2 h-4 w-4" />
+                    {t("chat.newChatWithDocument")}
+                  </Button>
+                </div>
               </div>
             </div>
           )}
