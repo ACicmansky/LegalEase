@@ -2,34 +2,39 @@
 
 ## Current Development Focus
 
-The project continues to improve the AI Agents architecture with a focus on type safety, performance, and maintainability. Recent work focuses on:
+The project is pivoting to a more sophisticated LangGraph-based agent architecture with a focus on improved law retrieval, context management, and procedural guidance. Recent work focuses on:
 
-1. Consolidating message types across the application
-2. Enhancing the conversational agent implementation 
-3. Optimizing data transfer between frontend and backend
+1. Planning the LangGraph-based conversational agent implementation
+2. Designing a law caching system to minimize web searches
+3. Enhancing context management for more relevant conversation history
+4. Implementing web search capabilities for Slovak legal sources
 
 
 ## Key Components Under Development
 
-### 1. Document Processing Agent
+### 1. LangGraph-Based Conversational Agent
+- State-based graph workflow using LangGraph
+- Specialized nodes for intent classification, entity extraction, and law retrieval
+- Web search capabilities targeting Slovak legal sources
+- Enhanced context management for more relevant conversation history
+- Law caching system to minimize web searches
+- Document-law comparison capabilities
+- Slovak legal citation formatting
+
+### 2. Law Caching System
+- Database schema for storing retrieved laws
+- Freshness policies for cached content
+- Version tracking for laws
+- RSS monitoring service for law updates
+- Integration with Supabase
+
+### 3. Document Processing Agent
 - Document upload and storage (maintaining existing functionality)
 - Text extraction and analysis
 - Key information and law extraction 
 - Consistency checking
 - Document summary generation
 - Proper database structure for document analyses
-
-### 2. Conversational Agent
-- Context-aware chat interface
-- Follow-up questions about documents
-- Guidance on legal next steps
-- Document-based conversation capabilities
-- Implementation with functional approach aligned with existing architecture
-- Slovak language prompts for better localization
-- Database access through dedicated tools instead of direct queries
-- Enhanced JSON response parsing
-- Added server-side directive for proper server component execution
-- Fixed conversation prompt template invocation with required placeholders
 
 ### 3. Consolidated Type System
 - Tiered message type hierarchy
@@ -48,43 +53,48 @@ The project continues to improve the AI Agents architecture with a focus on type
 
 ## Current Challenges
 
-- Optimizing agent performance for large documents
-- Ensuring secure and reliable document processing
-- Implementing robust error handling for edge cases
-- Integration testing across the complete pipeline
+- Migrating from functional pipeline to LangGraph's state-based graph architecture
+- Implementing efficient web search for Slovak legal sources
+- Designing an effective law caching system with freshness policies
+- Creating a reliable RSS monitoring service for law updates
+- Ensuring proper integration between cached laws and document context
+- Optimizing performance for complex legal queries
 
 ## Next Steps
 
-1. **Complete Integration Testing**:
-   - Test document processing pipeline end-to-end
-   - Verify database structure alignment
-   - Ensure proper error handling throughout
+1. **Implement LangGraph Framework**:
+   - Install LangGraph and set up the basic infrastructure
+   - Define the complete state schema
+   - Implement the core nodes (intent classifier, entity extractor)
 
-2. **Enhance Document Processing**:
-   - Add pagination for large documents
-   - Improve processing performance
-   - Create admin tools for monitoring processing status
+2. **Develop Law Retrieval and Caching System**:
+   - Create database schema for law storage
+   - Implement web search functionality for Slovak legal sources
+   - Develop caching logic with freshness policies
+   - Set up basic RSS monitoring for law updates
 
-3. **Implement Conversational Agent**:
-   - Design agent for follow-up questions
-   - Enable document context awareness
-   - Create guidance for next legal steps
+3. **Enhance Context Management**:
+   - Improve conversation history fetcher with adaptive approach
+   - Integrate document context with retrieved laws
+   - Implement proper citation formatting
    
-4. **Enhance User Experience**:
-   - Add typing indicators
-   - Implement loading states
-   - Create message queuing system
+4. **Testing and Optimization**:
+   - Test with real Slovak legal questions
+   - Optimize performance for web searches
+   - Refine prompts for Slovak language
 
 ## Recent Decisions
 
-- Refactored DocumentProcessingAgent to use a functional approach
-- Created proper TypeScript interfaces for the database schema
-- Fixed JSON parsing from AI model responses
-- Streamlined UI components and user flow
-- Updated document analysis API to use the new function-based approach
+- Decided to migrate from functional pipeline to LangGraph's state-based graph architecture
+- Designed a law caching system to minimize web searches and improve performance
+- Planned implementation of web search capabilities for Slovak legal sources
+- Designed a database schema for storing retrieved laws with version tracking
+- Planned RSS monitoring service for law updates
 
 ## Immediate Next Steps
 
-1. Test the conversational agent with the new message type system
-2. Update API documentation to reflect the new type system
-3. Monitor performance improvements from the type consolidation
+1. Install LangGraph and set up the basic infrastructure
+2. Define the complete state schema for the agent
+3. Create database schema for law caching
+4. Implement the core nodes (intent classifier, entity extractor)
+5. Research web search APIs suitable for Slovak legal sources

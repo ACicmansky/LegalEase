@@ -16,7 +16,7 @@
   - [x] Consistency checking
   - [x] Summary generation
   - [x] Database structure alignment
-- [x] Conversational agent implementation
+- [x] First-generation conversational agent implementation
   - [x] Server-side processing with 'use server' directive
   - [x] Functional programming approach
   - [x] Enhanced JSON parsing and error handling
@@ -30,20 +30,34 @@
   - [x] Tiered message hierarchy (ChatMessage, MessageRecord)
   - [x] Enhanced MessageSource with optional fields
   - [x] Integration across components, API routes, and agents
+- [x] LangGraph-based agent architecture planning
+  - [x] State-based graph workflow design
+  - [x] Law caching system design
+  - [x] Database schema for stored laws
+  - [x] Implementation phases planning
 
 ## In Progress
 
-- [ ] Conversational agent enhancements
-  - [ ] More robust document-aware chat capabilities
-  - [ ] Advanced legal guidance generation
-  - [ ] Follow-up question suggestions refinement
-- [ ] Document processing system enhancements
-  - [ ] Integration testing
-  - [ ] Performance optimization for large documents
-  - [ ] Admin monitoring tools
+- [ ] LangGraph implementation
+  - [ ] Framework setup and infrastructure
+  - [ ] State schema definition
+  - [ ] Core node implementation (intent classifier, entity extractor)
+- [ ] Law retrieval and caching system
+  - [ ] Database schema for law storage
+  - [ ] Web search functionality for Slovak legal sources
+  - [ ] Caching logic with freshness policies
+  - [ ] Basic RSS monitoring for law updates
 
 ## Coming Soon
 
+- [ ] Enhanced context management
+  - [ ] Adaptive conversation history
+  - [ ] Document-law comparison
+  - [ ] Slovak legal citation formatting
+- [ ] Testing and optimization
+  - [ ] Real Slovak legal question testing
+  - [ ] Web search performance optimization
+  - [ ] Slovak language prompt refinement
 - [ ] UI enhancements
   - [ ] Source attribution display
   - [ ] Legal guidance visualization
@@ -54,8 +68,8 @@
   - [ ] Precedent identification
 - [ ] Performance monitoring
   - [ ] Response time metrics
-  - [ ] Data transfer optimization analytics
-  - [ ] Database query performance tracking
+  - [ ] Web search efficiency analytics
+  - [ ] Law cache hit rate tracking
 
 ## Known Issues
 

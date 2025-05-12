@@ -3,7 +3,7 @@
 
 ## Overview
 
-Today we developed a comprehensive strategy for enhancing the LegalEases conversational agent using LangGraph to create a more sophisticated workflow for legal assistance. This represents a significant evolution from our current functional approach to a state-based graph that will enable more complex reasoning, better context management, and improved law retrieval capabilities.
+Today we developed a comprehensive strategy for enhancing the LegalEases conversational agent using LangGraph to create a more sophisticated workflow for legal assistance. This represents a significant evolution from our current functional approach to a state-based graph that will enable more complex reasoning, better context management, and improved law retrieval capabilities with efficient law caching.
 
 ## Key Improvements
 
@@ -18,6 +18,8 @@ The new agent architecture addresses several limitations in our current implemen
 4. **Improved Context Management** - Adaptive conversation history that prioritizes relevant past interactions rather than just the most recent messages.
 
 5. **Document-Law Comparison** - Ability to compare uploaded legal documents against current law requirements to identify discrepancies.
+
+6. **Law Caching System** - Database storage of retrieved laws to minimize expensive web searches and improve response times.
 
 ## Core Architecture
 
@@ -69,9 +71,12 @@ interface LegalAgentState {
    - Use adaptive approach instead of fixed message count
    - Include initial query, recent messages, and semantically relevant past messages
 
-4. **Law Retrieval with Web Search**
-   - Search slov-lex.sk and zakonypreludi.sk for current law versions
+4. **Law Retrieval with Caching System**
+   - First check database for cached law content
+   - If not available or outdated, search slov-lex.sk and zakonypreludi.sk for current law versions
    - Extract and process relevant legal content
+   - Store retrieved laws in database for future use
+   - Track law version information and last verification date
    - Verify source reliability and currency
 
 5. **Document Context Integration**
@@ -145,6 +150,26 @@ export async function createLegalAgentGraph() {
 }
 ```
 
+## Law Caching Database Schema
+
+We'll implement a law caching system with the following schema in Supabase:
+
+```typescript
+interface StoredLaw {
+  id: string;                // UUID primary key
+  name: string;              // Law name/number
+  section?: string;          // Specific section if applicable
+  content: string;           // Full text content of the law/section
+  source_url: string;        // URL where the law was retrieved from
+  last_updated: Date;        // When the law was last updated in our system
+  last_verified: Date;       // When we last verified against source
+  version_identifier?: string; // Official version identifier if available
+  is_current: boolean;       // Whether this is the current version
+}
+```
+
+We'll also create a scheduled job to monitor the RSS feed from slov-lex.sk for updates to laws in our database.
+
 ## Implementation Phases
 
 1. **Phase 1: Core Framework** (Estimated: 1 week)
@@ -152,9 +177,12 @@ export async function createLegalAgentGraph() {
    - Implement base state management
    - Create primary nodes (intent, entity extraction, response)
 
-2. **Phase 2: Law Retrieval Integration** (Estimated: 1 week)
+2. **Phase 2: Law Retrieval and Caching System** (Estimated: 1.5 weeks)
+   - Create database schema for law storage
    - Implement web search functionality for Slovak legal sources
    - Add law content extraction and processing
+   - Implement caching logic with freshness policies
+   - Create basic RSS monitoring for law updates
    - Implement source verification logic
 
 3. **Phase 3: Context Enhancement** (Estimated: 1 week)
@@ -172,8 +200,11 @@ export async function createLegalAgentGraph() {
 1. Install LangGraph and set up the basic infrastructure
 2. Define the complete state schema
 3. Implement the core nodes (intent classifier, entity extractor)
-4. Create the web search tool for Slovak legal sources
-5. Test the basic workflow with simple legal queries
+4. Create the database schema for law caching
+5. Implement the web search tool for Slovak legal sources
+6. Develop the law caching logic with freshness policies
+7. Set up a basic RSS monitoring service for law updates
+8. Test the basic workflow with simple legal queries
 
 ## Decisions Made
 
