@@ -1,6 +1,5 @@
 'use server';
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   ConversationState,
@@ -10,13 +9,10 @@ import { ConversationIntent, LegalGuidance, MessageSource } from "@/types/chat";
 import { ConversationHistoryFetcher, DocumentContextFetcher } from "./tools/messageTools";
 import { conversationPrompt, guidancePrompt } from "./prompts/conversationalAgentPrompts";
 import { extractJsonFromString } from "@/lib/utils/textProcessing";
+import { getModelFlash } from "@/lib/agents/languageModels";
 
 // Create a model instance
-const model = new ChatGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-  modelName: "gemini-2.0-flash",
-  temperature: 0.2,
-});
+const model = await getModelFlash();
 
 // Initialize tools
 const conversationHistoryFetcher = new ConversationHistoryFetcher();

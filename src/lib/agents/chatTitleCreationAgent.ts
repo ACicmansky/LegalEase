@@ -1,15 +1,11 @@
 'use server';
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { chatTitleCreationPrompt } from "./prompts/chatTitleCreationAgentPrompts";
 import { updateChatTitle } from "@/lib/services/chatsService";
+import { getModelFlashLite } from "@/lib/agents/languageModels";
 
-const model = new ChatGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-  modelName: "gemini-2.0-flash-lite",
-  temperature: 0.2,
-});
+const model = await getModelFlashLite();
 
 export async function createChatTitle(chatId: string, message: string): Promise<string> {
   try {

@@ -1,6 +1,5 @@
 'use server';
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   DocumentState,
@@ -13,13 +12,10 @@ import {
 import { DocumentContentExtractor, DocumentAnalysisStore } from "./tools/documentTools";
 import { extractKeyInformationPrompt, performLegalAnalysisPrompt, checkConsistencyPrompt, generateSummaryPrompt } from "@/lib/agents/prompts/documentProcessingAgentPrompts";
 import { extractJsonFromString } from "@/lib/utils/textProcessing";
+import { getModelFlashLite } from "@/lib/agents/languageModels";
 
 // Create a model instance
-const model = new ChatGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_GENAI_API_KEY!,
-  modelName: "gemini-2.0-flash-lite",
-  temperature: 0.1,
-});
+const model = await getModelFlashLite(0.1);
 
 // Initialize tools
 const documentContentExtractor = new DocumentContentExtractor();
