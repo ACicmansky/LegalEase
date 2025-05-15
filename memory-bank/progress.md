@@ -30,18 +30,23 @@
   - [x] Tiered message hierarchy (ChatMessage, MessageRecord)
   - [x] Enhanced MessageSource with optional fields
   - [x] Integration across components, API routes, and agents
-- [x] LangGraph-based agent architecture planning
-  - [x] State-based graph workflow design
+- [x] Agent architecture planning
+  - [x] Initial LangGraph-based workflow design (deprecated)
   - [x] Law caching system design
   - [x] Database schema for stored laws
   - [x] Implementation phases planning
+- [x] Vercel AI SDK-based agent architecture planning
+  - [x] Sequential processing with routing pattern design
+  - [x] Tool definition approach using Zod schemas
+  - [x] Integration strategy with Next.js framework
 
 ## In Progress
 
-- [ ] LangGraph implementation
-  - [ ] Framework setup and infrastructure
-  - [ ] State schema definition
-  - [ ] Core node implementation (intent classifier, entity extractor)
+- [ ] Vercel AI SDK implementation
+  - [ ] SDK setup and configuration
+  - [ ] Model provider integration
+  - [ ] Type-safe tool definitions with Zod schemas
+  - [ ] Sequential processing chain with routing
 - [ ] Law retrieval and caching system
   - [ ] Database schema for law storage
   - [ ] Web search functionality for Slovak legal sources
