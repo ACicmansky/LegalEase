@@ -2,28 +2,30 @@
 
 ## Current Development Focus
 
-The project is pivoting to a Vercel AI SDK-based agent architecture after encountering documentation and implementation challenges with LangGraph. This new approach offers better integration with our Next.js stack and more intuitive patterns for implementing our legal conversational agent. Current work focuses on:
+The project is adopting a hybrid approach combining LangChain's functional components with LangGraph's ReAct agent pattern, powered by Google's Gemini model. This approach leverages the strengths of each framework while utilizing Gemini's built-in Google Search capabilities for law retrieval. Current work focuses on:
 
-1. Transitioning from LangGraph to Vercel AI SDK for the conversational agent
-2. Implementing a sequential processing pattern with routing for different query types
-3. Creating type-safe tool definitions using Zod schemas
-4. Maintaining our law caching system design for efficient legal information retrieval
+1. Implementing LangChain components for intent classification and entity extraction
+2. Integrating LangGraph's ReAct agent for sophisticated response generation
+3. Leveraging Google Gemini's built-in search capabilities for law retrieval
+4. Developing the law caching system for retrieved legal content
 
 
 ## Key Components Under Development
 
-### 1. Vercel AI SDK-Based Conversational Agent
-- Sequential processing chain with routing capabilities
-- Type-safe tool definitions using Zod schemas
-- Multi-step tool usage for complex legal research tasks
-- Strong integration with Next.js framework
-- Streaming responses for improved user experience
-- Intent classification and entity extraction tools
+### 1. Hybrid LangChain-LangGraph Agent
+- LangChain components for core processing (intent classification, entity extraction)
+- LangGraph ReAct agent for response generation
+- Google Gemini as primary LLM with integrated search
+- Type-safe interfaces between processing steps
+- Structured output parsing for LLM responses
+- Tool-based reasoning for complex legal questions
 - Document-law comparison capabilities
 - Slovak legal citation formatting
 
-### 2. Law Caching System
-- Database schema for storing retrieved laws
+### 2. Law Caching System with Gemini Search Integration
+- Leveraging Gemini's built-in Google Search capabilities
+- Database schema for storing retrieved laws with source attribution
+- Optimized search queries targeting Slovak legal sources (slov-lex.sk, zakonypreludi.sk)
 - Freshness policies for cached content
 - Version tracking for laws
 - RSS monitoring service for law updates
@@ -54,51 +56,61 @@ The project is pivoting to a Vercel AI SDK-based agent architecture after encoun
 
 ## Current Challenges
 
-- Learning and implementing the Vercel AI SDK architecture effectively
-- Creating type-safe tool definitions for legal research capabilities
-- Implementing efficient web search for Slovak legal sources
-- Designing an effective law caching system with freshness policies
+- Integrating LangChain components with LangGraph's ReAct agent pattern
+- Configuring Google Gemini with appropriate search parameters for Slovak legal sources
+- Creating robust type definitions between processing steps
+- Managing API key security and usage limits for Google's services
+- Designing an effective law caching system with proper attribution from search results
 - Creating a reliable RSS monitoring service for law updates
-- Balancing streaming responses with complex multi-step tool usage
+- Handling error recovery gracefully across multiple frameworks
 - Optimizing performance and cost for complex legal queries
 
 ## Next Steps
 
-1. **Implement Vercel AI SDK Framework**:
-   - Install and configure Vercel AI SDK
-   - Set up model providers and authentication
-   - Create type-safe tool definitions using Zod schemas
-   - Implement sequential processing chain with routing
+1. **Set Up LangChain with Google Gemini**:
+   - Configure Google Generative AI integration
+   - Create core type definitions for processing steps
+   - Implement intent classification with structured output
+   - Build entity extraction with Slovak legal focus
 
-2. **Develop Law Retrieval and Caching System**:
-   - Create database schema for law storage
-   - Implement web search functionality for Slovak legal sources
-   - Develop caching logic with freshness policies
+2. **Integrate LangGraph ReAct Agent**:
+   - Set up the ReAct agent for response generation
+   - Define tools for law search and context retrieval
+   - Create the agent's prompt template
+   - Implement agent invocation flow
+
+3. **Implement Gemini Search Integration**:
+   - Configure Gemini with Google Search capability
+   - Create optimized search queries for Slovak legal sources
+   - Implement result processing and caching
+   - Develop proper attribution handling
+
+4. **Develop Law Caching System**:
+   - Create database schema for law storage with attribution
+   - Implement caching logic with freshness policies
    - Set up basic RSS monitoring for law updates
-
-3. **Enhance Context Management**:
-   - Implement semantic conversation history retrieval
-   - Create document-law comparison tools
-   - Develop citation formatting helpers
+   - Develop version tracking for laws
    
-4. **Testing and Optimization**:
+5. **Testing and Optimization**:
    - Test with real Slovak legal questions
-   - Optimize performance for web searches
+   - Optimize search parameters for Slovak legal sources
    - Refine prompts for Slovak language
    - Measure and optimize token usage for cost efficiency
 
 ## Recent Decisions
 
-- Decided to pivot from LangGraph to Vercel AI SDK due to documentation and implementation challenges
-- Selected sequential processing pattern with routing for our conversational agent workflow
-- Committed to using Zod schemas for type-safe tool definitions and structured outputs
-- Maintained our law caching system design to minimize web searches and improve performance
-- Planned implementation of streaming responses for better user experience
+- **Hybrid LangChain-LangGraph Approach**: Decided to combine LangChain for core processing components with LangGraph's ReAct agent pattern for response generation to leverage the strengths of both frameworks.
+- **Google Gemini Integration**: Selected Google's Gemini as our primary LLM due to its strong performance and built-in search capabilities for law retrieval.
+- **Search-Powered Law Retrieval**: Will leverage Gemini's integrated Google Search capabilities to access Slovak legal sources directly, reducing the need for custom web scraping.
+- **Type-Safe Processing Boundaries**: Will create explicit TypeScript interfaces for all processing steps to ensure type safety throughout the agent pipeline.
+- **Law Caching with Attribution**: Will implement our law caching system with additional fields for storing attribution information from Gemini's search results.
+- **Postpone Vercel AI SDK Migration**: The migration to Vercel AI SDK will be considered in a future phase after core functionality is implemented.
 
 ## Immediate Next Steps
 
-1. Install and configure Vercel AI SDK with appropriate model providers
-2. Create type-safe tool interfaces for law search and document analysis
-3. Implement intent classification with structured output using Zod schemas
-4. Design database schema for law caching system
-5. Research integration points with slov-lex.sk and zakonypreludi.sk APIs
+1. Configure Google Generative AI integration with appropriate API keys
+2. Create type definitions for our processing pipeline (intent, entities, law content)
+3. Implement intent classification and entity extraction using LangChain with Gemini
+4. Set up LangGraph's ReAct agent for response generation
+5. Implement Gemini's search integration for Slovak legal sources
+6. Design database schema for law caching with attribution information
