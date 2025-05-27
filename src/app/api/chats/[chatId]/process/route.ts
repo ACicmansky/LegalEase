@@ -2,11 +2,11 @@
 
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
-import { processConversation } from '@/lib/agents/conversationalAgent';
 import { ConversationProcessingStage } from '@/lib/agents/types';
 import { getChatById } from '@/lib/services/chatsService';
 import { createMessageExtended, createMessage } from '@/lib/services/messagesService';
 import { MessageType } from '@/types/chat';
+import { processConversation } from '@/lib/agents/conversationalAgentDeprecated';
 
 // POST /api/chats/[chatId]/process - Process a message through the Conversational Agent
 export async function POST(

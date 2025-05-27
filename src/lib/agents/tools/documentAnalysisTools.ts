@@ -56,7 +56,7 @@ export class SetDocumentAnalysisTool extends Tool {
  * Tool for fetching document context
  */
 export class GetDocumentAnalysisTool extends Tool {
-    name = "document_context_fetcher";
+    name = "document_analysis_fetcher";
     description = "Fetches document analysis and context for a given document ID";
 
     constructor() {

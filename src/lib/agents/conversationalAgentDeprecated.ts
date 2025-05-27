@@ -31,6 +31,8 @@ const documentContextFetcher = new GetDocumentAnalysisTool();
  * @param messageContent - The user's message
  * @param documentId - Optional document ID for context
  * @returns A promise that resolves to the final conversation state
+ * 
+ * @deprecated Use new hybrid agent instead
  */
 export async function processConversation(
   chatId: string,
