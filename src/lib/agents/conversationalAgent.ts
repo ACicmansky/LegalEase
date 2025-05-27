@@ -6,7 +6,8 @@ import {
   ConversationProcessingStage
 } from "./types";
 import { ConversationIntent, LegalGuidance, MessageSource } from "@/types/chat";
-import { ConversationHistoryFetcher, DocumentContextFetcher } from "./tools/messageTools";
+import { GetConversationHistoryTool } from "./tools/conversationTools";
+import { GetDocumentAnalysisTool } from "./tools/documentAnalysisTools";
 import { conversationPrompt, guidancePrompt } from "./prompts/conversationalAgentPrompts";
 import { extractJsonFromString } from "@/lib/utils/textProcessing";
 import { getModelFlash } from "@/lib/agents/languageModels";
@@ -15,8 +16,8 @@ import { getModelFlash } from "@/lib/agents/languageModels";
 const model = await getModelFlash();
 
 // Initialize tools
-const conversationHistoryFetcher = new ConversationHistoryFetcher();
-const documentContextFetcher = new DocumentContextFetcher();
+const conversationHistoryFetcher = new GetConversationHistoryTool();
+const documentContextFetcher = new GetDocumentAnalysisTool();
 
 /**
  * Process a conversation message through a series of steps

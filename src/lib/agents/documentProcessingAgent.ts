@@ -9,7 +9,8 @@ import {
   ConsistencyCheck,
   DocumentAnalysis
 } from "./types";
-import { DocumentContentExtractor, DocumentAnalysisStore } from "./tools/documentTools";
+import { DocumentContentExtractorTool } from "./tools/documentTools";
+import { SetDocumentAnalysisTool } from "./tools/documentAnalysisTools";
 import { extractKeyInformationPrompt, performLegalAnalysisPrompt, checkConsistencyPrompt, generateSummaryPrompt } from "@/lib/agents/prompts/documentProcessingAgentPrompts";
 import { extractJsonFromString } from "@/lib/utils/textProcessing";
 import { getModelFlashLite } from "@/lib/agents/languageModels";
@@ -18,8 +19,8 @@ import { getModelFlashLite } from "@/lib/agents/languageModels";
 const model = await getModelFlashLite(0.1);
 
 // Initialize tools
-const documentContentExtractor = new DocumentContentExtractor();
-const documentAnalysisStore = new DocumentAnalysisStore();
+const documentContentExtractor = new DocumentContentExtractorTool();
+const documentAnalysisStore = new SetDocumentAnalysisTool();
 
 /**
  * Process a document through a series of analysis steps
