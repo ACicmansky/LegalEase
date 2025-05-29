@@ -3,9 +3,9 @@
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { chatTitleCreationPrompt } from "./prompts/chatTitleCreationAgentPrompts";
 import { updateChatTitle } from "@/lib/services/chatsService";
-import { getModelFlashLite } from "@/lib/agents/languageModels";
+import { getModelGroq } from "@/lib/agents/languageModels";
 
-const model = await getModelFlashLite();
+const model = await getModelGroq();
 
 export async function createChatTitle(chatId: string, message: string): Promise<string> {
   try {
@@ -14,12 +14,13 @@ export async function createChatTitle(chatId: string, message: string): Promise<
       .pipe(new StringOutputParser())
       .invoke({ message });
 
-    const chat = await updateChatTitle(chatId, chatTitle);
+    const formattedTitle = chatTitle.endsWith('.') ? chatTitle.slice(0, -1) : chatTitle;
+    const chat = await updateChatTitle(chatId, formattedTitle);
     if (!chat) {
       throw new Error("Chat not found");
     }
 
-    return chatTitle;
+    return formattedTitle;
   } catch (error) {
     console.error("Error creating chat title:", error);
     throw new Error("Failed to create chat title");
