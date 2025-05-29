@@ -1,29 +1,28 @@
 'use server';
 
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { EnhancedAgentState, IntentClassification, LegalEntities } from "./types";
+import { EnhancedAgentState, IntentClassification, ExtractedLaw } from "./types";
 import { getModelFlash } from "@/lib/agents/languageModels";
-import { googleSearchRetrievalTool } from "@/lib/agents/tools/webSearchTools";
+import { duckDuckGoSearch, googleCustomSearch } from "@/lib/agents/tools/webSearchTools";
 import { GetDocumentAnalysisTool } from "@/lib/agents/tools/documentAnalysisTools";
 import { GetConversationHistoryTool } from "@/lib/agents/tools/conversationTools";
+import { SystemMessage } from "@langchain/core/messages";
 
 /**
  * Creates a ReAct agent configured for legal response generation
  * 
  * @returns The configured ReAct agent
  */
-export async function createLegalReactAgent() {
+async function createLegalReactAgent() {
   // Define the system prompt for our legal agent
   const systemPrompt = `
 Ste sofistikovaný slovenský právny asistent navrhnutý na pomoc používateľom s právnymi otázkami.
 Máte prístup k nástrojom, ktoré vám pomôžu poskytovať presné a užitočné odpovede.
 
 SCHOPNOSTI:
-- Vyhľadávanie konkrétnych slovenských zákonov a právnych kódexov
-- Získavanie viacerých zákonov na základe entít extrahovaných z otázky
+- Vyhľadávanie aktualneho znenia zákonov na internete pomocou vyhladavacích nástrojov, aktualne znenia zakonov hladaj na weboch https://www.slov-lex.sk/ a https://www.zakonypreludi.sk/
 - Získavanie histórie konverzácie pre kontext, keď je to potrebné
-- Prístup k analýze dokumentov, keď používatelia odkazujú na právne dokumenty
+- Prístup k analýze dokumentov, keď sa používatelia odkazujú na svoje dokumenty
 - Poskytovanie presných právnych informácií s riadnymi citáciami
 - Vysvetľovanie zložitých právnych konceptov jasným jazykom
 
@@ -48,24 +47,21 @@ DÔLEŽITÉ: V slovenskom právnom kontexte buďte obzvlášť opatrní pri:
 
   // Define the tools available to the agent
   const tools = [
-    //googleSearchRetrievalTool,        // For searching individual laws
+    duckDuckGoSearch,
+    googleCustomSearch,
     documentContextTool,          // For retrieving document analysis when needed
     conversationHistoryTool,       // For retrieving conversation history when needed
   ];
 
   // Create the agent model
   const model = await getModelFlash();
-  const modelWithSearchTool = model.bindTools([googleSearchRetrievalTool]);
 
   // Create the prompt template
-  const prompt = ChatPromptTemplate.fromMessages([
-    ["system", systemPrompt],
-    ["human", "{input}"]
-  ]);
+  const prompt = new SystemMessage({ content: systemPrompt });
 
   // Create the ReAct agent
   const agent = createReactAgent({
-    llm: modelWithSearchTool,
+    llm: model,
     tools: tools,
     prompt
   });
@@ -78,14 +74,14 @@ DÔLEŽITÉ: V slovenskom právnom kontexte buďte obzvlášť opatrní pri:
  * 
  * @param query - User's original query
  * @param intent - Classified intent
- * @param entities - Extracted entities
+ * @param laws - Extracted laws
  * @param state - Current agent state
  * @returns Updated agent state with response
  */
 export async function generateResponse(
   query: string,
   intent: IntentClassification,
-  entities: LegalEntities,
+  laws: ExtractedLaw[],
   state: EnhancedAgentState
 ): Promise<EnhancedAgentState> {
   try {
@@ -102,8 +98,8 @@ Oblasť: ${intent.domain}
 Miera istoty: ${intent.confidence}
 Zdôvodnenie: ${intent.reasoning}
 
-Extrahované entity:
-${JSON.stringify(entities, null, 2)}
+Zákony týkajúce sa dopytu:
+${JSON.stringify(laws, null, 2)}
 
 ID konverzácie: ${state.chatId}
 ${state.documentId ? `ID dokumentu: ${state.documentId}` : ''}
@@ -111,19 +107,38 @@ ${state.documentId ? `ID dokumentu: ${state.documentId}` : ''}
 Vašou úlohou je vygenerovať komplexnú odpoveď na dopyt používateľa.
 
 Na základe dopytu a zámeru:
-1. Rozhodnite, či potrebujete vyhľadať konkrétne zákony uvedené v entitách
+1. Rozhodnite, či potrebujete vyhľadať aktuálne znenie zákonov na internete pomocou vyhladavacích nástrojov
 2. Určite, či by bola história konverzácie užitočná pre kontext
-3. Ak sa dopyt týka dokumentu, zvážte získanie analýzy dokumentu
+3. Ak sa dopyt týka svojho dokumentu, zvážte získanie analýzy dokumentu
 4. Vygenerujte komplexnú odpoveď s využitím všetkých relevantných informácií
 
 Používajte svoje nástroje podľa potreby na zhromaždenie informácií - nepredpokladajte, že nejaké informácie boli už vopred získané.
 `;
 
     // Invoke the agent
-    const result = await agent.invoke({ messages: input });
+    const result = await agent.stream({
+      messages: [{ role: "user", content: input }]
+    },
+      { streamMode: "values" }
+    );
+
+    let msg;
+    for await (const { messages } of result) {
+      msg = messages[messages?.length - 1];
+      if (msg?.content) {
+        console.log(msg.content);
+      } else if (msg?.tool_calls?.length > 0) {
+        console.log(msg.tool_calls);
+      } else {
+        console.log(msg);
+      }
+      console.log("-----\n");
+    }
+
+    const response = msg?.content;
 
     // Parse the agent's response
-    const response = result.messages[result.messages.length - 1].content.toString();
+    //const response = result.messages[result.messages.length - 1].content.toString();
 
     // In a production implementation, we would extract sources and other metadata
     // from the agent's response for more structured output
