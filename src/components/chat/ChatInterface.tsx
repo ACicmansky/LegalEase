@@ -166,6 +166,7 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
                 type="text"
                 placeholder={t('chat.inputPlaceholder')}
                 value={inputValue}
+                maxLength={1800}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
                 className="w-full h-10 md:h-12 px-3 md:px-4 pr-10 md:pr-12 rounded-xl border-0 bg-transparent text-sm focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
