@@ -25,6 +25,7 @@ SCHOPNOSTI:
 - Prístup k analýze dokumentov, keď sa používatelia odkazujú na svoje dokumenty
 - Poskytovanie presných právnych informácií s riadnymi citáciami
 - Vysvetľovanie zložitých právnych konceptov jasným jazykom
+- Navrhovanie relevantných následných otázok pre používateľa
 
 POKYNY:
 - Vždy citujte svoje zdroje pri odkazovaní na zákony
@@ -34,11 +35,30 @@ POKYNY:
 - Pri procedurálnych otázkach poskytnite podrobný návod krok za krokom
 - Používajte slovenskú právnu terminológiu správne
 - Formátujte odpovede štruktúrovane a ľahko čitateľne
+- Vždy navrhnite 2-3 logické následné otázky, ktoré by používateľovi mohli pomôcť preskúmať tému do väčšej hĺbky
 
 DÔLEŽITÉ: V slovenskom právnom kontexte buďte obzvlášť opatrní pri:
 - Odkazovaní na zákony v štandardnom slovenskom formáte (napr. "Zákon č. 40/1964 Zb. Občiansky zákonník")
 - Rešpektovaní tradície kontinentálneho práva slovenského právneho systému
 - Zohľadnení dôsledkov práva EÚ, kde je to relevantné
+
+Formát odpovede:
+Vaša odpoveď by mala byť štruktúrovaná ako JSON objekt v tomto formáte:
+{
+  "text": "Hlavná odpoveď na otázku používateľa",
+  "sources": [
+    {
+      "title": "Názov zdroja",
+      "section": "Relevantná sekcia",
+      "text": "Citovaný text"
+    }
+  ],
+  "followUpQuestions": [
+    "Otázka 1?",
+    "Otázka 2?",
+    "Otázka 3?"
+  ]
+}
 `;
 
   // Initialize tools
@@ -111,8 +131,11 @@ Na základe dopytu a zámeru:
 2. Určite, či by bola história konverzácie užitočná pre kontext
 3. Ak sa dopyt týka svojho dokumentu, zvážte získanie analýzy dokumentu
 4. Vygenerujte komplexnú odpoveď s využitím všetkých relevantných informácií
+5. Navrhnite 2-3 logické následné otázky, ktoré by mohli používateľovi pomôcť preskúmať tému do väčšej hĺbky
 
 Používajte svoje nástroje podľa potreby na zhromaždenie informácií - nepredpokladajte, že nejaké informácie boli už vopred získané.
+
+Vo vašej odpovedi vždy použite formát JSON s poliami "text", "sources" a "followUpQuestions" ako je definované v systémovom promte.
 `;
 
     // Invoke the agent
@@ -137,16 +160,43 @@ Používajte svoje nástroje podľa potreby na zhromaždenie informácií - nepr
 
     const response = msg?.content;
 
-    // Parse the agent's response
-    //const response = result.messages[result.messages.length - 1].content.toString();
+    // Try to parse the agent's response as JSON to extract structured data
+    let parsedResponse: {
+      text: string;
+      sources?: { title: string; section?: string; text?: string }[];
+      followUpQuestions?: string[];
+    } = { text: response || '' }; // Default initialization with the raw response
 
-    // In a production implementation, we would extract sources and other metadata
-    // from the agent's response for more structured output
+    try {
+      // Response might be wrapped in markdown code blocks, so we need to extract just the JSON
+      const jsonMatch = response?.match(/```(?:json)?\s*({[\s\S]*?})\s*```/) || 
+                       response?.match(/{[\s\S]*?}/);
+      
+      if (jsonMatch) {
+        const parsedJson = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+        // Ensure parsedJson has at least a text field
+        parsedResponse = {
+          text: parsedJson.text || response || '',
+          sources: parsedJson.sources,
+          followUpQuestions: parsedJson.followUpQuestions
+        };
+      }
+    } catch (error) {
+      console.warn('Failed to parse agent response as JSON:', error);
+      // We already initialized parsedResponse with a default value, so no action needed here
+    }
 
-    // For now, just return the basic response
+    // Return the enhanced state with structured response data
     return {
       ...state,
-      response,
+      response: parsedResponse.text,
+      sources: parsedResponse.sources?.map(source => ({
+        type: 'law' as const,
+        title: source.title,
+        section: source.section,
+        content: source.text
+      })),
+      followUpQuestions: parsedResponse.followUpQuestions,
       processingStage: state.processingStage
     };
   } catch (error) {
