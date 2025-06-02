@@ -2,6 +2,19 @@
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatGroq } from "@langchain/groq";
+import { google } from '@ai-sdk/google';
+
+export async function getGeminiFlashLiteFromAiSdk(useSearchGrounding: boolean = false) {
+    return google('gemini-2.0-flash-lite', {
+        useSearchGrounding,
+    });
+}
+
+export async function getGeminiFlashFromAiSdk(useSearchGrounding: boolean = false) {
+    return google('gemini-2.0-flash', {
+        useSearchGrounding,
+    });
+}
 
 export async function getModelFlashLite(temperature: number = 0.1): Promise<ChatGoogleGenerativeAI> {
     return new ChatGoogleGenerativeAI({
