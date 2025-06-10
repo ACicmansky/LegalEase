@@ -44,10 +44,12 @@
 ## In Progress
 
 - [ ] Vercel AI SDK UI migration
-  - [ ] UI components for streaming responses
-  - [ ] Real-time message updates
-  - [ ] Improved chat interaction experience
-  - [ ] Loading states and optimistic updates
+  - [ ] Advanced streaming UI components with createStreamableUI
+  - [ ] Dynamic UI updates during streaming with ChatbotMessageContent
+  - [ ] Progressive rendering of structured responses (text, sources, follow-up questions)
+  - [ ] Custom UI components for streaming experiences with proper typing indicators
+  - [ ] Supabase integration with ChatStorageAdapter for message persistence
+  - [ ] Slovak language support throughout streaming UI components
 - [ ] Law retrieval and caching system
   - [ ] Database schema for law storage
   - [ ] Web search functionality via Vercel AI SDK

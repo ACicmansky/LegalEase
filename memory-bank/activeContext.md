@@ -4,21 +4,21 @@
 
 After encountering challenges with the hybrid LangChain/LangGraph approach and Gemini's native search capabilities, the project has pivoted to using Vercel AI SDK for agent implementation. Current work focuses on:
 
-1. Implementing Vercel AI SDK for conversation streaming and generation
-2. Migrating the UI to Vercel AI SDK components for better integration
-3. Leveraging Google Gemini's capabilities through Vercel AI SDK
-4. Optimizing the UI for real-time streaming responses
+1. Implementing Vercel AI SDK for conversation streaming and generation with full streaming capabilities
+2. Migrating the UI to Vercel AI SDK UI components for real-time streaming and structured responses
+3. Leveraging Google Gemini's capabilities through Vercel AI SDK with optimized performance
+4. Enhancing UI with progressive rendering and real-time feedback
 
 
 ## Key Components Under Development
 
 ### 1. Vercel AI SDK Integration
-- Streaming response generation with Vercel AI SDK
-- Google Gemini as primary LLM accessed through Vercel AI SDK
-- Type-safe interfaces between processing steps
-- Structured output parsing for LLM responses
-- Optimized streaming experience
-- Document-law comparison capabilities
+- Real-time streaming response generation using Vercel AI SDK's StreamingTextResponse and createStreamableUI
+- Google Gemini as primary LLM accessed through Vercel AI SDK with AI providers
+- Type-safe interfaces between processing steps with enhanced streaming state management
+- Structured output parsing with dynamic UI updates during streaming
+- Specialized UI components for streaming experiences
+- Document-law comparison capabilities with real-time source attribution
 - Slovak legal citation formatting
 
 ### 2. Law Caching System with Gemini Search Integration
