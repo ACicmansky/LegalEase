@@ -35,21 +35,22 @@
   - [x] Law caching system design
   - [x] Database schema for stored laws
   - [x] Implementation phases planning
-- [x] Vercel AI SDK-based agent architecture planning
-  - [x] Sequential processing with routing pattern design
-  - [x] Tool definition approach using Zod schemas
-  - [x] Integration strategy with Next.js framework
+- [x] Vercel AI SDK implementation
+  - [x] Google Gemini integration via Vercel AI SDK
+  - [x] Streaming response generation
+  - [x] Structured output parsing for streaming responses
+  - [x] Error handling for streaming context
 
 ## In Progress
 
-- [ ] Vercel AI SDK implementation
-  - [ ] SDK setup and configuration
-  - [ ] Model provider integration
-  - [ ] Type-safe tool definitions with Zod schemas
-  - [ ] Sequential processing chain with routing
+- [ ] Vercel AI SDK UI migration
+  - [ ] UI components for streaming responses
+  - [ ] Real-time message updates
+  - [ ] Improved chat interaction experience
+  - [ ] Loading states and optimistic updates
 - [ ] Law retrieval and caching system
   - [ ] Database schema for law storage
-  - [ ] Web search functionality for Slovak legal sources
+  - [ ] Web search functionality via Vercel AI SDK
   - [ ] Caching logic with freshness policies
   - [ ] Basic RSS monitoring for law updates
 
@@ -91,8 +92,8 @@
 
 ## Recent Achievements
 
-- Successfully implemented conversational agent with document-aware capabilities
-- Implemented proper server-side execution for the agent
-- Enhanced JSON parsing and error handling for AI responses
-- Improved message types to support the conversational agent needs
-- Refined Slovak language prompts for better localization
+- Successfully implemented Vercel AI SDK for conversation streaming
+- Configured Google Gemini integration through Vercel AI SDK
+- Created structured output parsing for streaming responses
+- Implemented server-side streaming with proper error handling
+- Maintained Slovak language support in the new implementation
