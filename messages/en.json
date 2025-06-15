@@ -61,7 +61,13 @@
     "welcomeDescription": "Upload a document to start a new conversation or select an existing chat from the sidebar.",
     "disclaimer": "This AI assistant provides information based on your documents. Always verify important information.",
     "delete": "Delete",
-    "deleteConfirmation": "Are you sure you want to delete this chat?"
+    "deleteConfirmation": "Are you sure you want to delete this chat?",
+    "legalGuidance": "Legal guidance",
+    "legalGuidanceDescription": "Legal guidance is a recommended information, not legal advice, no legal representation is created. Always verify important information.",
+    "timeframe": "Timeframe",
+    "recommendedSteps": "Recommended steps",
+    "relevantLaws": "Relevant laws",
+    "potentialRisks": "Potential risks"
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",

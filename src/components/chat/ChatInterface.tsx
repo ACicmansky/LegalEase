@@ -64,22 +64,18 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
       // First add the user message
       const userMessage = await ChatAPIService.addMessage(chatId, message, MessageType.User);
       await handleCreateMessage(userMessage);
-      
+
       try {
         // Process the user message and get the AI response
-        const response = await ChatAPIService.processUserMessage(chatId, message);
-        
-        // Get the message from the response
-        // The API now returns { message: ChatMessage, guidance?: any }
-        const { message: aiMessage } = response;
-        
+        const aiMessage = await ChatAPIService.processUserMessage(chatId, message);
+
         // Verify we have a valid message with content
         if (!aiMessage || !aiMessage.content) {
-          console.error("Invalid message structure", response);
+          console.error("Invalid message structure", aiMessage);
           toast.error(t("chat.emptyResponse"));
           return;
         }
-        
+
         // Add the AI message to the state
         await handleCreateMessage(aiMessage);
       } catch (aiError) {

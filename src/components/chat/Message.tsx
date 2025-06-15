@@ -1,9 +1,11 @@
 'use client';
 
-import { ChatMessageExtended, MessageSource, MessageType } from '@/types/chat';
+import { ChatMessageExtended, LegalGuidance, MessageSource, MessageType } from '@/types/chat';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import Markdown from 'react-markdown'
+import Markdown from 'react-markdown';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge'
 
 export function Message({ content, type, created_at, sources, metadata }: ChatMessageExtended) {
   // Validate message properties are properly defined
@@ -11,6 +13,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
   const t = useTranslations();
   const isUser = type === MessageType.User;
   const followUpQuestions = metadata?.followUpQuestions;
+  const legalGuidance = metadata?.guidance as LegalGuidance | undefined;
 
   const handleFollowUpClick = (question: string) => {
     // Create a custom event to handle the follow-up question
@@ -65,6 +68,67 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {!isUser && legalGuidance && (
+          <div className="mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <Card className="border-purple-200 dark:border-purple-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-purple-900 dark:text-purple-300 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                  </svg>
+                  {t('chat.legalGuidance')}
+                </CardTitle>
+                <CardDescription className="text-purple-800 dark:text-purple-400">
+                  {t('chat.legalGuidanceDescription')}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-sm">
+                {legalGuidance.timeframe && (
+                  <div className="mb-3">
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.timeframe')}:</h4>
+                    <p className="text-gray-800 dark:text-gray-300">{legalGuidance.timeframe}</p>
+                  </div>
+                )}
+
+                {legalGuidance.steps && legalGuidance.steps.length > 0 && (
+                  <div className="mb-3">
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.recommendedSteps')}:</h4>
+                    <ol className="list-decimal pl-5 text-gray-800 dark:text-gray-300">
+                      {legalGuidance.steps.map((step, index) => (
+                        <li key={index} className="mb-1">{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {legalGuidance.relevantLaws && legalGuidance.relevantLaws.length > 0 && (
+                  <div className="mb-3">
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.relevantLaws')}:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {legalGuidance.relevantLaws.map((law, index) => (
+                        <Badge key={index} variant="outline" className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-700">
+                          {law}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* {legalGuidance.risks && legalGuidance.risks.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.potentialRisks')}:</h4>
+                    <ul className="list-disc pl-5 text-gray-800 dark:text-gray-300">
+                      {legalGuidance.risks.map((risk, index) => (
+                        <li key={index} className="mb-1">{risk}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )} */}
+              </CardContent>
+            </Card>
           </div>
         )}
 

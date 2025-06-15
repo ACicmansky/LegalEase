@@ -61,7 +61,13 @@
     "welcomeDescription": "Nahrajte dokument pre začatie novej konverzácie alebo vyberte existujúci chat z bočného panela.",
     "disclaimer": "Tento AI asistent poskytuje informácie na základe vašich dokumentov. Vždy si overte dôležité informácie.",
     "delete": "Vymazať",
-    "deleteConfirmation": "Naozaj chcete vymazať tento chat?"
+    "deleteConfirmation": "Naozaj chcete vymazať tento chat?",
+    "legalGuidance": "Právne poradenstvo",
+    "legalGuidanceDescription": "Právne poradenstvo je odporúčaná informácia, nie sú to advokátske rady, nevzniká advokátske zastúpenie. Vždy si overte dôležité informácie.",
+    "timeframe": "Termín",
+    "recommendedSteps": "Odporúčané kroky",
+    "relevantLaws": "Relevantné zákony",
+    "potentialRisks": "Potenciálne rizika"
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",

@@ -54,7 +54,8 @@ export async function POST(
         response.sources,
         {
           intent: response.intent,
-          followUpQuestions: response.followUpQuestions
+          followUpQuestions: response.followUpQuestions,
+          guidance: guidance
         },
         supabaseClient
       );
