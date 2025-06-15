@@ -1,4 +1,4 @@
-import { Chat, ChatMessage, MessageType } from '@/types/chat';
+import { Chat, ChatMessage, ChatMessageExtended, MessageType } from '@/types/chat';
 
 const API_BASE = '/api';
 
@@ -68,7 +68,7 @@ export class ChatAPIService {
   /**
    * Processes a message and save AI response in database
    */
-  static async processUserMessage(chatId: string, content: string): Promise<ChatMessage> {
+  static async processUserMessage(chatId: string, content: string): Promise<ChatMessageExtended> {
     try {
       const response = await fetch(`${API_BASE}/chats/${chatId}/process`, {
         method: 'POST',
@@ -84,7 +84,14 @@ export class ChatAPIService {
         throw new Error(`Failed to process message: ${response.status} ${response.statusText}`);
       }
 
-      return response.json();
+      // Unwrap the message from the response object
+      const responseData = await response.json();
+      if (!responseData.message) {
+        console.error('Invalid response structure:', responseData);
+        throw new Error('Server returned an invalid response structure');
+      }
+      
+      return responseData.message;
     } catch (error) {
       console.error('ChatService.processUserMessage error:', error);
       throw error;

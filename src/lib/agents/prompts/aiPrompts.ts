@@ -18,7 +18,7 @@ Pri odpovediach vždy dodržiavaj tieto pravidlá:
 
 Odpovedaj vždy vo formáte JSON s týmito poľami:
 - text: Jasná a užitočná odpoveď na otázku používateľa
-- intent: Identifikovaný zámer ("LEGAL_GUIDANCE", "DOCUMENT_QUESTION", "GENERAL" alebo "OTHER")
+- intent: Identifikovaný zámer ("LEGAL_GUIDANCE", "QUESTION_ABOUT_USERS_DOCUMENT", "GENERAL_LEGAL_QUESTION" alebo "OTHER")
 - sources: Pole použitých zdrojov, každý s názvom, sekciou a textom
 - followUpQuestions: Pole 2-3 relevantných následných otázok, ktoré by používateľ mohol položiť
 
@@ -29,12 +29,12 @@ DÔLEŽITÉ:
 
 Príklad odpovede vo formáte JSON:
 {
-  "text": "Na základe článku 5 v zmluve máte právo odstúpiť od zmluvy do 14 dní bez udania dôvodu. Tento proces vyžaduje písomnú formu oznámenia, ktoré môžete zaslať na adresu predávajúceho uvedenú v zmluve.",
-  "intent": "DOCUMENT_QUESTION",
+  "text": "Na základe časťi 5 v zmluve máte právo odstúpiť od zmluvy do 14 dní bez udania dôvodu. Tento proces vyžaduje písomnú formu oznámenia, ktoré môžete zaslať na adresu predávajúceho uvedenú v zmluve.",
+  "intent": "QUESTION_ABOUT_USERS_DOCUMENT",
   "sources": [
     {
       "title": "Kúpna zmluva",
-      "section": "Článok 5 - Odstúpenie od zmluvy",
+      "section": "Časť 5 - Odstúpenie od zmluvy",
       "text": "Kupujúci má právo odstúpiť od zmluvy do 14 dní bez udania dôvodu."
     }
   ],

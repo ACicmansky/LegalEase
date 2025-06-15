@@ -34,14 +34,16 @@ export async function processConversation(
     documentId,
   );
 
+  let guidance: LegalGuidance | undefined;
   // For legal guidance queries, also return guidance
-  // The frontend can decide whether to use it based on the response intent
-  const guidance = await getLegalGuidance(
-    chatId,
-    messageContent,
-    "", // The initial response will be parsed by the frontend
-    documentId,
-  );
+  if (response.intent.toLocaleLowerCase() === ConversationIntent.LegalGuidance.toLocaleLowerCase()) {
+    guidance = await getLegalGuidance(
+      chatId,
+      messageContent,
+      response.text,
+      documentId,
+    );
+  }
 
   return {
     response,

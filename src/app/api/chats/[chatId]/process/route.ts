@@ -63,8 +63,7 @@ export async function POST(
       // Return the response with proper headers
       return new Response(
         JSON.stringify({
-          message,
-          guidance
+          message
         }),
         {
           status: 200,

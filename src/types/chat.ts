@@ -16,10 +16,10 @@ export interface LegalGuidance {
 
 // Intent classification for agent processing
 export enum ConversationIntent {
-  DocumentQuestion = "document_question",
+  DocumentQuestion = "question_about_users_document",
   LegalGuidance = "legal_guidance",
   Clarification = "clarification",
-  General = "general",
+  General = "general_legal_question",
 }
 
 // Message type for filtering and categorization

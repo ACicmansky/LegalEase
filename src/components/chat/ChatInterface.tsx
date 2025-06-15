@@ -6,7 +6,7 @@ import { ArrowUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { ChatAPIService } from '@/lib/api/chatAPIService';
-import { ChatMessage, MessageType } from '@/types/chat';
+import { ChatMessage, ChatMessageExtended, MessageType } from '@/types/chat';
 import { Message } from './Message';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Define handleCreateMessage with useCallback to avoid dependency issues
-  const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage) => {
+  const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage | ChatMessageExtended) => {
     // Ensure the message has valid content before adding to state
     if (newChatMessage && typeof newChatMessage.content === 'string' && newChatMessage.content.trim()) {
       setMessages((prevMessages) => {
@@ -53,7 +53,11 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
 
     setIsLoading(true);
     try {
-      if (messages.length === 0) {
+      // Check if this is the first message for this chat by fetching current count
+      const chat = await ChatAPIService.getChat(chatId);
+      const isFirstMessage = !chat.messages || chat.messages.length === 0;
+
+      if (isFirstMessage) {
         const title = await createChatTitle(chatId, message);
         // Notify parent component about the new title
         if (onTitleCreated) {
@@ -68,13 +72,6 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
       try {
         // Process the user message and get the AI response
         const aiMessage = await ChatAPIService.processUserMessage(chatId, message);
-
-        // Verify we have a valid message with content
-        if (!aiMessage || !aiMessage.content) {
-          console.error("Invalid message structure", aiMessage);
-          toast.error(t("chat.emptyResponse"));
-          return;
-        }
 
         // Add the AI message to the state
         await handleCreateMessage(aiMessage);
