@@ -68,7 +68,15 @@ export class ChatAPIService {
   /**
    * Processes a message and save AI response in database
    */
-  static async processUserMessage(chatId: string, content: string): Promise<ChatMessage> {
+  static async processUserMessage(chatId: string, content: string): Promise<{ 
+    message: ChatMessage, 
+    guidance?: { 
+      steps?: string[],
+      relevantLaws?: string[],
+      timeframe?: string,
+      risks?: string[] 
+    } 
+  }> {
     try {
       const response = await fetch(`${API_BASE}/chats/${chatId}/process`, {
         method: 'POST',

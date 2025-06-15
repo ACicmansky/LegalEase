@@ -33,7 +33,18 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
 
   // Define handleCreateMessage with useCallback to avoid dependency issues
   const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage) => {
-    setMessages((prevMessages) => [...prevMessages, newChatMessage]);
+    // Ensure the message has valid content before adding to state
+    if (newChatMessage && typeof newChatMessage.content === 'string' && newChatMessage.content.trim()) {
+      setMessages((prevMessages) => {
+        // Don't add duplicate messages
+        if (prevMessages.some(msg => msg.id === newChatMessage.id)) {
+          return prevMessages;
+        }
+        return [...prevMessages, newChatMessage];
+      });
+    } else {
+      console.error('Attempted to add invalid message:', newChatMessage);
+    }
   }, []);
 
   // Handle sending messages
@@ -50,11 +61,31 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
         }
       }
 
+      // First add the user message
       const userMessage = await ChatAPIService.addMessage(chatId, message, MessageType.User);
       await handleCreateMessage(userMessage);
-
-      const aiMessage = await ChatAPIService.processUserMessage(chatId, message);
-      await handleCreateMessage(aiMessage);
+      
+      try {
+        // Process the user message and get the AI response
+        const response = await ChatAPIService.processUserMessage(chatId, message);
+        
+        // Get the message from the response
+        // The API now returns { message: ChatMessage, guidance?: any }
+        const { message: aiMessage } = response;
+        
+        // Verify we have a valid message with content
+        if (!aiMessage || !aiMessage.content) {
+          console.error("Invalid message structure", response);
+          toast.error(t("chat.emptyResponse"));
+          return;
+        }
+        
+        // Add the AI message to the state
+        await handleCreateMessage(aiMessage);
+      } catch (aiError) {
+        console.error("AI processing error:", aiError);
+        toast.error(t("chat.aiProcessingFailed"));
+      }
     } catch (error) {
       console.error("Failed to send message:", error);
       toast.error(t("chat.failedToSend"));
@@ -149,7 +180,7 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
               </div>
             )}
             {messages.map((message) => (
-              <Message key={message.id} {...message} />
+              <Message key={message.id || `message-${message.created_at}`} {...message} />
             ))}
             <div ref={messagesEndRef} />
           </div>

@@ -1,16 +1,16 @@
 'use client';
 
 import { ChatMessageExtended, MessageSource, MessageType } from '@/types/chat';
-import DOMPurify from 'dompurify';
 import { useTranslations } from 'next-intl';
-import { marked } from 'marked';
 import { Button } from '@/components/ui/button';
+import Markdown from 'react-markdown'
 
 export function Message({ content, type, created_at, sources, metadata }: ChatMessageExtended) {
+  // Validate message properties are properly defined
+  const timestamp = typeof created_at === 'string' || created_at instanceof Date ? created_at : null;
   const t = useTranslations();
   const isUser = type === MessageType.User;
   const followUpQuestions = metadata?.followUpQuestions;
-  const sanitizedContent = DOMPurify.sanitize(marked.parse(content, { async: false }));
 
   const handleFollowUpClick = (question: string) => {
     // Create a custom event to handle the follow-up question
@@ -41,17 +41,21 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
       >
         <div className="prose dark:prose-invert max-w-none prose-sm sm:prose-base break-words">
           <p className="text-sm sm:text-base font-semibold mb-1">{isUser ? t('chat.you') : t('chat.bot')}</p>
-          <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
+          <div className="text-sm sm:text-base">
+            {typeof content === 'string' && content.trim().length > 0 ?
+              <Markdown>{content}</Markdown> :
+              <span className="text-red-500">No content available</span>}
+          </div>
         </div>
 
         {sources && sources.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs sm:text-sm text-gray-200 dark:text-gray-400">{t('chat.sources')}:</p>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('chat.sources')}:</p>
             <ul className="mt-1 space-y-1">
               {sources.map((source: MessageSource, index: number) => (
                 <li
                   key={index}
-                  className="text-xs sm:text-sm text-gray-200 dark:text-gray-400 flex items-start"
+                  className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex items-start"
                 >
                   <span className="mr-1 sm:mr-2 flex-shrink-0">📄</span>
                   <span className="break-words">
@@ -82,7 +86,9 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
         )}
 
         <div className="mt-2 text-[10px] sm:text-xs text-gray-200 dark:text-gray-400">
-          {new Date(created_at).toLocaleTimeString()}
+          {timestamp && !isNaN(new Date(timestamp).getTime())
+            ? new Date(timestamp).toLocaleTimeString()
+            : ''}
         </div>
       </div>
     </div>

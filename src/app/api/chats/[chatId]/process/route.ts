@@ -42,9 +42,6 @@ export async function POST(
       });
     }
 
-    // Create user message first
-    await createMessage(chatId, content, MessageType.User, supabaseClient);
-
     try {
       // Use the updated processConversation function
       const { response, guidance } = await processConversation(chatId, content, chat.document_id || undefined);
