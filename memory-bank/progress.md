@@ -40,44 +40,99 @@
   - [x] Streaming response generation
   - [x] Structured output parsing for streaming responses
   - [x] Error handling for streaming context
+- [x] Recent UX Improvements
+  - [x] Legal guidance generation and display
+  - [x] "Thinking..." placeholder message during response generation
+  - [x] Fixed duplicate user messages issue
+  - [x] Improved assistant message display
+  - [x] Enhanced conversation agent prompt
 
 ## In Progress
 
-- [ ] Vercel AI SDK UI migration
-  - [ ] Advanced streaming UI components with createStreamableUI
-  - [ ] Dynamic UI updates during streaming with ChatbotMessageContent
-  - [ ] Progressive rendering of structured responses (text, sources, follow-up questions)
-  - [ ] Custom UI components for streaming experiences with proper typing indicators
-  - [ ] Supabase integration with ChatStorageAdapter for message persistence
-  - [ ] Slovak language support throughout streaming UI components
-- [ ] Law retrieval and caching system
-  - [ ] Database schema for law storage
-  - [ ] Web search functionality via Vercel AI SDK
-  - [ ] Caching logic with freshness policies
-  - [ ] Basic RSS monitoring for law updates
+### 1. Document Processing Enhancements
+- [ ] Document Anonymization
+  - [ ] Implement PII detection and redaction
+  - [ ] Store only anonymized versions of documents
+  - [ ] Create secure storage for original documents (temporary)
+  - [ ] Implement document access controls
+
+- [ ] Two-Tier Summary Generation
+  - [ ] Professional detailed summary generation
+  - [ ] Simplified user-friendly summary
+  - [ ] Integration with chat interface
+  - [ ] Caching of generated summaries
+
+### 2. GDPR Compliance
+- [ ] Data Protection Measures
+  - [ ] Implement data processing agreements
+  - [ ] User consent management system
+  - [ ] Data subject rights implementation
+  - [ ] Data retention policies
+  - [ ] Security measures documentation
+
+### 3. UI/UX Improvements
+- [ ] Theme Support
+  - [ ] Dark/light mode toggle
+  - [ ] Theme persistence
+  - [ ] Consistent theming across components
+  - [ ] System preference detection
+
+- [ ] Authentication Enhancements
+  - [ ] "Remember Me" functionality
+  - [ ] Google OAuth integration
+  - [ ] Theme application to auth screens
+  - [ ] Improved form validation
+
+### 4. Vercel AI SDK Migration (Ongoing)
+- [ ] Complete UI Component Migration
+  - [ ] Advanced streaming UI components
+  - [ ] Dynamic UI updates during streaming
+  - [ ] Progressive rendering of responses
+  - [ ] Enhanced typing indicators
+  - [ ] Complete Supabase integration
 
 ## Coming Soon
 
+### 1. Advanced Legal Features
 - [ ] Enhanced context management
   - [ ] Adaptive conversation history
   - [ ] Document-law comparison
   - [ ] Slovak legal citation formatting
-- [ ] Testing and optimization
+  - [ ] Multi-document analysis
+  - [ ] Case law references
+  - [ ] Precedent identification
+
+### 2. Testing & Optimization
+- [ ] Comprehensive Testing
   - [ ] Real Slovak legal question testing
-  - [ ] Web search performance optimization
-  - [ ] Slovak language prompt refinement
-- [ ] UI enhancements
+  - [ ] Performance benchmarking
+  - [ ] Edge case handling
+  - [ ] Load testing
+  - [ ] Security testing
+
+### 3. UI/UX Enhancements
+- [ ] Advanced UI Features
   - [ ] Source attribution display
   - [ ] Legal guidance visualization
   - [ ] Document context panel
-- [ ] Advanced agent features
-  - [ ] Multi-document context
-  - [ ] Case law references
-  - [ ] Precedent identification
-- [ ] Performance monitoring
+  - [ ] Interactive legal flowcharts
+  - [ ] Customizable dashboard
+
+### 4. Performance & Monitoring
+- [ ] System Monitoring
   - [ ] Response time metrics
-  - [ ] Web search efficiency analytics
+  - [ ] Usage analytics
+  - [ ] Error tracking
   - [ ] Law cache hit rate tracking
+  - [ ] User behavior analysis
+
+### 5. Integration & Expansion
+- [ ] Third-Party Integrations
+  - [ ] Legal database APIs
+  - [ ] E-signature solutions
+  - [ ] Calendar/scheduling
+  - [ ] Payment processing
+  - [ ] Multi-language support
 
 ## Known Issues
 

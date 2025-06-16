@@ -2,12 +2,22 @@
 
 ## Current Development Focus
 
-After encountering challenges with the hybrid LangChain/LangGraph approach and Gemini's native search capabilities, the project has pivoted to using Vercel AI SDK for agent implementation. Current work focuses on:
+We've successfully implemented Vercel AI SDK with Google Gemini and completed several UX improvements. Our current focus is on:
 
-1. Implementing Vercel AI SDK for conversation streaming and generation with full streaming capabilities
-2. Migrating the UI to Vercel AI SDK UI components for real-time streaming and structured responses
-3. Leveraging Google Gemini's capabilities through Vercel AI SDK with optimized performance
-4. Enhancing UI with progressive rendering and real-time feedback
+1. **Document Processing Enhancements**:
+   - Implementing document anonymization layer for GDPR compliance
+   - Developing two-tier summary generation (professional + simplified)
+   - Ensuring secure storage of anonymized documents
+
+2. **UI/UX Improvements**:
+   - Adding dark/light mode toggle with persistent preferences
+   - Enhancing authentication flows with "Remember Me" and Google OAuth
+   - Improving overall user experience based on testing feedback
+
+3. **GDPR Compliance**:
+   - Implementing comprehensive data protection measures
+   - Documenting data processing activities
+   - Ensuring user consent management
 
 
 ## Key Components Under Development
