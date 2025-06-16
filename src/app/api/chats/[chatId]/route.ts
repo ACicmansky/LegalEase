@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 import { getChatById, deleteChat } from "@/lib/services/chatsService";
 import { deleteMessagesByChatId } from "@/lib/services/messagesService";
+import { getDocumentByChatId, deleteDocumentByChatId } from '@/lib/services/documentService';
+import { deleteFile } from '@/lib/services/storageService';
 
 // GET /api/chats/[chatId] - Get a specific chat
 export async function GET(
@@ -50,6 +52,13 @@ export async function DELETE(
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // if exist delete document from table and delete file from storage
+    const document = await getDocumentByChatId(chatId, supabaseClient);
+    if (document) {
+      await deleteFile(document.filepath, supabaseClient);
+      await deleteDocumentByChatId(chatId, supabaseClient);
     }
 
     // Delete chat messages first due to foreign key constraint

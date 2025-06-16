@@ -72,10 +72,10 @@ export function ChatListContainer({
 
   // Update the title of a chat
   const updateChatTitle = useCallback((chatId: string, newTitle: string) => {
-    setChats((prevChats) => 
-      prevChats.map(chat => 
-        chat.id === chatId 
-          ? { ...chat, title: newTitle } 
+    setChats((prevChats) =>
+      prevChats.map(chat =>
+        chat.id === chatId
+          ? { ...chat, title: newTitle }
           : chat
       )
     );
@@ -94,8 +94,13 @@ export function ChatListContainer({
   const handleDeleteChat = async (chatId: string) => {
     try {
       await ChatAPIService.deleteChat(chatId);
-      //TODO remove documents from db and from storage
       setChats(chats.filter((chat) => chat.id !== chatId));
+
+      // Clear the selected chat if the deleted chat was selected
+      if (selectedChatId === chatId) {
+        onChatSelect("");
+      }
+
       toast(t("chat.deletedSuccessfully"));
     } catch (error) {
       console.error("Failed to delete chat:", error);

@@ -17,7 +17,7 @@ interface UploadedFile {
 }
 
 interface DocumentUploadProps {
-  onUploadSuccess?: (documentId: string, fileName: string) => void;
+  onUploadSuccess?: (documentId: string, fileName: string, filepath: string) => void;
 }
 
 export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
@@ -47,7 +47,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
 
         const supabaseClient = createSupabaseClient();
         const userId = (await supabaseClient.auth.getUser()).data.user?.id;
-        const filePath = `${userId}/${fileEntry.id}/${fileEntry.file.name}`;
+        const filepath = `${userId}/${fileEntry.id}/${fileEntry.file.name}`;
 
         // Set initial progress
         setUploadedFiles((prev) =>
@@ -57,7 +57,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
         );
 
         // Upload file to Supabase storage
-        await uploadFile(filePath, fileEntry.file);
+        await uploadFile(filepath, fileEntry.file);
 
         // Set progress to 100% when upload is complete
         setUploadedFiles((prev) =>
@@ -84,7 +84,7 @@ export const DocumentUpload = ({ onUploadSuccess }: DocumentUploadProps) => {
 
         // Call the onUploadSuccess callback if provided
         if (onUploadSuccess) {
-          onUploadSuccess(fileEntry.id, fileEntry.file.name);
+          onUploadSuccess(fileEntry.id, fileEntry.file.name, filepath);
         }
       } catch (error) {
         // Update status to error

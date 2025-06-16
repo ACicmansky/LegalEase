@@ -107,7 +107,8 @@ export default function Home() {
 
   const handleCreateChatFromDocument = async (
     documentId: string,
-    fileName: string
+    fileName: string,
+    filepath: string
   ) => {
     try {
       // Create a new chat
@@ -123,7 +124,7 @@ export default function Home() {
         handleSidebarToggle(false);
       }
 
-      await addDocument(documentId, fileName, newChat.id);
+      await addDocument(documentId, fileName, newChat.id, filepath);
 
       // Set document analyzing state to true
       setIsDocumentAnalyzing(true);

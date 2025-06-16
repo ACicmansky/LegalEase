@@ -5,4 +5,5 @@ export interface Document {
     user_id: string;
     chat_id: string;
     folder_id?: string;
+    filepath: string;
 }

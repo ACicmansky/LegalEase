@@ -3,11 +3,11 @@
 import { createSupabaseServerClient } from "@/lib/utils/supabase/server";
 
 // Upload file to supabase storage
-export async function uploadFile(filePath: string, file: File) {
+export async function uploadFile(filepath: string, file: File) {
     const { error } = await (await createSupabaseServerClient())
         .storage
         .from('documents')
-        .upload(filePath, file);
+        .upload(filepath, file);
 
     if (error) {
         console.error('Failed to upload file:', error);
@@ -16,11 +16,12 @@ export async function uploadFile(filePath: string, file: File) {
 }
 
 // Delete file from storage
-export async function deleteFile(filePath: string) {
-    const { error } = await (await createSupabaseServerClient())
+export async function deleteFile(filepath: string, supabaseClient?: Awaited<ReturnType<typeof createSupabaseServerClient>>) {
+    const client = supabaseClient || await createSupabaseServerClient();
+    const { error } = await client
         .storage
         .from('documents')
-        .remove([filePath!]);
+        .remove([filepath!]);
 
     if (error) {
         console.error('Failed to delete file:', error);
