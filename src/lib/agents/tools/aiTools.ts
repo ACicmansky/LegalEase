@@ -15,7 +15,7 @@ export const getConversationHistoryTool = {
   }),
   handler: async ({ chatId }: { chatId: string }) => {
     try {
-      const messages = await getMessagesByChatId(chatId, [MessageType.User, MessageType.Assistant], 10);
+      const messages = await getMessagesByChatId(chatId, [MessageType.User, MessageType.Assistant], 20);
 
       if (!messages || messages.length === 0) {
         return "No conversation history available.";
