@@ -28,7 +28,7 @@ export async function processConversation(
   guidance?: LegalGuidance;
 }> {
   // Get the structured response as a typed object
-  const response = await streamStructuredResponse(
+  const response = await getStructuredResponse(
     chatId,
     messageContent,
     documentId,
@@ -60,7 +60,7 @@ export async function processConversation(
  * @param options - Optional streaming options
  * @returns A typed conversation response object
  */
-export async function streamStructuredResponse(
+export async function getStructuredResponse(
   chatId: string,
   messageContent: string,
   documentId?: string,

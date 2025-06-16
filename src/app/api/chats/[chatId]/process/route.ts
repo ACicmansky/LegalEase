@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@/lib/utils/supabase/server';
 import { getChatById } from '@/lib/services/chatsService';
 import { createMessageExtended, createMessage } from '@/lib/services/messagesService';
 import { MessageType } from '@/types/chat';
-import { processConversation } from '@/lib/agents/conversationalAgentStreaming';
+import { processConversation } from '@/lib/agents/conversationalAgent';
 
 // POST /api/chats/[chatId]/process - Process a message through the Conversational Agent with streaming support
 export async function POST(
