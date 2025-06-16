@@ -27,7 +27,8 @@ export enum MessageType {
   User = "user",
   Assistant = "assistant",
   Summary = "summary",
-  Error = "error"
+  Error = "error",
+  Placeholder = "placeholder"
 }
 
 // Display optimized message type with user information

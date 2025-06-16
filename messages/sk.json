@@ -52,7 +52,7 @@
     "deletedSuccessfully": "Chat bol úspešne vymazaný",
     "failedToDelete": "Nepodarilo sa vymazať chat. Skúste to znova.",
     "you": "Vy",
-    "bot": "Bot",
+    "bot": "Asistent",
     "sources": "Zdroje",
     "page": "Strana",
     "analyzingDocument": "Spracovávam dokument...",
@@ -67,7 +67,8 @@
     "timeframe": "Termín",
     "recommendedSteps": "Odporúčané kroky",
     "relevantLaws": "Relevantné zákony",
-    "potentialRisks": "Potenciálne rizika"
+    "potentialRisks": "Potenciálne rizika",
+    "thinking": "Rozmýšľam a vyhľadávam najnovšie informácie..."
   },
   "upload": {
     "dialogTitle": "Nahrajte dokument pre začatie nového chatu",

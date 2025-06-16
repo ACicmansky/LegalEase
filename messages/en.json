@@ -52,7 +52,7 @@
     "deletedSuccessfully": "Chat deleted successfully",
     "failedToDelete": "Failed to delete chat. Please try again.",
     "you": "You",
-    "bot": "Bot",
+    "bot": "Assistant",
     "sources": "Sources",
     "page": "Page",
     "analyzingDocument": "Analyzing document...",
@@ -67,7 +67,8 @@
     "timeframe": "Timeframe",
     "recommendedSteps": "Recommended steps",
     "relevantLaws": "Relevant laws",
-    "potentialRisks": "Potential risks"
+    "potentialRisks": "Potential risks",
+    "thinking": "Thinking and searching for the latest information..."
   },
   "upload": {
     "dialogTitle": "Upload a Document to Start a New Chat",

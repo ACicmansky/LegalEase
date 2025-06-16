@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { ArrowUp } from 'lucide-react';
-import { toast } from 'sonner';
+import { useEffect } from 'react';
 
-import { ChatAPIService } from '@/lib/api/chatAPIService';
-import { ChatMessage, ChatMessageExtended, MessageType } from '@/types/chat';
-import { Message } from './Message';
-import { Spinner } from '@/components/ui/spinner';
-import { Button } from '@/components/ui/button';
-import { createChatTitle } from '@/lib/agents/chatTitleCreationAgent';
+// Import our custom hooks and components
+import { useMessages } from './hooks/useMessages';
+import { useSendMessage } from './hooks/useSendMessage';
+import { useFollowUpHandler } from './hooks/useFollowUpHandler';
+import { MessageList } from './MessageList';
+import { ChatInput } from './ChatInput';
+import { ChatMessage } from '@/types/chat';
 
 interface ChatInterfaceProps {
   chatId?: string;
@@ -24,93 +22,26 @@ export interface ChatInterfaceRef {
 }
 
 export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitleCreated }: ChatInterfaceProps) {
-  const t = useTranslations();
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // Use our extracted hooks
+  const {
+    messages,
+    handleCreateMessage,
+    replacePlaceholderWithMessage,
+    removePlaceholderMessage
+  } = useMessages(chatId);
 
-  // Define handleCreateMessage with useCallback to avoid dependency issues
-  const handleCreateMessage = useCallback(async (newChatMessage: ChatMessage | ChatMessageExtended) => {
-    // Ensure the message has valid content before adding to state
-    if (newChatMessage && typeof newChatMessage.content === 'string' && newChatMessage.content.trim()) {
-      setMessages((prevMessages) => {
-        // Don't add duplicate messages
-        if (prevMessages.some(msg => msg.id === newChatMessage.id)) {
-          return prevMessages;
-        }
-        return [...prevMessages, newChatMessage];
-      });
-    } else {
-      console.error('Attempted to add invalid message:', newChatMessage);
-    }
-  }, []);
+  const { isLoading, sendMessage } = useSendMessage({
+    chatId,
+    handleCreateMessage,
+    replacePlaceholderWithMessage,
+    removePlaceholderMessage,
+    onTitleCreated
+  });
 
-  // Handle sending messages
-  const handleSendMessage = async (message: string) => {
-    if (!chatId) return;
+  // Handle follow-up questions
+  useFollowUpHandler(chatId, sendMessage);
 
-    setIsLoading(true);
-    try {
-      // Check if this is the first message for this chat by fetching current count
-      const chat = await ChatAPIService.getChat(chatId);
-      const isFirstMessage = !chat.messages || chat.messages.length === 0;
-
-      if (isFirstMessage) {
-        const title = await createChatTitle(chatId, message);
-        // Notify parent component about the new title
-        if (onTitleCreated) {
-          onTitleCreated(title);
-        }
-      }
-
-      // First add the user message
-      const userMessage = await ChatAPIService.addMessage(chatId, message, MessageType.User);
-      await handleCreateMessage(userMessage);
-
-      try {
-        // Process the user message and get the AI response
-        const aiMessage = await ChatAPIService.processUserMessage(chatId, message);
-
-        // Add the AI message to the state
-        await handleCreateMessage(aiMessage);
-      } catch (aiError) {
-        console.error("AI processing error:", aiError);
-        toast.error(t("chat.aiProcessingFailed"));
-      }
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      toast.error(t("chat.failedToSend"));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const isMounted = { current: true };
-
-    const loadMessages = async () => {
-      if (!chatId) return;
-
-      try {
-        const chat = await ChatAPIService.getChat(chatId);
-        if (isMounted.current && chat.messages) {
-          setMessages(chat.messages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
-        }
-      } catch (error) {
-        console.error('Failed to load messages:', error);
-      }
-    };
-
-    loadMessages();
-
-    // Cleanup function
-    return () => {
-      isMounted.current = false;
-    };
-  }, [chatId]);
-
+  // Set up ref for external control of the component
   useEffect(() => {
     if (ref) {
       ref.current = {
@@ -119,108 +50,19 @@ export function ChatInterface({ chatId, ref, isDocumentAnalyzing = false, onTitl
     }
   }, [ref, handleCreateMessage]);
 
-  // Add event listener for follow-up question clicks - moved from page.tsx
-  useEffect(() => {
-    const handleFollowUpQuestionClick = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const { question } = customEvent.detail;
-
-      if (question && chatId) {
-        handleSendMessage(question);
-      }
-    };
-
-    document.addEventListener('followUpQuestionClicked', handleFollowUpQuestionClick);
-
-    return () => {
-      document.removeEventListener('followUpQuestionClicked', handleFollowUpQuestionClick);
-    };
-  }, [chatId]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
-
-    try {
-      await handleSendMessage(inputValue);
-      setInputValue('');
-      // Focus back on input after sending
-      inputRef.current?.focus();
-    } catch (error) {
-      console.error('Failed to send message:', error);
-    }
-  };
-
   return (
     <div className="flex flex-col h-full">
-      {/* Messages Area - Make padding responsive */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pt-12 md:pt-6">
-        <div className="px-2 sm:px-4 md:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
-            {isDocumentAnalyzing && (
-              <div className="flex justify-center my-4">
-                <Spinner size="medium">
-                  <span className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t('chat.analyzingDocument')}</span>
-                </Spinner>
-              </div>
-            )}
-            {messages.map((message) => (
-              <Message key={message.id || `message-${message.created_at}`} {...message} />
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </div>
-      </div>
+      {/* Messages display component */}
+      <MessageList 
+        messages={messages} 
+        isDocumentAnalyzing={isDocumentAnalyzing} 
+      />
 
-      {/* Input Area - Fixed at bottom with responsive padding */}
-      <div className="bg-transparent py-2 md:py-4 px-2 md:px-4 lg:px-8 flex-shrink-0">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative rounded-xl border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/60 shadow-sm">
-            <form onSubmit={handleSubmit} className="relative">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder={t('chat.inputPlaceholder')}
-                value={inputValue}
-                maxLength={1800}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
-                className="w-full h-10 md:h-12 px-3 md:px-4 pr-10 md:pr-12 rounded-xl border-0 bg-transparent text-sm focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e);
-                  }
-                }}
-                disabled={isLoading}
-              />
-              <Button
-                type="submit"
-                className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-md p-0 flex items-center justify-center bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700"
-                disabled={isLoading || !inputValue.trim()}
-                size="icon"
-                variant="ghost"
-              >
-                {isLoading ? (
-                  <Spinner size="small" />
-                ) : (
-                  <ArrowUp className="h-4 w-4 text-primary" />
-                )}
-              </Button>
-            </form>
-          </div>
-          <div className="mt-1 md:mt-2 text-[10px] md:text-xs text-center text-muted-foreground opacity-70">
-            {t('chat.disclaimer')}
-          </div>
-        </div>
-      </div>
+      {/* Chat input component */}
+      <ChatInput 
+        onSendMessage={sendMessage} 
+        isLoading={isLoading} 
+      />
     </div>
   );
 }

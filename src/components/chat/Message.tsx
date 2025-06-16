@@ -14,6 +14,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
   const isUser = type === MessageType.User;
   const followUpQuestions = metadata?.followUpQuestions;
   const legalGuidance = metadata?.guidance as LegalGuidance | undefined;
+  const isPlaceHolder = type === MessageType.Placeholder;
 
   const handleFollowUpClick = (question: string) => {
     // Create a custom event to handle the follow-up question
@@ -44,10 +45,8 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
       >
         <div className="prose dark:prose-invert max-w-none prose-sm sm:prose-base break-words">
           <p className="text-sm sm:text-base font-semibold mb-1">{isUser ? t('chat.you') : t('chat.bot')}</p>
-          <div className="text-sm sm:text-base">
-            {typeof content === 'string' && content.trim().length > 0 ?
-              <Markdown>{content}</Markdown> :
-              <span className="text-red-500">No content available</span>}
+          <div className={`text-sm sm:text-base ${isPlaceHolder ? 'animate-pulse' : ''}`}>
+            <Markdown>{content}</Markdown>
           </div>
         </div>
 
@@ -149,7 +148,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
           </div>
         )}
 
-        <div className="mt-2 text-[10px] sm:text-xs text-gray-200 dark:text-gray-400">
+        <div className="mt-2 text-[10px] sm:text-xs text-gray-300 dark:text-gray-400">
           {timestamp && !isNaN(new Date(timestamp).getTime())
             ? new Date(timestamp).toLocaleTimeString()
             : ''}
