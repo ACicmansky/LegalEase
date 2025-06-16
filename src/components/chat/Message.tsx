@@ -89,7 +89,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
                 {legalGuidance.timeframe && (
                   <div className="mb-3">
                     <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.timeframe')}:</h4>
-                    <p className="text-gray-800 dark:text-gray-300">{legalGuidance.timeframe}</p>
+                    <div className="text-gray-800 dark:text-gray-300"><Markdown>{legalGuidance.timeframe}</Markdown></div>
                   </div>
                 )}
 
@@ -98,7 +98,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
                     <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-1">{t('chat.recommendedSteps')}:</h4>
                     <ol className="list-decimal pl-5 text-gray-800 dark:text-gray-300">
                       {legalGuidance.steps.map((step, index) => (
-                        <li key={index} className="mb-1">{step}</li>
+                        <li key={index} className="mb-1"><Markdown>{step}</Markdown></li>
                       ))}
                     </ol>
                   </div>
@@ -110,7 +110,7 @@ export function Message({ content, type, created_at, sources, metadata }: ChatMe
                     <div className="flex flex-wrap gap-2">
                       {legalGuidance.relevantLaws.map((law, index) => (
                         <Badge key={index} variant="outline" className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-700">
-                          {law}
+                          <Markdown>{law}</Markdown>
                         </Badge>
                       ))}
                     </div>
