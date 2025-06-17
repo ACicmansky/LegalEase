@@ -4,8 +4,8 @@
 // import { RunnableSequence } from "@langchain/core/runnables";
 // import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
-// if (!process.env.GOOGLE_GENAI_API_KEY) {
-//     throw new Error('Missing env.GOOGLE_GENAI_API_KEY');
+// if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+//     throw new Error('Missing env.GOOGLE_GENERATIVE_AI_API_KEY');
 // }
 
 // export class GenerationEngine {
@@ -14,7 +14,7 @@
 
 //     constructor() {
 //         this.model = new ChatGoogleGenerativeAI({
-//             apiKey: process.env.GOOGLE_GENAI_API_KEY!,
+//             apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY!,
 //             modelName: "gemini-2.0-flash-lite",
 //             temperature: 0.7,
 //             maxOutputTokens: 8192,
