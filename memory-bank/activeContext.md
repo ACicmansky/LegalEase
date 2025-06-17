@@ -5,9 +5,11 @@
 We've successfully implemented Vercel AI SDK with Google Gemini and completed several UX improvements. Our current focus is on:
 
 1. **Document Processing Enhancements**:
-   - Implementing document anonymization layer for GDPR compliance
+   - Migrating document processing agent to Vercel AI SDK
+   - Implementing in-memory text extraction with `office-text-extractor`
+   - Adding Mistral-powered anonymization (no training on user data)
    - Developing two-tier summary generation (professional + simplified)
-   - Ensuring secure storage of anonymized documents
+   - Storing only anonymized text for GDPR compliance
 
 2. **UI/UX Improvements**:
    - Adding dark/light mode toggle with persistent preferences

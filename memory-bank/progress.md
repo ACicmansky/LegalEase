@@ -50,17 +50,24 @@
 ## In Progress
 
 ### 1. Document Processing Enhancements
-- [ ] Document Anonymization
-  - [ ] Implement PII detection and redaction
-  - [ ] Store only anonymized versions of documents
-  - [ ] Create secure storage for original documents (temporary)
-  - [ ] Implement document access controls
+- [ ] Vercel AI SDK Migration
+  - [ ] Reimplement document processing agent with Vercel AI SDK
+  - [ ] Adopt streaming capabilities where applicable
+  - [ ] Implement consistent architecture with conversational agent
+
+- [ ] Privacy-Focused Document Processing
+  - [ ] Implement in-memory text extraction with `office-text-extractor`
+  - [ ] Extract directly from buffer without storing original files
+  - [ ] Create Mistral-powered anonymization function
+  - [ ] Implement PII detection for Slovak context (names, IDs, addresses, etc.)
+  - [ ] Ensure consistent entity replacement throughout documents
 
 - [ ] Two-Tier Summary Generation
-  - [ ] Professional detailed summary generation
+  - [ ] Professional detailed analysis and recommendations
+  - [ ] Legal opinion and risk assessment
   - [ ] Simplified user-friendly summary
-  - [ ] Integration with chat interface
-  - [ ] Caching of generated summaries
+  - [ ] Integration with chat interface (first message)
+  - [ ] Linking between summary and detailed analysis
 
 ### 2. GDPR Compliance
 - [ ] Data Protection Measures
