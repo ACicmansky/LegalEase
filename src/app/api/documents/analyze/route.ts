@@ -1,7 +1,7 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { processDocument } from '@/lib/agents/documentProcessingAgent';
+import { processDocument } from '@/lib/agents/documentProcessingAgentDepracated';
 import { ProcessingStage } from '@/lib/agents/types';
 import { getDocumentById } from '@/lib/services/documentService';
 
