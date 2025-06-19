@@ -5,6 +5,12 @@ import { google } from '@ai-sdk/google';
 import { mistral } from '@ai-sdk/mistral';
 import { groq } from '@ai-sdk/groq';
 
+export async function getGemini2_5FlashFromAiSdk(useSearchGrounding: boolean = false) {
+    return google('gemini-2.5-flash', {
+        useSearchGrounding,
+    });
+}
+
 export async function getGeminiFlashLiteFromAiSdk(useSearchGrounding: boolean = false) {
     return google('gemini-2.0-flash-lite', {
         useSearchGrounding,

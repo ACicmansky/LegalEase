@@ -11,7 +11,7 @@ import {
 } from "./types";
 import { DocumentContentExtractorTool } from "./tools/documentTools";
 import { SetDocumentAnalysisTool } from "./tools/documentAnalysisTools";
-import { extractKeyInformationPrompt, performLegalAnalysisPrompt, checkConsistencyPrompt, generateSummaryPrompt } from "@/lib/agents/prompts/documentProcessingAgentPrompts";
+import { extractKeyInformationPrompt, performLegalAnalysisPrompt, checkConsistencyPrompt, generateSummaryPrompt } from "@/lib/agents/prompts/documentProcessingAgentPromptsDeprecated";
 import { extractJsonFromString } from "@/lib/utils/textProcessing";
 import { getModelFlashLite } from "@/lib/agents/languageModels";
 
