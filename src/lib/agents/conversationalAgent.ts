@@ -109,8 +109,7 @@ export async function getStructuredResponse(
       });
 
       // Get the text from the stream and parse it as ConversationResponse
-      const jsonString = extractJsonFromString(stream.text);
-      const parsedResponse = JSON.parse(jsonString);
+      const parsedResponse = extractJsonFromString(stream.text);
 
       if (!parsedResponse || typeof parsedResponse !== 'object') {
         throw new Error("Failed to parse response as JSON");
@@ -197,8 +196,7 @@ export async function getLegalGuidance(
       });
 
       // Get the text from the stream and parse it as LegalGuidance
-      const jsonString = extractJsonFromString(stream.text);
-      const parsedGuidance = JSON.parse(jsonString);
+      const parsedGuidance = extractJsonFromString(stream.text);
 
       if (!parsedGuidance || typeof parsedGuidance !== 'object') {
         throw new Error("Failed to parse guidance as JSON");
