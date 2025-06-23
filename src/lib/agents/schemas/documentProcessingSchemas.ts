@@ -5,16 +5,10 @@
 export interface DocumentProcessingResult {
   anonymizedContent: string;
   keyInformation: KeyInformation;
-  legalAnalysis: LegalAnalysis; 
+  legalAnalysis: LegalAnalysis;
   consistencyChecks: ConsistencyIssue[];
   detailedAnalysis: DetailedAnalysis;
   simplifiedSummary: string;
-}
-
-export interface ProcessingStageResult<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
 }
 
 export interface KeyInformation {
