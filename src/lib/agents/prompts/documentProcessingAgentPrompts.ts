@@ -32,7 +32,7 @@ export function createAnonymizeDocumentHumanPrompt(documentContent: string): str
 
 export const extractKeyInformationSystemPrompt = `Si špecializovaný AI právny asistent, ktorého úlohou je identifikovať a extrahovať kľúčové informácie z právnych dokumentov.
     
-Analyzuj obsah anonymizovaného dokumentu a extrahuj nasledujúce kľúčové informácie v štruktúrovanom formáte:
+Analyzuj obsah dokumentu a extrahuj nasledujúce kľúčové informácie v štruktúrovanom formáte:
     
 1. Strany: Identifikuj všetky strany zapojené v dokumente, ich úlohy a akékoľvek popisné detaily
 2. Dátumy: Extrahuj všetky relevantné dátumy spomenuté v dokumente a ich význam

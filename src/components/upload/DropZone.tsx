@@ -14,7 +14,7 @@ interface DropZoneProps {
 
 export const DropZone = ({
   onFilesDrop,
-  maxFileSize = 32 * 1024 * 1024, // 10MB default
+  maxFileSize = 20 * 1024 * 1024, // 20MB default
   acceptedFileTypes = ['.pdf'],
   maxFiles = 5,
 }: DropZoneProps) => {

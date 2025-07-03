@@ -6,7 +6,8 @@
     "pending": "Pending",
     "processing": "Processing",
     "complete": "Complete",
-    "uploading": "{progress}%"
+    "uploading": "{progress}%",
+    "ready": "Ready"
   },
   "auth": {
     "login": {
@@ -79,6 +80,8 @@
     "fileSize": "{size} MB",
     "successToast": "New chat created!",
     "failedToCreateChat": "Failed to create new chat. Please try again.",
-    "failedUpload": "Failed to upload document. Please try again."
+    "failedUpload": "Failed to upload document. Please try again.",
+    "invalidFileType": "Invalid file type. Only PDF, DOCX, DOC, TXT, RTF, PPTX, PPT, XLSX, XLS files are allowed.",
+    "fileTooLarge": "File size exceeds the limit of {maxMB}MB."
   }
 }

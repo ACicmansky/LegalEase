@@ -1,20 +1,17 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { processDocument } from '@/lib/agents/documentProcessingAgent';
 import { addDocumentProcessing } from '@/lib/services/documentProcessnigService';
 
 export async function POST(request: NextRequest) {
     try {
-        const formData = await request.formData();
-        const document = formData.get('document') as File | null;
-
-        if (!document) {
-            return NextResponse.json({ error: 'Document is required' }, { status: 400 });
-        }
+        // Read the file as ArrayBuffer
+        const fileBuffer = await request.arrayBuffer();
 
         // Process the document
-        const result = await processDocument(document);
+        const timer = performance.now();
+        const result = await processDocument(fileBuffer);
+        const processingTime = performance.now() - timer;
+        console.log(`Processing time: ${processingTime} ms`);
 
         // Add document processing to DB
         const documentProcessing = await addDocumentProcessing(result);
@@ -23,10 +20,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Return success with processing result
-        return NextResponse.json({
-            success: true,
-            summary: result.simplifiedSummary,
-        });
+        return NextResponse.json(result.simplifiedSummary);
     }
     catch (error) {
         console.error('Error in document analysis service:', error);

@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/button";
 import { DocumentUpload } from "@/components/upload/DocumentUpload";
 import { useAuth } from "@/context/AuthContext";
 import { ChatAPIService } from "@/lib/api/chatAPIService";
-import { addDocument } from "@/lib/services/documentService";
-import { DocumentAnalyzeService } from '@/lib/api/documentAnalyzeService';
+import { DocumentAPIProcessingService } from '@/lib/api/documentAPIProcessnigService';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { routing } from "@/i18n/routing";
 import { MessageType } from "@/types/chat";
@@ -105,38 +104,30 @@ export default function Home() {
     }
   };
 
-  const handleCreateChatFromDocument = async (
-    documentId: string,
-    fileName: string,
-    filepath: string
-  ) => {
+  const handleCreateChatFromDocument = async (document: File) => {
+    // Create a new chat
+    const newChat = await ChatAPIService.createChat(`${document.name}`);
+    chatListRef.current?.handleCreateChat(newChat);
+    setSelectedChatId(newChat.id);
+
+    // Close the upload dialog
+    setIsUploadDialogOpen(false);
+
+    // Close sidebar on mobile after selecting a chat
+    if (window.innerWidth < 768) {
+      handleSidebarToggle(false);
+    }
+
+    // Set document analyzing state to true
+    setIsDocumentAnalyzing(true);
     try {
-      // Create a new chat
-      const newChat = await ChatAPIService.createChat(`${fileName}`, documentId);
-      chatListRef.current?.handleCreateChat(newChat);
-      setSelectedChatId(newChat.id);
-
-      // Close the upload dialog
-      setIsUploadDialogOpen(false);
-
-      // Close sidebar on mobile after selecting a chat
-      if (window.innerWidth < 768) {
-        handleSidebarToggle(false);
-      }
-
-      await addDocument(documentId, fileName, newChat.id, filepath);
-
-      // Set document analyzing state to true
-      setIsDocumentAnalyzing(true);
-
-      // Call documents analyze API
-      const analysisResult = await DocumentAnalyzeService.analyzeDocument(documentId);
+      const summary = await DocumentAPIProcessingService.processDocument(document);
 
       // If analysis was successful, add the summary
-      if (analysisResult.success && analysisResult.summary) {
+      if (summary) {
         const summaryMessage = await ChatAPIService.addMessage(
           newChat.id,
-          analysisResult.summary,
+          summary,
           MessageType.Summary
         );
         chatInterfaceRef.current?.handleCreateMessage(summaryMessage);
@@ -146,8 +137,9 @@ export default function Home() {
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Failed to create chat from document'
+          : 'Počas analýzy dokumentu sa vyskytla neznáma chyba'
       );
+      await ChatAPIService.deleteChat(newChat.id);
     } finally {
       // Set document analyzing state to false
       setIsDocumentAnalyzing(false);

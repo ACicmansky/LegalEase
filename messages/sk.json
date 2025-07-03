@@ -6,7 +6,8 @@
     "pending": "Čaká sa",
     "processing": "Spracováva sa",
     "complete": "Dokončené",
-    "uploading": "{progress}%"
+    "uploading": "{progress}%",
+    "ready": "Pripravený"
   },
   "auth": {
     "login": {
@@ -79,6 +80,8 @@
     "fileSize": "{size} MB",
     "successToast": "Nový chat vytvorený!",
     "failedToCreateChat": "Nepodarilo sa vytvoriť nový chat. Skúste to znova.",
-    "failedUpload": "Nepodarilo sa nahrať dokument. Skúste to znova."
+    "failedUpload": "Nepodarilo sa nahrať dokument. Skúste to znova.",
+    "invalidFileType": "Nesprávny typ súboru. Prípustné súbory sú PDF, DOCX, DOC, TXT, RTF, PPTX, PPT, XLSX, XLS.",
+    "fileTooLarge": "Veľkosť súboru prekračuje limit {maxMB}MB."
   }
 }

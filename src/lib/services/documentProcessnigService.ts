@@ -8,7 +8,7 @@ export async function addDocumentProcessing(documentProcessing: DocumentProcessi
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: processing, error } = await client
-        .from('document_processnig')
+        .from('document_processing')
         .insert({
             anonymizedContent: documentProcessing.anonymizedContent,
             keyInformation: documentProcessing.keyInformation,
@@ -32,7 +32,7 @@ export async function getDocumentProcessing(chatId: string, supabaseClient?: Awa
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: processing, error } = await client
-        .from('document_processnig')
+        .from('document_processing')
         .select('*')
         .eq('chat_id', chatId)
         .single();
@@ -49,7 +49,7 @@ export async function checkDocumentProcessingExists(chatId: string, supabaseClie
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: processing, error } = await client
-        .from('document_processnig')
+        .from('document_processing')
         .select('id')
         .eq('chat_id', chatId)
         .maybeSingle();
@@ -66,7 +66,7 @@ export async function updateDocumentProcessing(chatId: string, processing: Docum
     const client = supabaseClient || await createSupabaseServerClient();
 
     const { data: updatedProcessing, error } = await client
-        .from('document_processnig')
+        .from('document_processing')
         .update({
             anonymizedContent: processing.anonymizedContent,
             keyInformation: processing.keyInformation,
